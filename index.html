@@ -1,730 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>Civil Air Patrol Email Signature Generator</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="shortcut icon" href="favicon.png" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&display=block"
-			rel="stylesheet"
-		/>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
-		<script type="text/javascript">
-			let type = 'generic';
-			let grade_type = 'Senior';
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Civil Air Patrol Email Signature Generator</title>
+  <link rel="shortcut icon" href="favicon.png" />
 
-			const vals = {
-				name: 'Jane Doe',
-				grade_type: 'Senior',
-				grade: '2nd Lt.',
-				wing: '',
-				title: '',
-				phone_1_type: 'M',
-				phone_1: '',
-				phone_2_type: 'M',
-				phone_2: '',
-				phone_3_type: 'M',
-				phone_3: '',
-				website_text: '',
-				website_url: '',
-			};
+  <style>
+    /* reset */
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre, a,
+    abbr, acronym, address, big, cite, code, del, dfn,
+    em, img, ins, kbd, q, s, samp, small, strike, strong,
+    sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend, table, caption, tbody, tfoot,
+    thead, tr, th, td, article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup, menu, nav, output,
+    ruby, section, summary, time, mark, audio, video {
+      margin: 0; padding: 0; border: 0; font-size: 100%;
+      font: inherit; vertical-align: baseline;
+    }
+    article, aside, details, figcaption, figure, footer, header,
+    hgroup, menu, nav, section { display: block; }
+    body { line-height: 1; }
+    ol, ul { list-style: none; }
+    table { border-collapse: collapse; border-spacing: 0; }
 
-			const template = {
-				generic: () =>
-					`<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"><html><body><br /><h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">${
-						grade_type === 'Cadet' ? 'Cadet ' : ''
-					}${vals.grade && `${vals.grade} `}${vals.name}</h1>${
-						vals.title
-							? `<h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">${vals.title}</h2>`
-							: ''
-					}
-					<h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; margin: 0 0 20px;">Civil Air Patrol, U.S. Air Force Auxiliary</h2>${
-						vals.phone_1
-							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">(${vals.phone_1_type}) <a href="tel:${vals.phone_1}" style="color: #000000; text-decoration: none;">${vals.phone_1}</a></p>`
-							: ''
-					}${
-						vals.phone_2
-							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">(${vals.phone_2_type}) <a href="tel:${vals.phone_2}" style="color: #000000; text-decoration: none;">${vals.phone_2}</a></p>`
-							: ''
-					}${
-						vals.phone_3
-							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">(${vals.phone_3_type}) <a href="tel:${vals.phone_3}" style="color: #000000; text-decoration: none;">${vals.phone_3}</a></p>`
-							: ''
-					}<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;"><a href="https://www.GoCivilAirPatrol.com" style="color: #000000; text-decoration: underline;">GoCivilAirPatrol.com</a></p>${
-						vals.website_text && vals.website_url
-							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;"><a href="${vals.website_url}" style="color: #000000; text-decoration: underline;">${vals.website_text}</a></p>`
-							: ''
-					}<a href="https://www.GoCivilAirPatrol.com"><img src="https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzFNOTF6UzJGRXByV0pNUjQ1cnkxLnBuZyJ9:frontify:kAS-l74of5IyRDi0IxD9lG5yNH6i-Zg30PGjGUjU8y0?width=200" style="margin: 10px 0 10px -5px;"></a><p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color:#000000; font-weight: normal; font-style: italic; white-space: normal; line-height: 14px; margin: 0 0 5px;">Volunteers serving America's communities, saving lives, and shaping futures.</p></body></html>`,
-				plaintext: () =>
-					`${grade_type === 'Cadet' ? 'Cadet'  : ''}${vals.grade || ''} ${
-						vals.name
-					}${
-						vals.title ? `\n${vals.title}` : ''
-					}\nCivil Air Patrol, U.S. Air Force Auxiliary${
-						vals.phone_1 || vals.phone_2 || vals.phone_3
-							? `\n${
-									vals.phone_1
-										? `\n(${vals.phone_1_type}) ${vals.phone_1}`
-										: ''
-							  }${
-									vals.phone_2
-										? `\n(${vals.phone_2_type}) ${vals.phone_2}`
-										: ''
-							  }${
-									vals.phone_3
-										? `\n(${vals.phone_3_type}) ${vals.phone_3}`
-										: ''
-							  }`
-							: ''
-					}\n\nhttps://www.GoCivilAirPatrol.com${
-						vals.website_url ? `\n${vals.website_url}` : ''
-					}`,
-				mobile: () =>
-					`${grade_type === 'Cadet' ? 'Cadet ' : ''}${vals.grade} ${
-						vals.name
-					}${
-						vals.wing ? `, ${vals.wing.toUpperCase()}` : ''
-					}\nCivil Air Patrol`,
-			};
+    /* app layout */
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: #000;
+      background: #f3f4f6;
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+    a { color: rgb(0, 20, 137); }
 
-			$(document).ready(function () {
-				updateOutput();
+    body > div { padding: 50px; }
 
-				$('#type').change(function () {
-					type = $(this).val();
+    .left {
+      background: #fff;
+      flex: 1 1 40%;
+      min-width: 420px;
+      max-width: 640px;
+      overflow-y: auto;
+      border-right: 1px solid #f3f4f6;
+    }
+    .middle {
+      flex: 1 1 30%;
+      min-width: 260px;
+    }
+    .right {
+      flex: 1 1 30%;
+      min-width: 260px;
+      background: #fff;
+      border-left: 1px solid #f3f4f6;
+    }
 
-					if (type === 'mobile') {
-						$('#f_wing').show();
-						$('#f_title').hide();
-						$('#f_phone').hide();
-						$('#f_website').hide();
-					} else {
-						$('#f_wing').hide();
-						$('#f_title').show();
-						$('#f_phone').show();
-						$('#f_website').show();
-					}
+    h1 {
+      color: rgb(186, 12, 47);
+      font-size: 30px;
+      line-height: 1.3;
+      font-weight: 600;
+      margin: 0 0 10px;
+    }
+    p { margin: 8px 0; line-height: 1.45; }
 
-					if (type === 'plaintext') {
-						$('#website_text').hide();
-					} else {
-						$('#website_text').show();
-					}
+    form {
+      margin: 25px 0 0;
+      padding: 25px 0 0;
+      border-top: 1px solid #f3f4f6;
+    }
+    form > div {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0 0 15px;
+    }
 
-					if (type === 'generic') {
-						$('.middle').show();
-					} else {
-						$('.middle').hide();
-					}
+    label {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .req { color: #fc2050; }
+    .note {
+      margin-left: auto;
+      color: rgb(158, 162, 162);
+      font-size: 12px;
+      font-weight: 400;
+      white-space: normal;
+      text-align: right;
+      line-height: 1.3;
+    }
 
-					updateInput();
-					updateOutput();
-				});
+    input, select, textarea {
+      border: 1px solid rgb(158, 162, 162);
+      border-radius: 5px;
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 400;
+      padding: 10px;
+      background: #fff;
+      color: #000;
+    }
+    textarea { resize: vertical; min-height: 90px; }
 
-				$('#copy-output').click(function () {
-					const e = document.getElementById('output');
-					e.select();
-					document.execCommand('copy');
-				});
+    .dual {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      align-items: stretch;
+    }
+    .dual > * { flex: 1 1 0; }
 
-				$('#grade').on('change', function () {
-					updateInput();
-				});
-				$('#name').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#wing').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#title').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#phone_1_type').change(function () {
-					updateInput();
-				});
-				$('#phone_1').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#phone_2_type').change(function () {
-					updateInput();
-				});
-				$('#phone_2').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#phone_3_type').change(function () {
-					updateInput();
-				});
-				$('#phone_3').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#website_text').on('keyup blur', function () {
-					updateInput();
-				});
-				$('#website_url').on('keyup blur', function () {
-					updateInput();
-				});
+    button {
+      transition: all 0.2s ease-in-out;
+      font-size: 16px;
+      height: 38px;
+      border: 0;
+      border-radius: 5px;
+      background: rgb(0, 20, 137);
+      color: #fff;
+      padding: 10px 20px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 15px;
+    }
+    button:hover { background: rgb(0, 14, 102); }
 
-				$('#grade_type').change(function () {
-					grade_type = $(this).val();
+    footer {
+      color: rgb(158, 162, 162);
+      font-size: 12px;
+      padding: 50px 0 20px;
+    }
+    footer a { color: inherit; }
 
-					// Gate the grades based on SM or Cadet
-					if (grade_type === 'Senior') {
-						$('option[data-cadet="true"]').attr(
-							'disabled',
-							'disabled'
-						);
-						$('option[data-senior="true"]').removeAttr('disabled');
-						$('#grade').val('');
-					} else {
-						$('option[data-senior="true"]').attr(
-							'disabled',
-							'disabled'
-						);
-						$('option[data-cadet="true"]').removeAttr('disabled');
-						$('#grade').val('Airman');
-					}
+    /* middle */
+    .middle textarea {
+      width: 100%;
+      height: 260px;
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      margin-top: 15px;
+    }
 
-					updateInput();
-				});
-			});
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: rgb(158, 162, 162);
+      min-height: 18px;
+    }
 
-			function updateInput() {
-				vals['grade'] = $('#grade').val();
-				
-				if ($('#name').val()) {
-					vals['name'] = $('#name').val();
-				} else {
-					vals['name'] = 'Jane Doe';
-				}
+    .warning {
+      margin: 40px 0 20px;
+      color: rgb(186, 12, 47);
+      line-height: 1.45;
+    }
 
-				vals['wing'] = $('#wing').val();
-				vals['title'] = $('#title').val();
-				vals['phone_1_type'] = $('#phone_1_type').val();
-				vals['phone_1'] = $('#phone_1').val();
-				vals['phone_2_type'] = $('#phone_2_type').val();
-				vals['phone_2'] = $('#phone_2').val();
-				vals['phone_3_type'] = $('#phone_3_type').val();
-				vals['phone_3'] = $('#phone_3').val();
-				vals['website_text'] = $('#website_text').val();
-				vals['website_url'] = $('#website_url').val();
+    /* right preview */
+    .preview-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 20px 20px 0 20px;
+    }
+    .preview-toolbar label {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .preview-wrap {
+      padding: 20px;
+    }
+    .preview-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fff;
+    }
+    .preview-code {
+      white-space: pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
 
-				updateOutput();
-			}
+    .hidden { display: none !important; }
+  </style>
+</head>
 
-			function updateOutput() {
-				$('#output').val(template[type]);
-				$('#preview').html(template[type]);
-			}
-		</script>
-		<style type="text/css">
-			html,
-			body,
-			div,
-			span,
-			applet,
-			object,
-			iframe,
-			h1,
-			h2,
-			h3,
-			h4,
-			h5,
-			h6,
-			p,
-			blockquote,
-			pre,
-			a,
-			abbr,
-			acronym,
-			address,
-			big,
-			cite,
-			code,
-			del,
-			dfn,
-			em,
-			img,
-			ins,
-			kbd,
-			q,
-			s,
-			samp,
-			small,
-			strike,
-			strong,
-			sub,
-			sup,
-			tt,
-			var,
-			b,
-			u,
-			i,
-			center,
-			dl,
-			dt,
-			dd,
-			ol,
-			ul,
-			li,
-			fieldset,
-			form,
-			label,
-			legend,
-			table,
-			caption,
-			tbody,
-			tfoot,
-			thead,
-			tr,
-			th,
-			td,
-			article,
-			aside,
-			canvas,
-			details,
-			embed,
-			figure,
-			figcaption,
-			footer,
-			header,
-			hgroup,
-			menu,
-			nav,
-			output,
-			ruby,
-			section,
-			summary,
-			time,
-			mark,
-			audio,
-			video {
-				margin: 0;
-				padding: 0;
-				border: 0;
-				font-size: 100%;
-				font: inherit;
-				vertical-align: baseline;
-			}
-			/* HTML5 display-role reset for older browsers */
-			article,
-			aside,
-			details,
-			figcaption,
-			figure,
-			footer,
-			header,
-			hgroup,
-			menu,
-			nav,
-			section {
-				display: block;
-			}
-			body {
-				line-height: 1;
-			}
-			ol,
-			ul {
-				list-style: none;
-			}
-			blockquote,
-			q {
-				quotes: none;
-			}
-			blockquote:before,
-			blockquote:after,
-			q:before,
-			q:after {
-				content: "";
-				content: none;
-			}
-			table {
-				border-collapse: collapse;
-				border-spacing: 0;
-			}
+<body>
+  <div class="left">
+    <h1>Civil Air Patrol Email Signature Generator</h1>
+    <p>Fill out your details below, and verify the preview in the right column is correct.</p>
 
-			/*****/
+    <form id="sig-form" autocomplete="off">
+      <div>
+        <label for="type">Signature Type</label>
+        <select id="type">
+          <option value="generic" selected>Default</option>
+          <option value="plaintext">Plain Text</option>
+          <option value="mobile">Abbreviated (Mobile)</option>
+        </select>
+      </div>
 
-			body {
-				font-family: "Ubuntu", "Mier B", -apple-system,
-					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-					"Segoe UI Symbol";
-				color: rgb(0, 0, 0);
-				line-height: 1.4;
-				font-weight: 400;
-				font-size: 1em;
-				height: 100vh;
-				background: #f3f4f6;
-				display: flex;
-				flex-direction: row;
-				flex-wrap: nowrap;
-				justify-content: space-between;
-				align-items: stretch;
-				align-content: stretch;
-			}
-			a {
-				color: rgb(0, 20, 137);
-			}
-			h1 {
-				font-family: "Ubuntu", "Mier B", -apple-system,
-					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-					"Segoe UI Symbol";
-				color: rgb(186, 12, 47);
-				font-size: 30px;
-				line-height: 1.3;
-				font-weight: 500;
-				margin: 0 0 10px;
-			}
-			p {
-				margin: 5px 0;
-			}
-			input,
-			select,
-			textarea {
-				border: 1px solid rgb(158, 162, 162);
-				border-radius: 5px;
-				font-size: 16px;
-				line-height: 1.3;
-				font-weight: 400;
-				padding: 10px;
-				background-color: rgb(255, 255, 255);
-				color: rgb(0, 0, 0);
-				font-family: "Ubuntu", "Mier B", -apple-system,
-					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-					"Segoe UI Symbol";
-			}
-			form {
-				margin: 25px 0 0;
-				padding: 25px 0 0;
-				border-top: 1px solid #f3f4f6;
-			}
-			label {
-				flex: 1 0 auto;
-				padding: 0 0 10px;
-				display: flex;
-				align-items: center;
-				white-space: nowrap;
-			}
-			label span {
-				color: #fc2050;
-			}
-			label span.note {
-				color: rgb(158, 162, 162);
-				font-size: 12px;
-				flex: 1 1 100%;
-				text-align: right;
-			}
-			button,
-			a.button {
-				transition: all 0.2s ease-in-out;
-				font-family: "Ubuntu", "Mier B", -apple-system,
-					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-					"Segoe UI Symbol";
-				color: rgb(255, 255, 255);
-				font-size: 16px;
-				line-height: 16px;
-				height: 38px;
-				font-weight: 400;
-				border-width: 0;
-				border-radius: 5px;
-				background-color: rgb(0, 20, 137);
-				padding: 10px 20px;
-				cursor: pointer;
-				user-select: none;
-				margin-top: 15px;
-				text-decoration: none;
-			}
-			button:hover,
-			a.button:hover {
-				color: rgb(255, 255, 255);
-				border-color: rgb(0, 12, 92);
-				background-color: rgb(0, 14, 102);
-			}
-			footer {
-				font-family: "Ubuntu", "Mier B", -apple-system,
-					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-					"Segoe UI Symbol";
-				color: rgb(158, 162, 162);
-				font-size: 12px;
-				padding: 50px 0 20px;
-				background: #fff;
-			}
-			footer a {
-				color: inherit;
-			}
-			body > div {
-				padding: 50px;
-			}
-			div.left {
-				background: #fff;
-				flex: 1 1 40%;
-				min-width: 400px;
-				max-width: 600px;
-				overflow-y: auto;
-				border-right: 1px solid #f3f4f6;
-			}
-			div.left > form > div {
-				display: flex;
-				flex-direction: column;
-				flex-wrap: nowrap;
-				justify-content: flex-start;
-				align-content: flex-start;
-				margin: 0 0 15px;
-			}
-			div.left input[type="text"],
-			div.left textarea {
-				flex: 1 1 100%;
-			}
-			div.left div.dual {
-				display: flex;
-				flex-direction: row;
-				margin-bottom: 15px;
-				gap: 15px;
-			}
-			div.middle {
-				flex: 1 1 30%;
-				min-width: 200px;
-			}
-			div.middle textarea {
-				width: calc(100% - 25px);
-				height: 250px;
-				font-size: 13px;
-				font-family: monospace;
-				margin-top: 15px;
-			}
-			div.right {
-				flex: 1 1 30%;
-				min-width: 200px;
-				background: #fff;
-				font-family: Arial, sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="left">
-			<h1>Civil Air Patrol Email Signature Generator</h1>
-			<p>
-				Fill out your details below, and verify the preview in the right
-				column is correct.
-			</p>
-			<form>
-				<div>
-					<label for="type">Signature Type</label>
-					<select id="type">
-						<option value="generic">Default</option>
-						<option value="plaintext">Plain Text</option>
-						<option value="mobile">Abbreviated (Mobile)</option>
-					</select>
-				</div>
-				<div>
-					<label for="grade">Grade & Name<span>*</span></label>
-					<div class="dual">
-						<select id="grade_type">
-							<option value="Senior" selected>Senior</option>
-							<option value="Cadet">Cadet</option>
-						</select>
+      <div>
+        <label for="grade">Grade &amp; Name <span class="req">*</span></label>
+        <div class="dual">
+          <!-- CHANGED: Senior -> Adult -->
+          <select id="grade_type">
+            <option value="Adult" selected>Adult</option>
+            <option value="Cadet">Cadet</option>
+          </select>
 
-						<select id="grade">
-							<option value="Airman" data-cadet="true" disabled>
-								Airman Basic
-							</option>
-							<option value="Airman" data-cadet="true" disabled>
-								Airman
-							</option>
-							<option
-								value="Airman 1st Class"
-								data-cadet="true"
-								disabled
-							>
-								Airman 1st Class
-							</option>
-							<option
-								value="Senior Airman"
-								data-cadet="true"
-								disabled
-							>
-								Senior Airman
-							</option>
-							<option value="Staff Sgt.">Staff Sgt.</option>
-							<option value="Tech. Sgt.">Tech. Sgt.</option>
-							<option value="Master Sgt.">Master Sgt.</option>
-							<option value="Senior Master Sgt.">
-								Senior Master Sgt.
-							</option>
-							<option value="Chief Master Sgt.">
-								Chief Master Sgt.
-							</option>
-							<option value="" data-senior="true">
-								Senior Member
-							</option>
-							<option value="Flight Officer" data-senior="true">
-								Flight Officer
-							</option>
-							<option
-								value="Tech. Flight Officer"
-								data-senior="true"
-							>
-								Tech. Flight Officer
-							</option>
-							<option
-								value="Senior Flight Officer"
-								data-senior="true"
-							>
-								Senior Flight Officer
-							</option>
-							<option value="2nd Lt." selected>2nd Lt.</option>
-							<option value="1st Lt.">1st Lt.</option>
-							<option value="Capt.">Capt.</option>
-							<option value="Maj.">Maj.</option>
-							<option value="Lt. Col.">Lt. Col.</option>
-							<option value="Col.">Col.</option>
-							<option value="Brig. Gen." data-senior="true">
-								Brig. Gen.
-							</option>
-							<option value="Maj. Gen." data-senior="true">
-								Maj. Gen.
-							</option>
-						</select>
-						<input type="text" id="name" placeholder="Jane Doe" />
-					</div>
-				</div>
-				<div id="f_wing" style="display: none">
-					<label for="wing"
-						>Wing<span>*</span
-						><span class="note"
-							>Use 4-letter Wing, 3-letter Region, or “HQ”; no
-							squadron designators</span
-						></label
-					>
-					<input type="text" id="wing" placeholder="TXWG" />
-				</div>
-				<div id="f_title">
-					<label for="title"
-						>Duty Position(s)<span class="note"
-							>Unit name followed by duty position</span
-						></label
-					>
-					<textarea
-						type="text"
-						id="title"
-						placeholder="Texas Wing Director of Operations
-Apollo Comp. Sq. Operations Officer"
-					></textarea>
-				</div>
-				<div id="f_phone">
-					<label for="phone_1">Phone Number(s)</label>
-					<div class="dual">
-						<select id="phone_1_type">
-							<option value="M" selected>Mobile</option>
-							<option value="H">Home</option>
-							<option value="O">Office</option>
-						</select>
+          <select id="grade">
+            <!-- Cadet enlisted (data-cadet=true) -->
+            <option value="Airman Basic" data-cadet="true" disabled>Airman Basic</option>
+            <option value="Airman" data-cadet="true" disabled>Airman</option>
+            <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
+            <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
 
-						<input
-							type="text"
-							id="phone_1"
-							placeholder="555.555.5555"
-						/>
-					</div>
+            <!-- Common/Adult (data-adult=true) -->
+            <option value="Staff Sgt." data-adult="true">Staff Sgt.</option>
+            <option value="Tech. Sgt." data-adult="true">Tech. Sgt.</option>
+            <option value="Master Sgt." data-adult="true">Master Sgt.</option>
+            <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
+            <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
 
-					<div class="dual">
-						<select id="phone_2_type">
-							<option value="M" selected>Mobile</option>
-							<option value="H">Home</option>
-							<option value="O">Office</option>
-						</select>
+            <option value="" data-adult="true">Senior Member</option>
+            <option value="Flight Officer" data-adult="true">Flight Officer</option>
+            <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
+            <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
 
-						<input
-							type="text"
-							id="phone_2"
-							placeholder="555.555.5555"
-						/>
-					</div>
+            <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
+            <option value="1st Lt." data-adult="true">1st Lt.</option>
+            <option value="Capt." data-adult="true">Capt.</option>
+            <option value="Maj." data-adult="true">Maj.</option>
+            <option value="Lt. Col." data-adult="true">Lt. Col.</option>
+            <option value="Col." data-adult="true">Col.</option>
+            <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
+            <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
+          </select>
 
-					<div class="dual">
-						<select id="phone_3_type">
-							<option value="M" selected>Mobile</option>
-							<option value="H">Home</option>
-							<option value="O">Office</option>
-						</select>
+          <input type="text" id="name" placeholder="Jane Doe" />
+        </div>
+      </div>
 
-						<input
-							type="text"
-							id="phone_3"
-							placeholder="555.555.5555"
-						/>
-					</div>
-				</div>
-				<div id="f_website">
-					<label for="website_text">Website</label>
-					<div class="dual">
-						<input
-							type="text"
-							id="website_text"
-							placeholder="Display Text"
-						/>
-						<input
-							type="text"
-							id="website_url"
-							placeholder="Link URL"
-						/>
-					</div>
-				</div>
-			</form>
+      <div id="f_wing" class="hidden">
+        <label for="wing">
+          Wing <span class="req">*</span>
+          <span class="note">Use 4-letter Wing, 3-letter Region, or “HQ”; no squadron designators</span>
+        </label>
+        <input type="text" id="wing" placeholder="TXWG" />
+      </div>
 
-			<footer>
-				Version 14. Last modified on September 1st, 2024. Managed by
-				<a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
-			</footer>
-		</div>
+      <div id="f_title">
+        <label for="title">
+          Duty Position(s)
+          <span class="note">Unit name followed by duty position</span>
+        </label>
+        <textarea
+          id="title"
+          placeholder="Texas Wing Director of Operations&#10;Apollo Comp. Sq. Operations Officer"
+        ></textarea>
+      </div>
 
-		<div class="middle">
-			<p>
-				If your email client supports HTML signatures, copy and paste
-				the content from below. If it doesn't, highlight, copy and paste
-				the content from the right column.
-			</p>
-			<textarea id="output"></textarea>
-			<button id="copy-output">Copy</button>
-			<p style="margin: 40px 0 20px; color: rgb(186, 12, 47)">
-				<svg
-					height="14"
-					aria-hidden="true"
-					focusable="false"
-					data-prefix="fas"
-					data-icon="exclamation-triangle"
-					class="svg-inline--fa fa-exclamation-triangle fa-w-18"
-					role="img"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 576 512"
-				>
-					<path
-						fill="currentColor"
-						d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-					></path>
-				</svg>
-				If you have problems with formatting after pasting the signature
-				into your email client, you may need to use another templating
-				option. Please visit the
-				<a
-					href="https://civilairpatrol.frontify.com/document/449893#/templates/email-signature"
-					>Brand Guide Email Signature page</a
-				>
-				for more options.
-			</p>
-		</div>
+      <div id="f_phone">
+        <label>Phone Number(s)</label>
 
-		<div class="right">
-			<pre id="preview"></pre>
-		</div>
-	</body>
+        <div class="dual">
+          <select id="phone_1_type">
+            <option value="M" selected>Mobile</option>
+            <option value="H">Home</option>
+            <option value="O">Office</option>
+          </select>
+          <input type="text" id="phone_1" placeholder="555.555.5555" />
+        </div>
+
+        <div class="dual">
+          <select id="phone_2_type">
+            <option value="M" selected>Mobile</option>
+            <option value="H">Home</option>
+            <option value="O">Office</option>
+          </select>
+          <input type="text" id="phone_2" placeholder="555.555.5555" />
+        </div>
+
+        <div class="dual">
+          <select id="phone_3_type">
+            <option value="M" selected>Mobile</option>
+            <option value="H">Home</option>
+            <option value="O">Office</option>
+          </select>
+          <input type="text" id="phone_3" placeholder="555.555.5555" />
+        </div>
+      </div>
+
+      <div id="f_website">
+        <label for="website_text">Website</label>
+        <div class="dual">
+          <input type="text" id="website_text" placeholder="Display Text" />
+          <input type="text" id="website_url" placeholder="Link URL" />
+        </div>
+      </div>
+    </form>
+
+    <footer>
+      Version 14. Last modified on September 1st, 2024. Managed by
+      <a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
+    </footer>
+  </div>
+
+  <div class="middle">
+    <p>
+      If your email client supports HTML signatures, copy and paste the content from below.
+      If it doesn't, highlight/copy from the rendered preview on the right.
+    </p>
+
+    <textarea id="output" spellcheck="false"></textarea>
+    <button id="copy-output" type="button">Copy</button>
+    <div class="status" id="status"></div>
+
+    <p class="warning">
+      If you have problems with formatting after pasting the signature into your email client,
+      you may need to use another templating option. Please visit the Brand Guide Email Signature page
+      for more options.
+    </p>
+  </div>
+
+  <div class="right">
+    <div class="preview-toolbar">
+      <label for="preview_mode">Preview:</label>
+      <select id="preview_mode">
+        <option value="rendered" selected>Rendered</option>
+        <option value="code">Code</option>
+      </select>
+    </div>
+
+    <div class="preview-wrap">
+      <div class="preview-card">
+        <div id="preview_rendered"></div>
+        <pre id="preview_code" class="preview-code hidden"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // App state
+      let type = "generic";         // generic | plaintext | mobile
+      let gradeType = "Adult";      // Adult | Cadet
+
+      const vals = {
+        name: "Jane Doe",
+        grade: "2nd Lt.",
+        wing: "",
+        title: "",
+        phone_1_type: "M",
+        phone_1: "",
+        phone_2_type: "M",
+        phone_2: "",
+        phone_3_type: "M",
+        phone_3: "",
+        website_text: "",
+        website_url: ""
+      };
+
+      // Helpers
+      const $ = (id) => document.getElementById(id);
+
+      function setStatus(msg) {
+        $("status").textContent = msg || "";
+      }
+
+      function sanitizeText(s) {
+        // Minimal escaping to reduce accidental HTML injection in rendered preview.
+        // (Email clients often tolerate raw text; escaping is safer for preview.)
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function normalizeTel(s) {
+        // Keep digits and leading + only for tel: href.
+        const raw = String(s || "").trim();
+        if (!raw) return "";
+        let out = "";
+        for (let i = 0; i < raw.length; i++) {
+          const ch = raw[i];
+          if ((ch >= "0" && ch <= "9") || (ch === "+" && out.length === 0)) out += ch;
+        }
+        return out;
+      }
+
+      // Templates
+      const template = {
+        generic: () => {
+          const name = sanitizeText(vals.name || "Jane Doe");
+          const title = sanitizeText(vals.title || "");
+          const grade = sanitizeText(vals.grade || "");
+          const wing = sanitizeText(vals.wing || "");
+          const wText = sanitizeText(vals.website_text || "");
+          const wUrl = sanitizeText(vals.website_url || "");
+
+          const phoneRows = [
+            { t: vals.phone_1_type, n: vals.phone_1 },
+            { t: vals.phone_2_type, n: vals.phone_2 },
+            { t: vals.phone_3_type, n: vals.phone_3 }
+          ]
+            .filter(p => String(p.n || "").trim().length > 0)
+            .map(p => {
+              const shown = sanitizeText(p.n);
+              const tel = normalizeTel(p.n);
+              const href = tel ? `tel:${tel}` : "";
+              return `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">
+                (${sanitizeText(p.t)}) <a href="${href}" style="color: #000000; text-decoration: none;">${shown}</a>
+              </p>`;
+            })
+            .join("");
+
+          const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+          const gradePart = grade ? `${grade} ` : "";
+
+          return `<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><br />
+  <h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">
+    ${cadetPrefix}${gradePart}${name}
+  </h1>
+  ${title ? `<h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">${title}</h2>` : ""}
+  <h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; margin: 0 0 20px;">
+    Civil Air Patrol, U.S. Air Force Auxiliary
+  </h2>
+  ${phoneRows}
+  <p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;">
+    <a href="https://www.GoCivilAirPatrol.com" style="color: #000000; text-decoration: underline;">GoCivilAirPatrol.com</a>
+  </p>
+  ${(wText && wUrl) ? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;">
+    <a href="${wUrl}" style="color: #000000; text-decoration: underline;">${wText}</a>
+  </p>` : ""}
+  <a href="https://www.GoCivilAirPatrol.com">
+    <img src="https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzFNOTF6UzJGRXByV0pNUjQ1cnkxLnBuZyJ9:frontify:kAS-l74of5IyRDi0IxD9lG5yNH6i-Zg30PGjGUjU8y0?width=200"
+      style="margin: 10px 0 10px -5px;" alt="Civil Air Patrol" />
+  </a>
+  <p style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color:#000000; font-weight: normal; font-style: italic; white-space: normal; line-height: 14px; margin: 0 0 5px;">
+    Volunteers serving America's communities, saving lives, and shaping futures.
+  </p>
+</body></html>`;
+        },
+
+        plaintext: () => {
+          const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+          const gradePart = vals.grade ? `${vals.grade} ` : "";
+          const name = vals.name || "Jane Doe";
+
+          const lines = [];
+          lines.push(`${cadetPrefix}${gradePart}${name}`.trim());
+
+          if (vals.title && String(vals.title).trim()) {
+            lines.push(String(vals.title).trim());
+          }
+
+          lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
+
+          const phones = [
+            { t: vals.phone_1_type, n: vals.phone_1 },
+            { t: vals.phone_2_type, n: vals.phone_2 },
+            { t: vals.phone_3_type, n: vals.phone_3 }
+          ].filter(p => String(p.n || "").trim());
+
+          for (const p of phones) {
+            lines.push(`(${p.t}) ${String(p.n).trim()}`);
+          }
+
+          lines.push("");
+          lines.push("https://www.GoCivilAirPatrol.com");
+
+          if (vals.website_url && String(vals.website_url).trim()) {
+            lines.push(String(vals.website_url).trim());
+          }
+
+          return lines.join("\n");
+        },
+
+        mobile: () => {
+          const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+          const gradePart = vals.grade ? `${vals.grade} ` : "";
+          const name = vals.name || "Jane Doe";
+
+          const wing = (vals.wing && String(vals.wing).trim())
+            ? `, ${String(vals.wing).trim().toUpperCase()}`
+            : "";
+
+          return `${cadetPrefix}${gradePart}${name}${wing}\nCivil Air Patrol`;
+        }
+      };
+
+      function gateGrades() {
+        const gradeSelect = $("grade");
+        const options = Array.from(gradeSelect.options);
+
+        if (gradeType === "Adult") {
+          for (const opt of options) {
+            const isCadet = opt.getAttribute("data-cadet") === "true";
+            const isAdult = opt.getAttribute("data-adult") === "true" || !opt.hasAttribute("data-cadet");
+            opt.disabled = isCadet ? true : false;
+            // keep adult options enabled
+            if (isAdult) opt.disabled = false;
+          }
+          // If currently on a cadet-only value, reset:
+          if (gradeSelect.selectedOptions[0]?.getAttribute("data-cadet") === "true") {
+            gradeSelect.value = "2nd Lt.";
+          }
+        } else {
+          for (const opt of options) {
+            const isCadet = opt.getAttribute("data-cadet") === "true";
+            const isAdult = opt.getAttribute("data-adult") === "true";
+            opt.disabled = isAdult ? true : false;
+            if (isCadet) opt.disabled = false;
+          }
+          // Default to "Airman" for cadets if available:
+          gradeSelect.value = "Airman";
+        }
+      }
+
+      function applyTypeUI() {
+        const isMobile = type === "mobile";
+        const isPlain = type === "plaintext";
+        const isGeneric = type === "generic";
+
+        $("f_wing").classList.toggle("hidden", !isMobile);
+        $("f_title").classList.toggle("hidden", isMobile);
+        $("f_phone").classList.toggle("hidden", isMobile);
+        $("f_website").classList.toggle("hidden", isMobile);
+
+        // In original behavior, website_text hidden for plaintext.
+        // We'll keep the whole website field visible, but disable display text when plaintext.
+        $("website_text").disabled = isPlain;
+
+        // Rendered preview makes most sense for generic; for text/mobile it's fine too.
+        // (No need to hide middle column like the old code; output is always useful.)
+      }
+
+      function readInputsToState() {
+        vals.grade = $("grade").value;
+
+        const nm = $("name").value.trim();
+        vals.name = nm ? nm : "Jane Doe";
+
+        vals.wing = $("wing").value.trim();
+        vals.title = $("title").value.trim();
+
+        vals.phone_1_type = $("phone_1_type").value;
+        vals.phone_1 = $("phone_1").value.trim();
+
+        vals.phone_2_type = $("phone_2_type").value;
+        vals.phone_2 = $("phone_2").value.trim();
+
+        vals.phone_3_type = $("phone_3_type").value;
+        vals.phone_3 = $("phone_3").value.trim();
+
+        vals.website_text = $("website_text").value.trim();
+        vals.website_url = $("website_url").value.trim();
+      }
+
+      function updateOutputAndPreview() {
+        readInputsToState();
+
+        const out = template[type]();
+
+        $("output").value = out;
+
+        // Update both previews; toggle visibility based on selected preview mode
+        $("preview_rendered").innerHTML = (type === "generic")
+          ? out
+          : `<div style="white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.45;">${sanitizeText(out)}</div>`;
+
+        $("preview_code").textContent = out;
+
+        const mode = $("preview_mode").value;
+        $("preview_rendered").classList.toggle("hidden", mode !== "rendered");
+        $("preview_code").classList.toggle("hidden", mode !== "code");
+      }
+
+      async function copyOutput() {
+        const text = $("output").value;
+
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(text);
+          } else {
+            // Fallback
+            $("output").focus();
+            $("output").select();
+            document.execCommand("copy");
+          }
+          setStatus("Copied to clipboard.");
+          setTimeout(() => setStatus(""), 2000);
+        } catch (e) {
+          setStatus("Copy failed. You can manually select and copy the output.");
+        }
+      }
+
+      function init() {
+        // Initial state
+        type = $("type").value;
+        gradeType = $("grade_type").value;
+
+        gateGrades();
+        applyTypeUI();
+        updateOutputAndPreview();
+
+        // Events
+        $("type").addEventListener("change", () => {
+          type = $("type").value;
+          applyTypeUI();
+          updateOutputAndPreview();
+        });
+
+        $("grade_type").addEventListener("change", () => {
+          gradeType = $("grade_type").value; // Adult | Cadet
+          gateGrades();
+          updateOutputAndPreview();
+        });
+
+        $("grade").addEventListener("change", updateOutputAndPreview);
+
+        const inputs = [
+          "name", "wing", "title",
+          "phone_1_type", "phone_1",
+          "phone_2_type", "phone_2",
+          "phone_3_type", "phone_3",
+          "website_text", "website_url"
+        ];
+
+        for (const id of inputs) {
+          const el = $(id);
+          el.addEventListener("input", updateOutputAndPreview);
+          el.addEventListener("blur", updateOutputAndPreview);
+          el.addEventListener("change", updateOutputAndPreview);
+        }
+
+        $("preview_mode").addEventListener("change", updateOutputAndPreview);
+        $("copy-output").addEventListener("click", copyOutput);
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    })();
+  </script>
+</body>
 </html>
