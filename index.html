@@ -1,273 +1,730 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Civil Air Patrol Email Signature Generator (HTML Only)</title>
-  <link rel="shortcut icon" href="favicon.png" />
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Civil Air Patrol Email Signature Generator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="shortcut icon" href="favicon.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&display=block"
+			rel="stylesheet"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+		<script type="text/javascript">
+			let type = 'generic';
+			let grade_type = 'Senior';
 
-  <style>
-    /* basic reset */
-    html, body, div, span, applet, object, iframe,
-    h1, h2, h3, h4, h5, h6, p, blockquote, pre, a,
-    abbr, acronym, address, big, cite, code, del, dfn,
-    em, img, ins, kbd, q, s, samp, small, strike, strong,
-    sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li,
-    fieldset, form, label, legend, table, caption, tbody, tfoot,
-    thead, tr, th, td, article, aside, canvas, details, embed,
-    figure, figcaption, footer, header, hgroup, menu, nav, output,
-    ruby, section, summary, time, mark, audio, video {
-      margin: 0; padding: 0; border: 0; font-size: 100%;
-      font: inherit; vertical-align: baseline;
-    }
-    article, aside, details, figcaption, figure, footer, header,
-    hgroup, menu, nav, section { display: block; }
-    body { line-height: 1; }
-    ol, ul { list-style: none; }
-    table { border-collapse: collapse; border-spacing: 0; }
+			const vals = {
+				name: 'Jane Doe',
+				grade_type: 'Senior',
+				grade: '2nd Lt.',
+				wing: '',
+				title: '',
+				phone_1_type: 'M',
+				phone_1: '',
+				phone_2_type: 'M',
+				phone_2: '',
+				phone_3_type: 'M',
+				phone_3: '',
+				website_text: '',
+				website_url: '',
+			};
 
-    /* layout */
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: #f3f4f6;
-      display: flex;
-      min-height: 100vh;
-    }
-    body > div { padding: 50px; }
-    .left {
-      background: #fff;
-      flex: 1 1 40%;
-      min-width: 400px;
-      max-width: 600px;
-      overflow-y: auto;
-      border-right: 1px solid #f3f4f6;
-    }
-    .middle { flex: 1 1 30%; min-width: 240px; }
-    .right {
-      background: #fff;
-      flex: 1 1 30%;
-      min-width: 240px;
-      font-family: Arial, sans-serif;
-    }
+			const template = {
+				generic: () =>
+					`<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"><html><body><br /><h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">${
+						grade_type === 'Cadet' ? 'Cadet ' : ''
+					}${vals.grade && `${vals.grade} `}${vals.name}</h1>${
+						vals.title
+							? `<h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">${vals.title}</h2>`
+							: ''
+					}
+					<h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; margin: 0 0 20px;">Civil Air Patrol, U.S. Air Force Auxiliary</h2>${
+						vals.phone_1
+							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">(${vals.phone_1_type}) <a href="tel:${vals.phone_1}" style="color: #000000; text-decoration: none;">${vals.phone_1}</a></p>`
+							: ''
+					}${
+						vals.phone_2
+							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">(${vals.phone_2_type}) <a href="tel:${vals.phone_2}" style="color: #000000; text-decoration: none;">${vals.phone_2}</a></p>`
+							: ''
+					}${
+						vals.phone_3
+							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">(${vals.phone_3_type}) <a href="tel:${vals.phone_3}" style="color: #000000; text-decoration: none;">${vals.phone_3}</a></p>`
+							: ''
+					}<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;"><a href="https://www.GoCivilAirPatrol.com" style="color: #000000; text-decoration: underline;">GoCivilAirPatrol.com</a></p>${
+						vals.website_text && vals.website_url
+							? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;"><a href="${vals.website_url}" style="color: #000000; text-decoration: underline;">${vals.website_text}</a></p>`
+							: ''
+					}<a href="https://www.GoCivilAirPatrol.com"><img src="https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzFNOTF6UzJGRXByV0pNUjQ1cnkxLnBuZyJ9:frontify:kAS-l74of5IyRDi0IxD9lG5yNH6i-Zg30PGjGUjU8y0?width=200" style="margin: 10px 0 10px -5px;"></a><p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color:#000000; font-weight: normal; font-style: italic; white-space: normal; line-height: 14px; margin: 0 0 5px;">Volunteers serving America's communities, saving lives, and shaping futures.</p></body></html>`,
+				plaintext: () =>
+					`${grade_type === 'Cadet' ? 'Cadet'  : ''}${vals.grade || ''} ${
+						vals.name
+					}${
+						vals.title ? `\n${vals.title}` : ''
+					}\nCivil Air Patrol, U.S. Air Force Auxiliary${
+						vals.phone_1 || vals.phone_2 || vals.phone_3
+							? `\n${
+									vals.phone_1
+										? `\n(${vals.phone_1_type}) ${vals.phone_1}`
+										: ''
+							  }${
+									vals.phone_2
+										? `\n(${vals.phone_2_type}) ${vals.phone_2}`
+										: ''
+							  }${
+									vals.phone_3
+										? `\n(${vals.phone_3_type}) ${vals.phone_3}`
+										: ''
+							  }`
+							: ''
+					}\n\nhttps://www.GoCivilAirPatrol.com${
+						vals.website_url ? `\n${vals.website_url}` : ''
+					}`,
+				mobile: () =>
+					`${grade_type === 'Cadet' ? 'Cadet ' : ''}${vals.grade} ${
+						vals.name
+					}${
+						vals.wing ? `, ${vals.wing.toUpperCase()}` : ''
+					}\nCivil Air Patrol`,
+			};
 
-    h1 {
-      color: rgb(186, 12, 47);
-      font-size: 30px;
-      line-height: 1.3;
-      font-weight: 600;
-      margin: 0 0 10px;
-    }
-    p { margin: 8px 0; line-height: 1.4; }
-    a { color: rgb(0, 20, 137); }
+			$(document).ready(function () {
+				updateOutput();
 
-    form {
-      margin: 25px 0 0;
-      padding: 25px 0 0;
-      border-top: 1px solid #f3f4f6;
-    }
-    form > div { margin: 0 0 15px; display: flex; flex-direction: column; gap: 8px; }
+				$('#type').change(function () {
+					type = $(this).val();
 
-    label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-    label .req { color: #fc2050; }
-    label .note {
-      margin-left: auto;
-      color: rgb(158, 162, 162);
-      font-size: 12px;
-      font-weight: 400;
-      white-space: normal;
-      text-align: right;
-    }
+					if (type === 'mobile') {
+						$('#f_wing').show();
+						$('#f_title').hide();
+						$('#f_phone').hide();
+						$('#f_website').hide();
+					} else {
+						$('#f_wing').hide();
+						$('#f_title').show();
+						$('#f_phone').show();
+						$('#f_website').show();
+					}
 
-    input, select, textarea {
-      border: 1px solid rgb(158, 162, 162);
-      border-radius: 5px;
-      font-size: 16px;
-      padding: 10px;
-      background: #fff;
-    }
-    textarea { min-height: 90px; resize: vertical; }
+					if (type === 'plaintext') {
+						$('#website_text').hide();
+					} else {
+						$('#website_text').show();
+					}
 
-    .dual { display: flex; gap: 15px; }
-    .dual > * { flex: 1 1 0; }
+					if (type === 'generic') {
+						$('.middle').show();
+					} else {
+						$('.middle').hide();
+					}
 
-    .middle textarea {
-      width: 100%;
-      height: 250px;
-      font-size: 13px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      margin-top: 15px;
-    }
+					updateInput();
+					updateOutput();
+				});
 
-    button {
-      margin-top: 15px;
-      height: 38px;
-      padding: 10px 20px;
-      border: 0;
-      border-radius: 5px;
-      background: rgb(0, 20, 137);
-      color: #fff;
-      cursor: pointer;
-    }
+				$('#copy-output').click(function () {
+					const e = document.getElementById('output');
+					e.select();
+					document.execCommand('copy');
+				});
 
-    footer {
-      color: rgb(158, 162, 162);
-      font-size: 12px;
-      padding: 50px 0 20px;
-    }
+				$('#grade').on('change', function () {
+					updateInput();
+				});
+				$('#name').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#wing').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#title').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#phone_1_type').change(function () {
+					updateInput();
+				});
+				$('#phone_1').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#phone_2_type').change(function () {
+					updateInput();
+				});
+				$('#phone_2').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#phone_3_type').change(function () {
+					updateInput();
+				});
+				$('#phone_3').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#website_text').on('keyup blur', function () {
+					updateInput();
+				});
+				$('#website_url').on('keyup blur', function () {
+					updateInput();
+				});
 
-    .warning {
-      margin: 40px 0 20px;
-      color: rgb(186, 12, 47);
-      line-height: 1.4;
-    }
+				$('#grade_type').change(function () {
+					grade_type = $(this).val();
 
-    .preview-box {
-      padding: 10px;
-      white-space: pre-wrap;
-    }
-  </style>
-</head>
+					// Gate the grades based on SM or Cadet
+					if (grade_type === 'Senior') {
+						$('option[data-cadet="true"]').attr(
+							'disabled',
+							'disabled'
+						);
+						$('option[data-senior="true"]').removeAttr('disabled');
+						$('#grade').val('');
+					} else {
+						$('option[data-senior="true"]').attr(
+							'disabled',
+							'disabled'
+						);
+						$('option[data-cadet="true"]').removeAttr('disabled');
+						$('#grade').val('Airman');
+					}
 
-<body>
-  <div class="left">
-    <h1>Civil Air Patrol Email Signature Generator</h1>
-    <p>
-      Fill out your details below. (HTML-only version: this page does not auto-generate output without JavaScript.)
-    </p>
+					updateInput();
+				});
+			});
 
-    <form>
-      <div>
-        <label for="type">Signature Type</label>
-        <select id="type" name="type">
-          <option value="generic">Default</option>
-          <option value="plaintext">Plain Text</option>
-          <option value="mobile">Abbreviated (Mobile)</option>
-        </select>
-      </div>
+			function updateInput() {
+				vals['grade'] = $('#grade').val();
+				
+				if ($('#name').val()) {
+					vals['name'] = $('#name').val();
+				} else {
+					vals['name'] = 'Jane Doe';
+				}
 
-      <div>
-        <label for="grade">Grade &amp; Name <span class="req">*</span></label>
-        <div class="dual">
-          <select id="grade_type" name="grade_type">
-            <!-- CHANGED: Senior -> Adult -->
-            <option value="Adult" selected>Adult</option>
-            <option value="Cadet">Cadet</option>
-          </select>
+				vals['wing'] = $('#wing').val();
+				vals['title'] = $('#title').val();
+				vals['phone_1_type'] = $('#phone_1_type').val();
+				vals['phone_1'] = $('#phone_1').val();
+				vals['phone_2_type'] = $('#phone_2_type').val();
+				vals['phone_2'] = $('#phone_2').val();
+				vals['phone_3_type'] = $('#phone_3_type').val();
+				vals['phone_3'] = $('#phone_3').val();
+				vals['website_text'] = $('#website_text').val();
+				vals['website_url'] = $('#website_url').val();
 
-          <select id="grade" name="grade">
-            <option value="Airman Basic">Airman Basic</option>
-            <option value="Airman">Airman</option>
-            <option value="Airman 1st Class">Airman 1st Class</option>
-            <option value="Senior Airman">Senior Airman</option>
-            <option value="Staff Sgt.">Staff Sgt.</option>
-            <option value="Tech. Sgt.">Tech. Sgt.</option>
-            <option value="Master Sgt.">Master Sgt.</option>
-            <option value="Senior Master Sgt.">Senior Master Sgt.</option>
-            <option value="Chief Master Sgt.">Chief Master Sgt.</option>
-            <option value="">Senior Member</option>
-            <option value="Flight Officer">Flight Officer</option>
-            <option value="Tech. Flight Officer">Tech. Flight Officer</option>
-            <option value="Senior Flight Officer">Senior Flight Officer</option>
-            <option value="2nd Lt." selected>2nd Lt.</option>
-            <option value="1st Lt.">1st Lt.</option>
-            <option value="Capt.">Capt.</option>
-            <option value="Maj.">Maj.</option>
-            <option value="Lt. Col.">Lt. Col.</option>
-            <option value="Col.">Col.</option>
-            <option value="Brig. Gen.">Brig. Gen.</option>
-            <option value="Maj. Gen.">Maj. Gen.</option>
-          </select>
+				updateOutput();
+			}
 
-          <input type="text" id="name" name="name" placeholder="Jane Doe" />
-        </div>
-      </div>
+			function updateOutput() {
+				$('#output').val(template[type]);
+				$('#preview').html(template[type]);
+			}
+		</script>
+		<style type="text/css">
+			html,
+			body,
+			div,
+			span,
+			applet,
+			object,
+			iframe,
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6,
+			p,
+			blockquote,
+			pre,
+			a,
+			abbr,
+			acronym,
+			address,
+			big,
+			cite,
+			code,
+			del,
+			dfn,
+			em,
+			img,
+			ins,
+			kbd,
+			q,
+			s,
+			samp,
+			small,
+			strike,
+			strong,
+			sub,
+			sup,
+			tt,
+			var,
+			b,
+			u,
+			i,
+			center,
+			dl,
+			dt,
+			dd,
+			ol,
+			ul,
+			li,
+			fieldset,
+			form,
+			label,
+			legend,
+			table,
+			caption,
+			tbody,
+			tfoot,
+			thead,
+			tr,
+			th,
+			td,
+			article,
+			aside,
+			canvas,
+			details,
+			embed,
+			figure,
+			figcaption,
+			footer,
+			header,
+			hgroup,
+			menu,
+			nav,
+			output,
+			ruby,
+			section,
+			summary,
+			time,
+			mark,
+			audio,
+			video {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				font-size: 100%;
+				font: inherit;
+				vertical-align: baseline;
+			}
+			/* HTML5 display-role reset for older browsers */
+			article,
+			aside,
+			details,
+			figcaption,
+			figure,
+			footer,
+			header,
+			hgroup,
+			menu,
+			nav,
+			section {
+				display: block;
+			}
+			body {
+				line-height: 1;
+			}
+			ol,
+			ul {
+				list-style: none;
+			}
+			blockquote,
+			q {
+				quotes: none;
+			}
+			blockquote:before,
+			blockquote:after,
+			q:before,
+			q:after {
+				content: "";
+				content: none;
+			}
+			table {
+				border-collapse: collapse;
+				border-spacing: 0;
+			}
 
-      <div>
-        <label for="wing">
-          Wing <span class="req">*</span>
-          <span class="note">Use 4-letter Wing, 3-letter Region, or “HQ”; no squadron designators</span>
-        </label>
-        <input type="text" id="wing" name="wing" placeholder="TXWG" />
-      </div>
+			/*****/
 
-      <div>
-        <label for="title">
-          Duty Position(s)
-          <span class="note">Unit name followed by duty position</span>
-        </label>
-        <textarea id="title" name="title" placeholder="Texas Wing Director of Operations&#10;Apollo Comp. Sq. Operations Officer"></textarea>
-      </div>
+			body {
+				font-family: "Ubuntu", "Mier B", -apple-system,
+					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+					"Segoe UI Symbol";
+				color: rgb(0, 0, 0);
+				line-height: 1.4;
+				font-weight: 400;
+				font-size: 1em;
+				height: 100vh;
+				background: #f3f4f6;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				justify-content: space-between;
+				align-items: stretch;
+				align-content: stretch;
+			}
+			a {
+				color: rgb(0, 20, 137);
+			}
+			h1 {
+				font-family: "Ubuntu", "Mier B", -apple-system,
+					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+					"Segoe UI Symbol";
+				color: rgb(186, 12, 47);
+				font-size: 30px;
+				line-height: 1.3;
+				font-weight: 500;
+				margin: 0 0 10px;
+			}
+			p {
+				margin: 5px 0;
+			}
+			input,
+			select,
+			textarea {
+				border: 1px solid rgb(158, 162, 162);
+				border-radius: 5px;
+				font-size: 16px;
+				line-height: 1.3;
+				font-weight: 400;
+				padding: 10px;
+				background-color: rgb(255, 255, 255);
+				color: rgb(0, 0, 0);
+				font-family: "Ubuntu", "Mier B", -apple-system,
+					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+					"Segoe UI Symbol";
+			}
+			form {
+				margin: 25px 0 0;
+				padding: 25px 0 0;
+				border-top: 1px solid #f3f4f6;
+			}
+			label {
+				flex: 1 0 auto;
+				padding: 0 0 10px;
+				display: flex;
+				align-items: center;
+				white-space: nowrap;
+			}
+			label span {
+				color: #fc2050;
+			}
+			label span.note {
+				color: rgb(158, 162, 162);
+				font-size: 12px;
+				flex: 1 1 100%;
+				text-align: right;
+			}
+			button,
+			a.button {
+				transition: all 0.2s ease-in-out;
+				font-family: "Ubuntu", "Mier B", -apple-system,
+					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+					"Segoe UI Symbol";
+				color: rgb(255, 255, 255);
+				font-size: 16px;
+				line-height: 16px;
+				height: 38px;
+				font-weight: 400;
+				border-width: 0;
+				border-radius: 5px;
+				background-color: rgb(0, 20, 137);
+				padding: 10px 20px;
+				cursor: pointer;
+				user-select: none;
+				margin-top: 15px;
+				text-decoration: none;
+			}
+			button:hover,
+			a.button:hover {
+				color: rgb(255, 255, 255);
+				border-color: rgb(0, 12, 92);
+				background-color: rgb(0, 14, 102);
+			}
+			footer {
+				font-family: "Ubuntu", "Mier B", -apple-system,
+					BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+					sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+					"Segoe UI Symbol";
+				color: rgb(158, 162, 162);
+				font-size: 12px;
+				padding: 50px 0 20px;
+				background: #fff;
+			}
+			footer a {
+				color: inherit;
+			}
+			body > div {
+				padding: 50px;
+			}
+			div.left {
+				background: #fff;
+				flex: 1 1 40%;
+				min-width: 400px;
+				max-width: 600px;
+				overflow-y: auto;
+				border-right: 1px solid #f3f4f6;
+			}
+			div.left > form > div {
+				display: flex;
+				flex-direction: column;
+				flex-wrap: nowrap;
+				justify-content: flex-start;
+				align-content: flex-start;
+				margin: 0 0 15px;
+			}
+			div.left input[type="text"],
+			div.left textarea {
+				flex: 1 1 100%;
+			}
+			div.left div.dual {
+				display: flex;
+				flex-direction: row;
+				margin-bottom: 15px;
+				gap: 15px;
+			}
+			div.middle {
+				flex: 1 1 30%;
+				min-width: 200px;
+			}
+			div.middle textarea {
+				width: calc(100% - 25px);
+				height: 250px;
+				font-size: 13px;
+				font-family: monospace;
+				margin-top: 15px;
+			}
+			div.right {
+				flex: 1 1 30%;
+				min-width: 200px;
+				background: #fff;
+				font-family: Arial, sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="left">
+			<h1>Civil Air Patrol Email Signature Generator</h1>
+			<p>
+				Fill out your details below, and verify the preview in the right
+				column is correct.
+			</p>
+			<form>
+				<div>
+					<label for="type">Signature Type</label>
+					<select id="type">
+						<option value="generic">Default</option>
+						<option value="plaintext">Plain Text</option>
+						<option value="mobile">Abbreviated (Mobile)</option>
+					</select>
+				</div>
+				<div>
+					<label for="grade">Grade & Name<span>*</span></label>
+					<div class="dual">
+						<select id="grade_type">
+							<option value="Senior" selected>Senior</option>
+							<option value="Cadet">Cadet</option>
+						</select>
 
-      <div>
-        <label>Phone Number(s)</label>
+						<select id="grade">
+							<option value="Airman" data-cadet="true" disabled>
+								Airman Basic
+							</option>
+							<option value="Airman" data-cadet="true" disabled>
+								Airman
+							</option>
+							<option
+								value="Airman 1st Class"
+								data-cadet="true"
+								disabled
+							>
+								Airman 1st Class
+							</option>
+							<option
+								value="Senior Airman"
+								data-cadet="true"
+								disabled
+							>
+								Senior Airman
+							</option>
+							<option value="Staff Sgt.">Staff Sgt.</option>
+							<option value="Tech. Sgt.">Tech. Sgt.</option>
+							<option value="Master Sgt.">Master Sgt.</option>
+							<option value="Senior Master Sgt.">
+								Senior Master Sgt.
+							</option>
+							<option value="Chief Master Sgt.">
+								Chief Master Sgt.
+							</option>
+							<option value="" data-senior="true">
+								Senior Member
+							</option>
+							<option value="Flight Officer" data-senior="true">
+								Flight Officer
+							</option>
+							<option
+								value="Tech. Flight Officer"
+								data-senior="true"
+							>
+								Tech. Flight Officer
+							</option>
+							<option
+								value="Senior Flight Officer"
+								data-senior="true"
+							>
+								Senior Flight Officer
+							</option>
+							<option value="2nd Lt." selected>2nd Lt.</option>
+							<option value="1st Lt.">1st Lt.</option>
+							<option value="Capt.">Capt.</option>
+							<option value="Maj.">Maj.</option>
+							<option value="Lt. Col.">Lt. Col.</option>
+							<option value="Col.">Col.</option>
+							<option value="Brig. Gen." data-senior="true">
+								Brig. Gen.
+							</option>
+							<option value="Maj. Gen." data-senior="true">
+								Maj. Gen.
+							</option>
+						</select>
+						<input type="text" id="name" placeholder="Jane Doe" />
+					</div>
+				</div>
+				<div id="f_wing" style="display: none">
+					<label for="wing"
+						>Wing<span>*</span
+						><span class="note"
+							>Use 4-letter Wing, 3-letter Region, or “HQ”; no
+							squadron designators</span
+						></label
+					>
+					<input type="text" id="wing" placeholder="TXWG" />
+				</div>
+				<div id="f_title">
+					<label for="title"
+						>Duty Position(s)<span class="note"
+							>Unit name followed by duty position</span
+						></label
+					>
+					<textarea
+						type="text"
+						id="title"
+						placeholder="Texas Wing Director of Operations
+Apollo Comp. Sq. Operations Officer"
+					></textarea>
+				</div>
+				<div id="f_phone">
+					<label for="phone_1">Phone Number(s)</label>
+					<div class="dual">
+						<select id="phone_1_type">
+							<option value="M" selected>Mobile</option>
+							<option value="H">Home</option>
+							<option value="O">Office</option>
+						</select>
 
-        <div class="dual">
-          <select id="phone_1_type" name="phone_1_type">
-            <option value="M" selected>Mobile</option>
-            <option value="H">Home</option>
-            <option value="O">Office</option>
-          </select>
-          <input type="text" id="phone_1" name="phone_1" placeholder="555.555.5555" />
-        </div>
+						<input
+							type="text"
+							id="phone_1"
+							placeholder="555.555.5555"
+						/>
+					</div>
 
-        <div class="dual">
-          <select id="phone_2_type" name="phone_2_type">
-            <option value="M" selected>Mobile</option>
-            <option value="H">Home</option>
-            <option value="O">Office</option>
-          </select>
-          <input type="text" id="phone_2" name="phone_2" placeholder="555.555.5555" />
-        </div>
+					<div class="dual">
+						<select id="phone_2_type">
+							<option value="M" selected>Mobile</option>
+							<option value="H">Home</option>
+							<option value="O">Office</option>
+						</select>
 
-        <div class="dual">
-          <select id="phone_3_type" name="phone_3_type">
-            <option value="M" selected>Mobile</option>
-            <option value="H">Home</option>
-            <option value="O">Office</option>
-          </select>
-          <input type="text" id="phone_3" name="phone_3" placeholder="555.555.5555" />
-        </div>
-      </div>
+						<input
+							type="text"
+							id="phone_2"
+							placeholder="555.555.5555"
+						/>
+					</div>
 
-      <div>
-        <label for="website_text">Website</label>
-        <div class="dual">
-          <input type="text" id="website_text" name="website_text" placeholder="Display Text" />
-          <input type="text" id="website_url" name="website_url" placeholder="Link URL" />
-        </div>
-      </div>
-    </form>
+					<div class="dual">
+						<select id="phone_3_type">
+							<option value="M" selected>Mobile</option>
+							<option value="H">Home</option>
+							<option value="O">Office</option>
+						</select>
 
-    <footer>
-      Version 14. Last modified on September 1st, 2024. Managed by
-      <a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
-    </footer>
-  </div>
+						<input
+							type="text"
+							id="phone_3"
+							placeholder="555.555.5555"
+						/>
+					</div>
+				</div>
+				<div id="f_website">
+					<label for="website_text">Website</label>
+					<div class="dual">
+						<input
+							type="text"
+							id="website_text"
+							placeholder="Display Text"
+						/>
+						<input
+							type="text"
+							id="website_url"
+							placeholder="Link URL"
+						/>
+					</div>
+				</div>
+			</form>
 
-  <div class="middle">
-    <p>
-      HTML-only version: you can type/paste your final signature output here manually.
-    </p>
-    <textarea id="output" placeholder="Generated signature output would appear here (requires JavaScript)."></textarea>
-    <button type="button">Copy (non-functional without JavaScript)</button>
+			<footer>
+				Version 14. Last modified on September 1st, 2024. Managed by
+				<a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
+			</footer>
+		</div>
 
-    <p class="warning">
-      If you have problems with formatting after pasting the signature into your email client, you may need to use another templating option.
-      Please visit the Brand Guide Email Signature page for more options.
-    </p>
-  </div>
+		<div class="middle">
+			<p>
+				If your email client supports HTML signatures, copy and paste
+				the content from below. If it doesn't, highlight, copy and paste
+				the content from the right column.
+			</p>
+			<textarea id="output"></textarea>
+			<button id="copy-output">Copy</button>
+			<p style="margin: 40px 0 20px; color: rgb(186, 12, 47)">
+				<svg
+					height="14"
+					aria-hidden="true"
+					focusable="false"
+					data-prefix="fas"
+					data-icon="exclamation-triangle"
+					class="svg-inline--fa fa-exclamation-triangle fa-w-18"
+					role="img"
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 576 512"
+				>
+					<path
+						fill="currentColor"
+						d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+					></path>
+				</svg>
+				If you have problems with formatting after pasting the signature
+				into your email client, you may need to use another templating
+				option. Please visit the
+				<a
+					href="https://civilairpatrol.frontify.com/document/449893#/templates/email-signature"
+					>Brand Guide Email Signature page</a
+				>
+				for more options.
+			</p>
+		</div>
 
-  <div class="right">
-    <div class="preview-box">
-      Preview area (static without JavaScript).
-    </div>
-  </div>
-</body>
+		<div class="right">
+			<pre id="preview"></pre>
+		</div>
+	</body>
 </html>
