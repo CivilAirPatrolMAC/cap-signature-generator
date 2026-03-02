@@ -355,105 +355,123 @@
         return out;
       }
 
-      const template = {
-        generic: () => {
-          const name = sanitizeText(vals.name || "Jane Doe");
-          const title = sanitizeText(vals.title || "");
-          const grade = sanitizeText(vals.grade || "");
-          const wText = sanitizeText(vals.website_text || "");
-          const wUrl = sanitizeText(vals.website_url || "");
+const template = {
+  generic: () => {
+    const name = sanitizeText(vals.name || "Jane Doe");
+    const grade = sanitizeText(vals.grade || "");
+    const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+    const gradePart = grade ? `${grade} ` : "";
 
-          const phoneRows = [
-            { t: vals.phone_1_type, n: vals.phone_1 },
-            { t: vals.phone_2_type, n: vals.phone_2 },
-            { t: vals.phone_3_type, n: vals.phone_3 }
-          ]
-            .filter(p => String(p.n || "").trim().length > 0)
-            .map(p => {
-              const shown = sanitizeText(p.n);
-              const tel = normalizeTel(p.n);
-              const href = tel ? `tel:${tel}` : "";
-              return `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">
-                (${sanitizeText(p.t)}) <a href="${href}" style="color: #000000; text-decoration: none;">${shown}</a>
-              </p>`;
-            })
-            .join("");
+    // MULTILINE FIX
+    const titleRaw = vals.title || "";
+    const titleHtml = sanitizeText(titleRaw)
+      .split(/\r?\n/)
+      .filter(line => line.trim() !== "")
+      .join("<br />");
 
-          const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
-          const gradePart = grade ? `${grade} ` : "";
+    const wText = sanitizeText(vals.website_text || "");
+    const wUrl = sanitizeText(vals.website_url || "");
 
-          return `<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+    const phoneRows = [
+      { t: vals.phone_1_type, n: vals.phone_1 },
+      { t: vals.phone_2_type, n: vals.phone_2 },
+      { t: vals.phone_3_type, n: vals.phone_3 }
+    ]
+      .filter(p => String(p.n || "").trim().length > 0)
+      .map(p => {
+        const shown = sanitizeText(p.n);
+        const tel = normalizeTel(p.n);
+        const href = tel ? `tel:${tel}` : "";
+        return `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">
+          (${sanitizeText(p.t)}) <a href="${href}" style="color: #000000; text-decoration: none;">${shown}</a>
+        </p>`;
+      })
+      .join("");
+
+    return `<!DOCTYPE html>
 <html><body><br />
   <h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">
     ${cadetPrefix}${gradePart}${name}
   </h1>
-  ${title ? `<h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">${title}</h2>` : ""}
+
+  ${titleHtml ? `<h2 style="font-size: 12px; line-height: 14px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">
+    ${titleHtml}
+  </h2>` : ""}
+
   <h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; margin: 0 0 20px;">
     Civil Air Patrol, U.S. Air Force Auxiliary
   </h2>
+
   ${phoneRows}
-  <p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;">
+
+  <p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0 0 5px;">
     <a href="https://www.GoCivilAirPatrol.com" style="color: #000000; text-decoration: underline;">GoCivilAirPatrol.com</a>
   </p>
-  ${(wText && wUrl) ? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: normal; margin: 0 0 5px;">
+
+  ${(wText && wUrl) ? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0 0 5px;">
     <a href="${wUrl}" style="color: #000000; text-decoration: underline;">${wText}</a>
   </p>` : ""}
+
   <a href="https://www.GoCivilAirPatrol.com">
     <img src="https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzFNOTF6UzJGRXByV0pNUjQ1cnkxLnBuZyJ9:frontify:kAS-l74of5IyRDi0IxD9lG5yNH6i-Zg30PGjGUjU8y0?width=200"
       style="margin: 10px 0 10px -5px;" alt="Civil Air Patrol" />
   </a>
-  <p style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color:#000000; font-weight: normal; font-style: italic; white-space: normal; line-height: 14px; margin: 0 0 5px;">
+
+  <p style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-style: italic; line-height: 14px; margin: 0 0 5px;">
     Volunteers serving America's communities, saving lives, and shaping futures.
   </p>
 </body></html>`;
-        },
+  },
 
-        plaintext: () => {
-          const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
-          const gradePart = vals.grade ? `${vals.grade} ` : "";
-          const name = vals.name || "Jane Doe";
+  plaintext: () => {
+    const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+    const gradePart = vals.grade ? `${vals.grade} ` : "";
+    const name = vals.name || "Jane Doe";
 
-          const lines = [];
-          lines.push(`${cadetPrefix}${gradePart}${name}`.trim());
+    const lines = [];
+    lines.push(`${cadetPrefix}${gradePart}${name}`.trim());
 
-          if (vals.title && String(vals.title).trim()) {
-            lines.push(String(vals.title).trim());
-          }
+    // MULTILINE FIX
+    if (vals.title && vals.title.trim()) {
+      vals.title.split(/\r?\n/)
+        .filter(line => line.trim() !== "")
+        .forEach(line => lines.push(line.trim()));
+    }
 
-          lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
+    lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
 
-          const phones = [
-            { t: vals.phone_1_type, n: vals.phone_1 },
-            { t: vals.phone_2_type, n: vals.phone_2 },
-            { t: vals.phone_3_type, n: vals.phone_3 }
-          ].filter(p => String(p.n || "").trim());
+    const phones = [
+      { t: vals.phone_1_type, n: vals.phone_1 },
+      { t: vals.phone_2_type, n: vals.phone_2 },
+      { t: vals.phone_3_type, n: vals.phone_3 }
+    ].filter(p => String(p.n || "").trim());
 
-          for (const p of phones) {
-            lines.push(`(${p.t}) ${String(p.n).trim()}`);
-          }
+    for (const p of phones) {
+      lines.push(`(${p.t}) ${String(p.n).trim()}`);
+    }
 
-          lines.push("");
-          lines.push("https://www.GoCivilAirPatrol.com");
+    lines.push("");
+    lines.push("https://www.GoCivilAirPatrol.com");
 
-          if (vals.website_url && String(vals.website_url).trim()) {
-            lines.push(String(vals.website_url).trim());
-          }
+    if (vals.website_url && vals.website_url.trim()) {
+      lines.push(vals.website_url.trim());
+    }
 
-          return lines.join("\n");
-        },
+    return lines.join("\n");
+  },
 
-        mobile: () => {
-          const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
-          const gradePart = vals.grade ? `${vals.grade} ` : "";
-          const name = vals.name || "Jane Doe";
+  mobile: () => {
+    const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+    const gradePart = vals.grade ? `${vals.grade} ` : "";
+    const name = vals.name || "Jane Doe";
 
-          const wing = (vals.wing && String(vals.wing).trim())
-            ? `, ${String(vals.wing).trim().toUpperCase()}`
-            : "";
+    const wing = (vals.wing && vals.wing.trim())
+      ? `, ${vals.wing.trim().toUpperCase()}`
+      : "";
 
-          return `${cadetPrefix}${gradePart}${name}${wing}\nCivil Air Patrol`;
-        }
-      };
+    return `${cadetPrefix}${gradePart}${name}${wing}\nCivil Air Patrol`;
+  }
+};
 
       function gateGrades() {
         const gradeSelect = $("grade");
