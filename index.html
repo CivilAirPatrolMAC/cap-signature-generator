@@ -170,7 +170,7 @@
         </select>
       </div>
 
-      <!-- NEW: Logo selector -->
+      <!-- Logo selector -->
       <div>
         <label for="logo_variant">Logo</label>
         <select id="logo_variant">
@@ -433,6 +433,12 @@
 
           const logoUrl = LOGOS[logoVariant] || LOGOS.aux;
 
+          /* NEW: Organization line depends on logo variant */
+          const orgLine =
+            (logoVariant === "aux")
+              ? "Civil Air Patrol, U.S. Air Force Auxiliary"
+              : "Civil Air Patrol";
+
           return `<!DOCTYPE html>
 <html><body><br />
   <h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">
@@ -444,7 +450,7 @@
   </h2>` : ""}
 
   <h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; margin: 0 0 20px;">
-    Civil Air Patrol, U.S. Air Force Auxiliary
+    ${orgLine}
   </h2>
 
   ${phoneRows}
@@ -484,7 +490,10 @@
               .forEach(line => lines.push(line.trim()));
           }
 
-          lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
+          // NEW: Organization line depends on logo variant
+          lines.push((logoVariant === "aux")
+            ? "Civil Air Patrol, U.S. Air Force Auxiliary"
+            : "Civil Air Patrol");
 
           const phones = [
             { t: vals.phone_1_type, n: vals.phone_1 },
