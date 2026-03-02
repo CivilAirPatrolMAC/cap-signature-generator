@@ -42,7 +42,7 @@
       background: #fff;
       flex: 1 1 50%;
       min-width: 420px;
-      max-width: 700px;
+      max-width: 720px;
       overflow-y: auto;
       border-right: 1px solid #f3f4f6;
     }
@@ -128,9 +128,7 @@
       opacity: 0;
       transition: opacity 150ms ease-in-out;
     }
-    .subtle-warning.show {
-      opacity: 1;
-    }
+    .subtle-warning.show { opacity: 1; }
 
     /* right preview */
     .preview-toolbar {
@@ -139,10 +137,7 @@
       align-items: center;
       padding: 20px 20px 0 20px;
     }
-    .preview-toolbar label {
-      font-weight: 600;
-      white-space: nowrap;
-    }
+    .preview-toolbar label { font-weight: 600; white-space: nowrap; }
     .preview-wrap { padding: 20px; }
     .preview-card {
       border: 1px solid #e5e7eb;
@@ -172,6 +167,15 @@
           <option value="generic" selected>Default</option>
           <option value="plaintext">Plain Text</option>
           <option value="mobile">Abbreviated (Mobile)</option>
+        </select>
+      </div>
+
+      <!-- NEW: Logo selector -->
+      <div>
+        <label for="logo_variant">Logo</label>
+        <select id="logo_variant">
+          <option value="aux" selected>Auxiliary line</option>
+          <option value="noaux">No Auxiliary Line</option>
         </select>
       </div>
 
@@ -248,18 +252,15 @@
       <div id="f_title">
         <label for="title">
           Duty Position(s)
-          <span class="note">Unit name followed by duty position</span>
           <span class="note">Max 2 lines</span>
         </label>
 
-        <!-- Restrict to 2 visible lines -->
         <textarea
           id="title"
           rows="2"
-          placeholder="Texas Wing Director of Operations&#10;Fort Worth Phoenix Comp. Sq. Commander"
+          placeholder="Texas Wing Director of Operations&#10;Apollo Comp. Sq. Operations Officer"
         ></textarea>
 
-        <!-- Subtle warning (hidden by default) -->
         <div id="title_warning" class="subtle-warning" aria-live="polite">
           Maximum two lines allowed. Extra lines were removed.
         </div>
@@ -306,8 +307,8 @@
     </form>
 
     <footer>
-      Version 16. Last modified on March 2nd, 2026. Managed by
-      <a href="mailto:Brand@cap.gov">Maj. Roman Vitanza</a>.
+      Version 14. Last modified on September 1st, 2024. Managed by
+      <a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
     </footer>
   </div>
 
@@ -330,8 +331,14 @@
 
   <script>
     (function () {
-      let type = "generic";    // generic | plaintext | mobile
-      let gradeType = "Adult"; // Adult | Cadet
+      let type = "generic";        // generic | plaintext | mobile
+      let gradeType = "Adult";     // Adult | Cadet
+      let logoVariant = "aux";     // aux | noaux
+
+      const LOGOS = {
+        aux: "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcL3hQWmZtMVoxd29VOEpOTnJlaEx0LnBuZyJ9:frontify:0CYcGyqBrivt0CkxwKl2Wi8yTIL5O8kZzU4n0tnauhM?width=2400",
+        noaux: "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400"
+      };
 
       const vals = {
         name: "Jane Doe",
@@ -373,7 +380,6 @@
       function showTitleWarning() {
         const el = $("title_warning");
         el.classList.add("show");
-        // auto-hide after a moment
         window.clearTimeout(showTitleWarning._t);
         showTitleWarning._t = window.setTimeout(() => {
           el.classList.remove("show");
@@ -399,11 +405,11 @@
           const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
           const gradePart = grade ? `${grade} ` : "";
 
-          // MULTILINE (max 2 lines enforced by input logic)
           const titleRaw = vals.title || "";
           const titleHtml = sanitizeText(titleRaw)
             .split(/\r?\n/)
             .filter(line => line.trim() !== "")
+            .slice(0, 2)
             .join("<br />");
 
           const wText = sanitizeText(vals.website_text || "");
@@ -424,6 +430,8 @@
               </p>`;
             })
             .join("");
+
+          const logoUrl = LOGOS[logoVariant] || LOGOS.aux;
 
           return `<!DOCTYPE html>
 <html><body><br />
@@ -450,8 +458,9 @@
   </p>` : ""}
 
   <a href="https://www.GoCivilAirPatrol.com">
-    <img src="https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcL3hQWmZtMVoxd29VOEpOTnJlaEx0LnBuZyJ9:frontify:0CYcGyqBrivt0CkxwKl2Wi8yTIL5O8kZzU4n0tnauhM?width=2400"
-      style="margin: 10px 0 10px -5px;" alt="Civil Air Patrol" />
+    <img src="${logoUrl}"
+         style="margin: 10px 0 10px -5px; width: 200px; height: auto;"
+         alt="Civil Air Patrol Logo" />
   </a>
 
   <p style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-style: italic; line-height: 14px; margin: 0 0 5px;">
@@ -471,7 +480,7 @@
           if (vals.title && vals.title.trim()) {
             vals.title.split(/\r?\n/)
               .filter(line => line.trim() !== "")
-              .slice(0, 2) // safety: max 2
+              .slice(0, 2)
               .forEach(line => lines.push(line.trim()));
           }
 
@@ -548,7 +557,6 @@
 
         $("website_text").disabled = isPlain;
 
-        // Ensure title warning isn't stuck on when title is hidden
         if (isMobile) $("title_warning").classList.remove("show");
       }
 
@@ -559,7 +567,7 @@
         vals.name = nm ? nm : "Jane Doe";
 
         vals.wing = $("wing").value.trim();
-        vals.title = $("title").value; // keep exact newlines
+        vals.title = $("title").value;
 
         vals.phone_1_type = $("phone_1_type").value;
         vals.phone_1 = $("phone_1").value.trim();
@@ -593,17 +601,22 @@
       function init() {
         type = $("type").value;
         gradeType = $("grade_type").value;
+        logoVariant = $("logo_variant").value;
 
         gateGrades();
         applyTypeUI();
 
-        // Enforce 2-line rule on load (in case browser restores form state)
         limitTitleLines();
         updateOutputAndPreview();
 
         $("type").addEventListener("change", () => {
           type = $("type").value;
           applyTypeUI();
+          updateOutputAndPreview();
+        });
+
+        $("logo_variant").addEventListener("change", () => {
+          logoVariant = $("logo_variant").value; // aux | noaux
           updateOutputAndPreview();
         });
 
@@ -615,13 +628,11 @@
 
         $("grade").addEventListener("change", updateOutputAndPreview);
 
-        // Title: enforce 2 lines, show subtle warning if trimmed
         $("title").addEventListener("input", () => {
           limitTitleLines();
           updateOutputAndPreview();
         });
 
-        // Prevent "Enter" from creating a 3rd line
         $("title").addEventListener("keydown", function (e) {
           if (e.key === "Enter") {
             const lines = this.value.split(/\r?\n/);
