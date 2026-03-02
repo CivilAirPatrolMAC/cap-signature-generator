@@ -170,15 +170,6 @@
         </select>
       </div>
 
-      <!-- Logo selector -->
-      <div>
-        <label for="logo_variant">Logo</label>
-        <select id="logo_variant">
-          <option value="aux" selected>Auxiliary line</option>
-          <option value="noaux">No Auxiliary Line</option>
-        </select>
-      </div>
-
       <div>
         <label for="grade">Grade &amp; Name <span class="req">*</span></label>
         <div class="dual">
@@ -188,8 +179,16 @@
           </select>
 
           <select id="grade">
+            <!-- No Grade options -->
             <optgroup label="No Grade">
               <option value="" data-any="true">No grade</option>
+            </optgroup>
+
+            <!-- NEW: Courtesy titles -->
+            <optgroup label="Courtesy Titles">
+              <option value="Mr." data-any="true">Mr.</option>
+              <option value="Ms." data-any="true">Ms.</option>
+              <option value="Mrs." data-any="true">Mrs.</option>
             </optgroup>
 
             <optgroup label="Cadet Enlisted">
@@ -252,14 +251,13 @@
       <div id="f_title">
         <label for="title">
           Duty Position(s)
-          <span class="note">Unit name followed by duty position</span>
           <span class="note">Max 2 lines</span>
         </label>
 
         <textarea
           id="title"
           rows="2"
-          placeholder="Texas Wing Director of Operations&#10;Fort Worth Phoenix Comp. Sq. Commander"
+          placeholder="Texas Wing Director of Operations&#10;Apollo Comp. Sq. Operations Officer"
         ></textarea>
 
         <div id="title_warning" class="subtle-warning" aria-live="polite">
@@ -308,8 +306,8 @@
     </form>
 
     <footer>
-      Version 20. Last modified on March 2nd, 2026. Managed by
-      <a href="mailto:Brand@cap.gov">Major Roman Vitanza</a>.
+      Version 14. Last modified on September 1st, 2024. Managed by
+      <a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
     </footer>
   </div>
 
@@ -334,12 +332,9 @@
     (function () {
       let type = "generic";        // generic | plaintext | mobile
       let gradeType = "Adult";     // Adult | Cadet
-      let logoVariant = "aux";     // aux | noaux
 
-      const LOGOS = {
-        aux: "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcL3hQWmZtMVoxd29VOEpOTnJlaEx0LnBuZyJ9:frontify:0CYcGyqBrivt0CkxwKl2Wi8yTIL5O8kZzU4n0tnauhM?width=2400",
-        noaux: "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400"
-      };
+      // ONLY the "no auxiliary line" graphic
+      const LOGO_URL = "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
 
       const vals = {
         name: "Jane Doe",
@@ -404,7 +399,14 @@
           const name = sanitizeText(vals.name || "Jane Doe");
           const grade = sanitizeText(vals.grade || "");
           const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
-          const gradePart = grade ? `${grade} ` : "";
+
+          // If grade is a courtesy title (Mr./Ms./Mrs.), don't add extra spacing rules; treat it as a prefix.
+          const courtesyTitles = new Set(["Mr.", "Ms.", "Mrs."]);
+          const isCourtesy = courtesyTitles.has(vals.grade);
+
+          const gradePart = grade
+            ? (isCourtesy ? `${grade} ` : `${grade} `)
+            : "";
 
           const titleRaw = vals.title || "";
           const titleHtml = sanitizeText(titleRaw)
@@ -432,13 +434,8 @@
             })
             .join("");
 
-          const logoUrl = LOGOS[logoVariant] || LOGOS.aux;
-
-          /* NEW: Organization line depends on logo variant */
-          const orgLine =
-            (logoVariant === "aux")
-              ? "Civil Air Patrol, U.S. Air Force Auxiliary"
-              : "";
+          // Since we're always using the "no auxiliary line" logo now:
+          const orgLine = "Civil Air Patrol";
 
           return `<!DOCTYPE html>
 <html><body><br />
@@ -465,7 +462,7 @@
   </p>` : ""}
 
   <a href="https://www.GoCivilAirPatrol.com">
-    <img src="${logoUrl}"
+    <img src="${LOGO_URL}"
          style="margin: 10px 0 10px -5px; width: 200px; height: auto;"
          alt="Civil Air Patrol Logo" />
   </a>
@@ -491,10 +488,8 @@
               .forEach(line => lines.push(line.trim()));
           }
 
-          // NEW: Organization line depends on logo variant
-          lines.push((logoVariant === "aux")
-            ? "Civil Air Patrol, U.S. Air Force Auxiliary"
-            : "Civil Air Patrol");
+          // No-aux logo => org line is "Civil Air Patrol"
+          lines.push("Civil Air Patrol");
 
           const phones = [
             { t: vals.phone_1_type, n: vals.phone_1 },
@@ -611,7 +606,6 @@
       function init() {
         type = $("type").value;
         gradeType = $("grade_type").value;
-        logoVariant = $("logo_variant").value;
 
         gateGrades();
         applyTypeUI();
@@ -622,11 +616,6 @@
         $("type").addEventListener("change", () => {
           type = $("type").value;
           applyTypeUI();
-          updateOutputAndPreview();
-        });
-
-        $("logo_variant").addEventListener("change", () => {
-          logoVariant = $("logo_variant").value; // aux | noaux
           updateOutputAndPreview();
         });
 
