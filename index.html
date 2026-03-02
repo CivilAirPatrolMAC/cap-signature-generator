@@ -33,28 +33,22 @@
       color: #000;
       background: #f3f4f6;
       display: flex;
-      flex-direction: row;
       min-height: 100vh;
     }
     a { color: rgb(0, 20, 137); }
-
     body > div { padding: 50px; }
 
     .left {
       background: #fff;
-      flex: 1 1 40%;
+      flex: 1 1 50%;
       min-width: 420px;
-      max-width: 640px;
+      max-width: 700px;
       overflow-y: auto;
       border-right: 1px solid #f3f4f6;
     }
-    .middle {
-      flex: 1 1 30%;
-      min-width: 260px;
-    }
     .right {
-      flex: 1 1 30%;
-      min-width: 260px;
+      flex: 1 1 50%;
+      min-width: 320px;
       background: #fff;
       border-left: 1px solid #f3f4f6;
     }
@@ -118,49 +112,12 @@
     }
     .dual > * { flex: 1 1 0; }
 
-    button {
-      transition: all 0.2s ease-in-out;
-      font-size: 16px;
-      height: 38px;
-      border: 0;
-      border-radius: 5px;
-      background: rgb(0, 20, 137);
-      color: #fff;
-      padding: 10px 20px;
-      cursor: pointer;
-      user-select: none;
-      margin-top: 15px;
-    }
-    button:hover { background: rgb(0, 14, 102); }
-
     footer {
       color: rgb(158, 162, 162);
       font-size: 12px;
       padding: 50px 0 20px;
     }
     footer a { color: inherit; }
-
-    /* middle */
-    .middle textarea {
-      width: 100%;
-      height: 260px;
-      font-size: 13px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      margin-top: 15px;
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 13px;
-      color: rgb(158, 162, 162);
-      min-height: 18px;
-    }
-
-    .warning {
-      margin: 40px 0 20px;
-      color: rgb(186, 12, 47);
-      line-height: 1.45;
-    }
 
     /* right preview */
     .preview-toolbar {
@@ -173,9 +130,7 @@
       font-weight: 600;
       white-space: nowrap;
     }
-    .preview-wrap {
-      padding: 20px;
-    }
+    .preview-wrap { padding: 20px; }
     .preview-card {
       border: 1px solid #e5e7eb;
       border-radius: 8px;
@@ -188,7 +143,6 @@
       font-size: 12px;
       line-height: 1.45;
     }
-
     .hidden { display: none !important; }
   </style>
 </head>
@@ -218,32 +172,39 @@
           </select>
 
           <select id="grade">
-            <!-- Cadet enlisted (data-cadet=true) -->
-            <option value="Airman Basic" data-cadet="true" disabled>Airman Basic</option>
-            <option value="Airman" data-cadet="true" disabled>Airman</option>
-            <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
-            <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
+            <!-- NEW: No grade option -->
+            <optgroup label="No Grade">
+              <option value="" data-any="true">No grade</option>
+            </optgroup>
 
-            <!-- Common/Adult (data-adult=true) -->
-            <option value="Staff Sgt." data-adult="true">Staff Sgt.</option>
-            <option value="Tech. Sgt." data-adult="true">Tech. Sgt.</option>
-            <option value="Master Sgt." data-adult="true">Master Sgt.</option>
-            <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
-            <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
+            <optgroup label="Cadet">
+              <option value="Airman Basic" data-cadet="true" disabled>Airman Basic</option>
+              <option value="Airman" data-cadet="true" disabled>Airman</option>
+              <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
+              <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
+            </optgroup>
 
-            <option value="" data-adult="true">Senior Member</option>
-            <option value="Flight Officer" data-adult="true">Flight Officer</option>
-            <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
-            <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
+            <optgroup label="Adult">
+              <option value="Staff Sgt." data-adult="true">Staff Sgt.</option>
+              <option value="Tech. Sgt." data-adult="true">Tech. Sgt.</option>
+              <option value="Master Sgt." data-adult="true">Master Sgt.</option>
+              <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
+              <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
 
-            <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
-            <option value="1st Lt." data-adult="true">1st Lt.</option>
-            <option value="Capt." data-adult="true">Capt.</option>
-            <option value="Maj." data-adult="true">Maj.</option>
-            <option value="Lt. Col." data-adult="true">Lt. Col.</option>
-            <option value="Col." data-adult="true">Col.</option>
-            <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
-            <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
+              <option value="" data-adult="true">Senior Member</option>
+              <option value="Flight Officer" data-adult="true">Flight Officer</option>
+              <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
+              <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
+
+              <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
+              <option value="1st Lt." data-adult="true">1st Lt.</option>
+              <option value="Capt." data-adult="true">Capt.</option>
+              <option value="Maj." data-adult="true">Maj.</option>
+              <option value="Lt. Col." data-adult="true">Lt. Col.</option>
+              <option value="Col." data-adult="true">Col.</option>
+              <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
+              <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
+            </optgroup>
           </select>
 
           <input type="text" id="name" placeholder="Jane Doe" />
@@ -310,26 +271,9 @@
     </form>
 
     <footer>
-      Version 14. Last modified on September 1st, 2024. Managed by
-      <a href="mailto:Brand@cap.gov">Capt. Roman Vitanza</a>.
+      Version 16. Last modified on March 2nd, 2026. Managed by
+      <a href="mailto:Brand@cap.gov">Maj. Roman Vitanza</a>.
     </footer>
-  </div>
-
-  <div class="middle">
-    <p>
-      If your email client supports HTML signatures, copy and paste the content from below.
-      If it doesn't, highlight/copy from the rendered preview on the right.
-    </p>
-
-    <textarea id="output" spellcheck="false"></textarea>
-    <button id="copy-output" type="button">Copy</button>
-    <div class="status" id="status"></div>
-
-    <p class="warning">
-      If you have problems with formatting after pasting the signature into your email client,
-      you may need to use another templating option. Please visit the Brand Guide Email Signature page
-      for more options.
-    </p>
   </div>
 
   <div class="right">
@@ -351,9 +295,8 @@
 
   <script>
     (function () {
-      // App state
-      let type = "generic";         // generic | plaintext | mobile
-      let gradeType = "Adult";      // Adult | Cadet
+      let type = "generic";    // generic | plaintext | mobile
+      let gradeType = "Adult"; // Adult | Cadet
 
       const vals = {
         name: "Jane Doe",
@@ -370,16 +313,9 @@
         website_url: ""
       };
 
-      // Helpers
       const $ = (id) => document.getElementById(id);
 
-      function setStatus(msg) {
-        $("status").textContent = msg || "";
-      }
-
       function sanitizeText(s) {
-        // Minimal escaping to reduce accidental HTML injection in rendered preview.
-        // (Email clients often tolerate raw text; escaping is safer for preview.)
         return String(s)
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
@@ -389,7 +325,6 @@
       }
 
       function normalizeTel(s) {
-        // Keep digits and leading + only for tel: href.
         const raw = String(s || "").trim();
         if (!raw) return "";
         let out = "";
@@ -400,13 +335,11 @@
         return out;
       }
 
-      // Templates
       const template = {
         generic: () => {
           const name = sanitizeText(vals.name || "Jane Doe");
           const title = sanitizeText(vals.title || "");
           const grade = sanitizeText(vals.grade || "");
-          const wing = sanitizeText(vals.wing || "");
           const wText = sanitizeText(vals.website_text || "");
           const wUrl = sanitizeText(vals.website_url || "");
 
@@ -504,48 +437,44 @@
 
       function gateGrades() {
         const gradeSelect = $("grade");
-        const options = Array.from(gradeSelect.options);
+        const options = Array.from(gradeSelect.querySelectorAll("option"));
 
-        if (gradeType === "Adult") {
-          for (const opt of options) {
-            const isCadet = opt.getAttribute("data-cadet") === "true";
-            const isAdult = opt.getAttribute("data-adult") === "true" || !opt.hasAttribute("data-cadet");
-            opt.disabled = isCadet ? true : false;
-            // keep adult options enabled
-            if (isAdult) opt.disabled = false;
+        for (const opt of options) {
+          const isCadet = opt.getAttribute("data-cadet") === "true";
+          const isAdult = opt.getAttribute("data-adult") === "true";
+          const isAny = opt.getAttribute("data-any") === "true";
+
+          // "No grade" should always be selectable
+          if (isAny) {
+            opt.disabled = false;
+            continue;
           }
-          // If currently on a cadet-only value, reset:
-          if (gradeSelect.selectedOptions[0]?.getAttribute("data-cadet") === "true") {
-            gradeSelect.value = "2nd Lt.";
+
+          if (gradeType === "Adult") {
+            opt.disabled = isCadet;       // disable cadet-only
+          } else {
+            opt.disabled = isAdult;       // disable adult-only
           }
-        } else {
-          for (const opt of options) {
-            const isCadet = opt.getAttribute("data-cadet") === "true";
-            const isAdult = opt.getAttribute("data-adult") === "true";
-            opt.disabled = isAdult ? true : false;
-            if (isCadet) opt.disabled = false;
-          }
-          // Default to "Airman" for cadets if available:
-          gradeSelect.value = "Airman";
+        }
+
+        // If the currently selected option is disabled, choose a sensible default
+        const selected = gradeSelect.selectedOptions[0];
+        if (selected && selected.disabled) {
+          gradeSelect.value = (gradeType === "Cadet") ? "Airman" : "2nd Lt.";
         }
       }
 
       function applyTypeUI() {
         const isMobile = type === "mobile";
         const isPlain = type === "plaintext";
-        const isGeneric = type === "generic";
 
         $("f_wing").classList.toggle("hidden", !isMobile);
         $("f_title").classList.toggle("hidden", isMobile);
         $("f_phone").classList.toggle("hidden", isMobile);
         $("f_website").classList.toggle("hidden", isMobile);
 
-        // In original behavior, website_text hidden for plaintext.
-        // We'll keep the whole website field visible, but disable display text when plaintext.
+        // Disable display text for plaintext (URL still allowed)
         $("website_text").disabled = isPlain;
-
-        // Rendered preview makes most sense for generic; for text/mobile it's fine too.
-        // (No need to hide middle column like the old code; output is always useful.)
       }
 
       function readInputsToState() {
@@ -575,9 +504,6 @@
 
         const out = template[type]();
 
-        $("output").value = out;
-
-        // Update both previews; toggle visibility based on selected preview mode
         $("preview_rendered").innerHTML = (type === "generic")
           ? out
           : `<div style="white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.45;">${sanitizeText(out)}</div>`;
@@ -589,27 +515,7 @@
         $("preview_code").classList.toggle("hidden", mode !== "code");
       }
 
-      async function copyOutput() {
-        const text = $("output").value;
-
-        try {
-          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-            await navigator.clipboard.writeText(text);
-          } else {
-            // Fallback
-            $("output").focus();
-            $("output").select();
-            document.execCommand("copy");
-          }
-          setStatus("Copied to clipboard.");
-          setTimeout(() => setStatus(""), 2000);
-        } catch (e) {
-          setStatus("Copy failed. You can manually select and copy the output.");
-        }
-      }
-
       function init() {
-        // Initial state
         type = $("type").value;
         gradeType = $("grade_type").value;
 
@@ -617,7 +523,6 @@
         applyTypeUI();
         updateOutputAndPreview();
 
-        // Events
         $("type").addEventListener("change", () => {
           type = $("type").value;
           applyTypeUI();
@@ -648,7 +553,6 @@
         }
 
         $("preview_mode").addEventListener("change", updateOutputAndPreview);
-        $("copy-output").addEventListener("click", copyOutput);
       }
 
       document.addEventListener("DOMContentLoaded", init);
