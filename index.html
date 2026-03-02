@@ -172,40 +172,60 @@
           </select>
 
           <select id="grade">
-            <!-- NEW: No grade option -->
-            <optgroup label="No Grade">
-              <option value="" data-any="true">No grade</option>
-            </optgroup>
 
-            <optgroup label="Cadet">
-              <option value="Airman Basic" data-cadet="true" disabled>Airman Basic</option>
-              <option value="Airman" data-cadet="true" disabled>Airman</option>
-              <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
-              <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
-            </optgroup>
+  <!-- No Grade (always available) -->
+  <optgroup label="No Grade">
+    <option value="" data-any="true">No grade</option>
+  </optgroup>
 
-            <optgroup label="Adult">
-              <option value="Staff Sgt." data-adult="true">Staff Sgt.</option>
-              <option value="Tech. Sgt." data-adult="true">Tech. Sgt.</option>
-              <option value="Master Sgt." data-adult="true">Master Sgt.</option>
-              <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
-              <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
+  <!-- Cadet Enlisted -->
+  <optgroup label="Cadet Enlisted">
+    <option value="Airman Basic" data-cadet="true" disabled>Airman Basic</option>
+    <option value="Airman" data-cadet="true" disabled>Airman</option>
+    <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
+    <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
 
-              <option value="" data-adult="true">Senior Member</option>
-              <option value="Flight Officer" data-adult="true">Flight Officer</option>
-              <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
-              <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
+    <option value="Staff Sgt." data-cadet="true" disabled>Staff Sgt.</option>
+    <option value="Tech. Sgt." data-cadet="true" disabled>Tech. Sgt.</option>
+    <option value="Master Sgt." data-cadet="true" disabled>Master Sgt.</option>
+    <option value="Senior Master Sgt." data-cadet="true" disabled>Senior Master Sgt.</option>
+    <option value="Chief Master Sgt." data-cadet="true" disabled>Chief Master Sgt.</option>
+  </optgroup>
 
-              <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
-              <option value="1st Lt." data-adult="true">1st Lt.</option>
-              <option value="Capt." data-adult="true">Capt.</option>
-              <option value="Maj." data-adult="true">Maj.</option>
-              <option value="Lt. Col." data-adult="true">Lt. Col.</option>
-              <option value="Col." data-adult="true">Col.</option>
-              <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
-              <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
-            </optgroup>
-          </select>
+  <!-- Cadet Officer -->
+  <optgroup label="Cadet Officer">
+    <option value="2nd Lt." data-cadet="true" disabled>2nd Lt.</option>
+    <option value="1st Lt." data-cadet="true" disabled>1st Lt.</option>
+    <option value="Capt." data-cadet="true" disabled>Capt.</option>
+    <option value="Maj." data-cadet="true" disabled>Maj.</option>
+    <option value="Lt. Col." data-cadet="true" disabled>Lt. Col.</option>
+    <option value="Col." data-cadet="true" disabled>Col.</option>
+  </optgroup>
+
+  <!-- Adult -->
+  <optgroup label="Adult">
+    <option value="Staff Sgt." data-adult="true">Staff Sgt.</option>
+    <option value="Tech. Sgt." data-adult="true">Tech. Sgt.</option>
+    <option value="Master Sgt." data-adult="true">Master Sgt.</option>
+    <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
+    <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
+
+    <option value="" data-adult="true">Senior Member</option>
+    <option value="Flight Officer" data-adult="true">Flight Officer</option>
+    <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
+    <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
+
+    <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
+    <option value="1st Lt." data-adult="true">1st Lt.</option>
+    <option value="Capt." data-adult="true">Capt.</option>
+    <option value="Maj." data-adult="true">Maj.</option>
+    <option value="Lt. Col." data-adult="true">Lt. Col.</option>
+    <option value="Col." data-adult="true">Col.</option>
+    <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
+    <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
+  </optgroup>
+
+</select>
 
           <input type="text" id="name" placeholder="Jane Doe" />
         </div>
