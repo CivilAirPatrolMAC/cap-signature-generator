@@ -122,6 +122,64 @@
     "Assistant Deputy Chief of Staff, Operations",
     "Assistant Deputy Chief of Staff, Education and Training"
   ]);
+  
+  const CADET_ALLOWED_DUTY_ASSIGNMENTS = new Set([
+  "Cadet Activities NCO",
+  "Cadet Activities Officer",
+  "Cadet Administrative NCO",
+  "Cadet Administrative Officer",
+  "Cadet Aerospace Education NCO",
+  "Cadet Aerospace Education Officer",
+  "Cadet Commander",
+  "Cadet Communications NCO",
+  "Cadet Communications Officer",
+  "Cadet Cyber Education NCO",
+  "Cadet Cyber Education Officer",
+  "Cadet Deputy Commander for Operations",
+  "Cadet Deputy Commander for Support",
+  "Cadet Element Leader",
+  "Cadet Emergency Services NCO",
+  "Cadet Emergency Services Officer",
+  "Cadet Executive Officer",
+  "Cadet Finance NCO",
+  "Cadet Finance Officer",
+  "Cadet First Sergeant",
+  "Cadet Flight Commander",
+  "Cadet Flight Sergeant",
+  "Cadet Group Commander",
+  "Cadet Group Deputy Commander for Operations",
+  "Cadet Group Deputy Commander for Support",
+  "Cadet Group Superintendent",
+  "Cadet Historian",
+  "Cadet Information Technology NCO",
+  "Cadet Information Technology Officer",
+  "Cadet Leadership Education NCO",
+  "Cadet Leadership Education Officer",
+  "Cadet Logistics NCO",
+  "Cadet Logistics Officer",
+  "Cadet Operations NCO",
+  "Cadet Operations Officer",
+  "Cadet Public Affairs NCO",
+  "Cadet Public Affairs Officer",
+  "Cadet Recruiting NCO",
+  "Cadet Recruiting Officer",
+  "Cadet Safety NCO",
+  "Cadet Safety Officer",
+  "Cadet Squadron Commander",
+  "Cadet Squadron Deputy Commander for Operations",
+  "Cadet Squadron Deputy Commander for Support",
+  "Cadet Superintendent",
+  "Cadet Testing NCO",
+  "Cadet Testing Officer",
+  "Cadet Training NCO",
+  "Cadet Training Officer",
+  "Cadet Wing Commander",
+  "Cadet Wing Deputy Commander for Operations",
+  "Cadet Wing Deputy Commander for Support",
+  "Cadet Wing Executive Officer",
+  "Cadet Wing First Sergeant",
+  "Cadet Wing Superintendent"
+]);
 
   const $ = (id) => document.getElementById(id);
 
@@ -212,7 +270,16 @@
     const websiteUrlValue = String(vals.website_url || "").trim();
 
     const combinedName = (gradeValue + " " + nameValue).trim();
-
+    
+  if (gradeType === "Cadet") {
+  for (const line of titleLines) {
+    const extractedDuty = extractDutyPosition(line);
+    if (!extractedDuty || !CADET_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+      warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+      break;
+    }
+  }
+}
     if (/\bSM\b/i.test(combinedName)) {
       warnings.push('"SM" is not a grade and should not be used.');
     }
