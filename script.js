@@ -240,35 +240,44 @@
   }
 
   function normalizeDutyAssignmentName(s) {
-    return String(s || "")
-      .replace(/&/gi, "and")
-      .replace(/\s+/g, " ")
-      .trim()
-      .replace(/^Deputy Chief of Staff\s+/i, "Deputy Chief of Staff ");
+  return String(s || "")
+    .replace(/&/gi, "and")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractDutyPosition(line) {
+  const clean = String(line || "").trim();
+  if (!clean) return "";
+
+  const preferredSet =
+    gradeType === "Cadet"
+      ? CADET_ALLOWED_DUTY_ASSIGNMENTS
+      : ADULT_ALLOWED_DUTY_ASSIGNMENTS;
+
+  const secondarySet =
+    gradeType === "Cadet"
+      ? ADULT_ALLOWED_DUTY_ASSIGNMENTS
+      : CADET_ALLOWED_DUTY_ASSIGNMENTS;
+
+  for (const allowed of preferredSet) {
+    const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(escaped + "$", "i");
+    if (re.test(clean)) return allowed;
   }
 
-  function extractDutyPosition(line) {
-    const clean = String(line || "").trim();
-    if (!clean) return "";
-
-    for (const allowed of ADULT_ALLOWED_DUTY_ASSIGNMENTS) {
-      const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const re = new RegExp(escaped + "$", "i");
-      if (re.test(clean)) return allowed;
-    }
-
-    for (const allowed of CADET_ALLOWED_DUTY_ASSIGNMENTS) {
-      const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const re = new RegExp(escaped + "$", "i");
-      if (re.test(clean)) return allowed;
-    }
-
-    const noComma = clean.replace(/,/g, " ");
-    const pieces = noComma.split(/\s{2,}/).filter(Boolean);
-    if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
-
-    return normalizeDutyAssignmentName(clean);
+  for (const allowed of secondarySet) {
+    const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(escaped + "$", "i");
+    if (re.test(clean)) return allowed;
   }
+
+  const noComma = clean.replace(/,/g, " ");
+  const pieces = noComma.split(/\s{2,}/).filter(Boolean);
+  if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
+
+  return normalizeDutyAssignmentName(clean);
+}
 
   function getValidationWarnings() {
     const warnings = [];
@@ -352,17 +361,15 @@
 }
 
 if (gradeType === "Cadet" && !hasNational) {
-  const allowedCadetNormalized = new Set(
+ const allowedCadetNormalized = new Set(
     Array.from(CADET_ALLOWED_DUTY_ASSIGNMENTS).map((duty) =>
-      duty.toLowerCase().trim()
+      normalizeDutyAssignmentName(duty).toLowerCase()
     )
   );
 
   for (const line of titleLines) {
     const extractedDuty = extractDutyPosition(line);
-    const normalizedExtracted = String(extractedDuty || "")
-      .toLowerCase()
-      .trim();
+    const normalizedExtracted = normalizeDutyAssignmentName(extractedDuty).toLowerCase();
 
     if (!normalizedExtracted || !allowedCadetNormalized.has(normalizedExtracted)) {
       warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
@@ -370,7 +377,6 @@ if (gradeType === "Cadet" && !hasNational) {
     }
   }
 }
-
     if ((websiteTextValue && !websiteUrlValue) || (!websiteTextValue && websiteUrlValue)) {
       warnings.push("Include both Wing/Region website display text and URL, or leave both fields blank.");
     }
