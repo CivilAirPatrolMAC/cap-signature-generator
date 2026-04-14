@@ -407,7 +407,7 @@ textarea:focus {
 }
 
 .preview-surface {
-  min-height: 200px;
+  min-height: 250px;
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: 14px;
