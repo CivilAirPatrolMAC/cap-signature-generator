@@ -61,6 +61,20 @@
     if (el.value !== formatted) el.value = formatted;
   }
 
+  function autoCorrectDutyAssignments(value) {
+    let v = String(value || "");
+
+    v = v.replace(/\bAssistant\s+DCS\.?\s+([^\n]+)/gi, function (_, role) {
+      return "Assistant Deputy Chief of Staff, " + role.trim();
+    });
+
+    v = v.replace(/\bDCS\.?\s+([^\n]+)/gi, function (_, role) {
+      return "Deputy Chief of Staff, " + role.trim();
+    });
+
+    return v;
+  }
+
   function showTitleWarning() {
     const el = $("title_warning");
     el.classList.add("show");
@@ -86,7 +100,7 @@
     generic: () => {
       const name = sanitizeText(vals.name || "Jane Doe");
       const grade = sanitizeText(vals.grade || "");
-      const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+      const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
 
       const courtesyTitles = new Set(["Mr.", "Ms.", "Mrs."]);
       const isCourtesy = courtesyTitles.has(vals.grade);
@@ -160,7 +174,7 @@
     },
 
     plaintext: () => {
-      const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+      const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
       const gradePart = vals.grade ? `${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
 
@@ -197,7 +211,7 @@
     },
 
     mobile: () => {
-      const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+      const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
       const gradePart = vals.grade ? `${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
 
@@ -232,7 +246,7 @@
 
     const selected = gradeSelect.selectedOptions[0];
     if (selected && selected.disabled) {
-      gradeSelect.value = (gradeType === "Cadet") ? "Airman" : "2nd Lt.";
+      gradeSelect.value = gradeType === "Cadet" ? "Airman" : "2nd Lt.";
     }
   }
 
@@ -277,7 +291,7 @@
 
     const out = template[type]();
 
-    $("preview_rendered").innerHTML = (type === "generic")
+    $("preview_rendered").innerHTML = type === "generic"
       ? out
       : `<div style="white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.45;">${sanitizeText(out)}</div>`;
 
@@ -328,6 +342,13 @@
     $("grade").addEventListener("change", updateOutputAndPreview);
 
     $("title").addEventListener("input", () => {
+      const el = $("title");
+      const corrected = autoCorrectDutyAssignments(el.value);
+
+      if (el.value !== corrected) {
+        el.value = corrected;
+      }
+
       limitTitleLines();
       updateOutputAndPreview();
     });
