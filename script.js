@@ -132,6 +132,16 @@
       warnings.push("No disclaimer, FOUO statement, or motivational quote may be appended unless required by law or mission program requirements.");
     }
 
+    for (const line of titleLines) {
+      const mentionsEncampment = /\bencampment\b/i.test(line);
+      const allowedEncampmentRole = /\b(encampment commander|commandant of cadets)\b/i.test(line);
+
+      if (mentionsEncampment && !allowedEncampmentRole) {
+        warnings.push('Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."');
+        break;
+      }
+    }
+
     if ((websiteTextValue && !websiteUrlValue) || (!websiteTextValue && websiteUrlValue)) {
       warnings.push("Include both Wing/Region website display text and URL, or leave both fields blank.");
     }
