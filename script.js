@@ -297,7 +297,15 @@ function extractDutyPosition(line) {
    if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP)\b/i.test(combinedName)) {
   warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
 }
+if (/\b(MD|DO|DDS|DMD|OD|DPM|DC|PharmD|DNP|DPT|AuD|RN|LPN|LVN|NP|FNP|CNS|CRNA|CNM|PA-C|PA|RPh|OTR\/L|PT|PTA|OT|OTA|RD|RDN|PhD|EdD|DBA|DSc|ScD|DPhil|DLitt|JD|LLM|SJD|Esq\.?|MA|MS|MSc|MBA|MPA|MPP|MHA|MEd|BA|BS|BSc|BBA|BPA|CPA|CFA|CFP|CIMA|CMA|CGMA|CIA|CFE|FRM|ChFC|CLU|PMP|CAPM|PgMP|SHRM-CP|SHRM-SCP|PHR|SPHR|GPHR|CISSP|SSCP|CCSP|CISM|CISA|CRISC|CEH|OSCP|Security\+|Network\+|A\+|CASP\+|AWS-CP|AWS-SAA|CCNA|CCNP|CCIE|MCSE|MCSA|ITIL|PE|FE|EIT|P\.?Eng|CFI|CFII|MEI|ATP|A&P|IA|AGI|IGI|CEM|AEM|MEP|IAEM|EMT|EMT-B|EMT-P|Paramedic|FACHE|FACMPE|FHFMA|FRCP|FACS|FAAFP|CSP|CIH|RCDD|CIPP|CIPM
+)\b/i.test(combinedName)) {
+  warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+}
 
+    
+    if (/,\s*[A-Z]{2,}/.test(combinedName)) {
+  warnings.push('Post-nominal credentials are not authorized in CAP signature blocks.');
+}
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
       warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
     }
