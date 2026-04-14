@@ -303,7 +303,7 @@
     }
 
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
-      warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
+      warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity. Civil Air Patrol is already prominently displayed in the signature block");
     }
 
     const titleLines = titleValue
