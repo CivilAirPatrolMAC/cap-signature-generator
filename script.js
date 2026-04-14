@@ -122,64 +122,58 @@
     "Assistant Deputy Chief of Staff, Operations",
     "Assistant Deputy Chief of Staff, Education and Training"
   ]);
-  
+
   const CADET_ALLOWED_DUTY_ASSIGNMENTS = new Set([
-  "Cadet Activities NCO",
-  "Cadet Activities Officer",
-  "Cadet Administrative NCO",
-  "Cadet Administrative Officer",
-  "Cadet Aerospace Education NCO",
-  "Cadet Aerospace Education Officer",
-  "Cadet Commander",
-  "Cadet Communications NCO",
-  "Cadet Communications Officer",
-  "Cadet Cyber Education NCO",
-  "Cadet Cyber Education Officer",
-  "Cadet Deputy Commander for Operations",
-  "Cadet Deputy Commander for Support",
-  "Cadet Element Leader",
-  "Cadet Emergency Services NCO",
-  "Cadet Emergency Services Officer",
-  "Cadet Executive Officer",
-  "Cadet Finance NCO",
-  "Cadet Finance Officer",
-  "Cadet First Sergeant",
-  "Cadet Flight Commander",
-  "Cadet Flight Sergeant",
-  "Cadet Group Commander",
-  "Cadet Group Deputy Commander for Operations",
-  "Cadet Group Deputy Commander for Support",
-  "Cadet Group Superintendent",
-  "Cadet Historian",
-  "Cadet Information Technology NCO",
-  "Cadet Information Technology Officer",
-  "Cadet Leadership Education NCO",
-  "Cadet Leadership Education Officer",
-  "Cadet Logistics NCO",
-  "Cadet Logistics Officer",
-  "Cadet Operations NCO",
-  "Cadet Operations Officer",
-  "Cadet Public Affairs NCO",
-  "Cadet Public Affairs Officer",
-  "Cadet Recruiting NCO",
-  "Cadet Recruiting Officer",
-  "Cadet Safety NCO",
-  "Cadet Safety Officer",
-  "Cadet Squadron Commander",
-  "Cadet Squadron Deputy Commander for Operations",
-  "Cadet Squadron Deputy Commander for Support",
-  "Cadet Superintendent",
-  "Cadet Testing NCO",
-  "Cadet Testing Officer",
-  "Cadet Training NCO",
-  "Cadet Training Officer",
-  "Cadet Wing Commander",
-  "Cadet Wing Deputy Commander for Operations",
-  "Cadet Wing Deputy Commander for Support",
-  "Cadet Wing Executive Officer",
-  "Cadet Wing First Sergeant",
-  "Cadet Wing Superintendent"
-]);
+    "Cadet Activities NCO",
+    "Cadet Activities Officer",
+    "Cadet Administrative NCO",
+    "Cadet Administrative Officer",
+    "Cadet Aerospace Education NCO",
+    "Cadet Aerospace Education Officer",
+    "Cadet Commander",
+    "Cadet Communications NCO",
+    "Cadet Communications Officer",
+    "Cadet Cyber Education NCO",
+    "Cadet Cyber Education Officer",
+    "Cadet Deputy Commander for Operations",
+    "Cadet Deputy Commander for Support",
+    "Cadet Element Leader",
+    "Cadet Emergency Services NCO",
+    "Cadet Emergency Services Officer",
+    "Cadet Executive Officer",
+    "Cadet Finance NCO",
+    "Cadet Finance Officer",
+    "Cadet First Sergeant",
+    "Cadet Flight Commander",
+    "Cadet Flight Sergeant",
+    "Cadet Group Commander",
+    "Cadet Group Deputy Commander for Operations",
+    "Cadet Group Deputy Commander for Support",
+    "Cadet Group Superintendent",
+    "Cadet Historian",
+    "Cadet Information Technology NCO",
+    "Cadet Information Technology Officer",
+    "Cadet Leadership Education NCO",
+    "Cadet Leadership Education Officer",
+    "Cadet Logistics NCO",
+    "Cadet Logistics Officer",
+    "Cadet Operations NCO",
+    "Cadet Operations Officer",
+    "Cadet Public Affairs NCO",
+    "Cadet Public Affairs Officer",
+    "Cadet Recruiting NCO",
+    "Cadet Recruiting Officer",
+    "Cadet Safety NCO",
+    "Cadet Safety Officer",
+    "Cadet Squadron Commander",
+    "Cadet Squadron Deputy Commander for Operations",
+    "Cadet Squadron Deputy Commander for Support",
+    "Cadet Superintendent",
+    "Cadet Testing NCO",
+    "Cadet Testing Officer",
+    "Cadet Training NCO",
+    "Cadet Training Officer"
+  ]);
 
   const $ = (id) => document.getElementById(id);
 
@@ -253,6 +247,12 @@
       if (re.test(clean)) return allowed;
     }
 
+    for (const allowed of CADET_ALLOWED_DUTY_ASSIGNMENTS) {
+      const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp(escaped + "$", "i");
+      if (re.test(clean)) return allowed;
+    }
+
     const noComma = clean.replace(/,/g, " ");
     const pieces = noComma.split(/\s{2,}/).filter(Boolean);
     if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
@@ -270,23 +270,14 @@
     const websiteUrlValue = String(vals.website_url || "").trim();
 
     const combinedName = (gradeValue + " " + nameValue).trim();
-    
-  if (gradeType === "Cadet") {
-  for (const line of titleLines) {
-    const extractedDuty = extractDutyPosition(line);
-    if (!extractedDuty || !CADET_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-      warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
-      break;
-    }
-  }
-}
+
     if (/\bSM\b/i.test(combinedName)) {
       warnings.push('"SM" is not a grade and should not be used.');
     }
 
-  if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP)\b/i.test(combinedName)) {
-  warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
-}
+    if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP)\b/i.test(combinedName)) {
+      warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+    }
 
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
       warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
@@ -301,6 +292,9 @@
       warnings.push("You may only list two duty assignments recorded in eServices.");
     }
 
+    if (titleLines.some((line) => line.includes(","))) {
+      warnings.push("Duty assignments will state the name of the unit, followed by the duty position, without a comma.");
+    }
 
     if (titleLines.length >= 2) {
       const rankOrder = (line) => {
@@ -339,7 +333,17 @@
       for (const line of titleLines) {
         const extractedDuty = extractDutyPosition(line);
         if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-          warnings.push('Adult duty assignments must use an approved duty position that is assignable in eServices. Invalid entry: "' + line + '"');
+          warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          break;
+        }
+      }
+    }
+
+    if (gradeType === "Cadet") {
+      for (const line of titleLines) {
+        const extractedDuty = extractDutyPosition(line);
+        if (!extractedDuty || !CADET_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+          warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
           break;
         }
       }
@@ -471,7 +475,8 @@
       const courtesyTitles = new Set(["Mr.", "Ms.", "Mrs."]);
       const isCourtesy = courtesyTitles.has(vals.grade);
 
-      const gradePart = grade ? (isCourtesy ? `${grade} ` : `${grade} `) : "";
+      const gradePart = grade ? `${grade} ` : "";
+      const displayName = `${cadetPrefix}${isCourtesy ? gradePart : gradePart}${name}`;
 
       const titleRaw = vals.title || "";
       const titleHtml = sanitizeText(titleRaw)
@@ -504,7 +509,7 @@
       return `<!DOCTYPE html>
 <html><body><br />
   <h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">
-    ${cadetPrefix}${gradePart}${name}
+    ${displayName}
   </h1>
 
   ${titleHtml ? `<h2 style="font-size: 12px; line-height: 14px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">
