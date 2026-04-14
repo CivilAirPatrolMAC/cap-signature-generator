@@ -54,12 +54,14 @@
     <section class="layout">
       <div class="controls-column">
         <section class="card guidance-card">
-          <h2>Email Signature Guidance</h2>
-          <p>
-            To generate your email signature, you have three options: you can download the
-            Word template to copy and paste from on the brand portal, you can use this email
-            signature generator tool, or you can copy and paste from the samples on the brand portal.
-          </p>
+          <div class="section-heading">
+            <h2>Email Signature Guidance</h2>
+            <p>
+              To generate your email signature, you have three options: you can download the
+              Word template to copy and paste from on the brand portal, you can use this email
+              signature generator tool, or you can copy and paste from the samples on the brand portal.
+            </p>
+          </div>
 
           <div class="callout callout--warning">
             <h3>Guidelines, Standards, and Requirements</h3>
@@ -107,6 +109,14 @@
 
         <form id="sig-form" class="card form-card" autocomplete="off">
           <section class="form-section">
+            <div class="section-heading">
+              <h2>Signature Type</h2>
+              <p>
+                Default is recommended for standard desktop email clients. Plain Text is best for
+                clients that strip formatting. Abbreviated (Mobile) is intended for mobile devices only.
+              </p>
+            </div>
+
             <div class="field">
               <label for="type">Signature Type</label>
               <select id="type">
@@ -114,20 +124,21 @@
                 <option value="plaintext">Plain Text</option>
                 <option value="mobile">Abbreviated (Mobile)</option>
               </select>
-              <div class="field-help">
-                Default is recommended for standard desktop email clients. Plain Text is best for
-                clients that strip formatting. Abbreviated (Mobile) is intended for mobile devices only.
-              </div>
             </div>
           </section>
 
           <section class="form-section">
-            <div class="field">
-              <label for="grade">
-                Grade &amp; Name <span class="req">*</span>
-              </label>
+            <div class="section-heading">
+              <h2>Grade &amp; Name</h2>
+              <p>
+                Use approved CAP grade abbreviations. Do not use "SM" or add professional titles or post-nominals.
+              </p>
+            </div>
 
-              <div class="dual">
+            <div class="field">
+              <label for="grade">Grade &amp; Name <span class="req">*</span></label>
+
+              <div class="dual dual--triple">
                 <select id="grade_type">
                   <option value="Paid">NHQ Staff</option>
                   <option value="Adult" selected>Adult Volunteer</option>
@@ -189,25 +200,33 @@
 
                 <input type="text" id="name" placeholder="Jane Doe" />
               </div>
-
-              <div class="field-help">
-                Use approved CAP grade abbreviations. Do not use "SM" or add professional titles or post-nominals.
-              </div>
             </div>
           </section>
 
           <section id="f_wing" class="form-section hidden">
+            <div class="section-heading">
+              <h2>Wing</h2>
+              <p>Used only for the abbreviated mobile signature.</p>
+            </div>
+
             <div class="field">
               <label for="wing">
                 Wing <span class="req">*</span>
                 <span class="note">Use 4-letter Wing, 3-letter Region, or “HQ”; no squadron designators</span>
               </label>
               <input type="text" id="wing" placeholder="TXWG" />
-              <div class="field-help">Used only for the abbreviated mobile signature.</div>
             </div>
           </section>
 
           <section id="f_title" class="form-section">
+            <div class="section-heading">
+              <h2>Duty Position(s)</h2>
+              <p>
+                List no more than two duty assignments recorded in eServices. Organize assignments from
+                highest to lowest organizational level.
+              </p>
+            </div>
+
             <div class="field">
               <label for="title">
                 Duty Position(s)
@@ -226,18 +245,22 @@
               </div>
 
               <div class="field-help">
-                List no more than two duty assignments recorded in eServices. Organize assignments
-                from highest to lowest organizational level. Do not include certifications,
-                accomplishments, special activity assignments, non-Civil Air Patrol titles, or quotes.
+                Do not include certifications, accomplishments, special activity assignments,
+                non-Civil Air Patrol titles, or quotes.
               </div>
             </div>
           </section>
 
           <section id="f_phone" class="form-section">
+            <div class="section-heading">
+              <h2>Phone Number(s)</h2>
+              <p>Phone numbers are automatically formatted with periods as you type.</p>
+            </div>
+
             <div class="field">
               <label>Phone Number(s)</label>
 
-              <div class="dual">
+              <div class="dual dual--pair">
                 <select id="phone_1_type">
                   <option value="M" selected>Mobile</option>
                   <option value="H">Home</option>
@@ -246,7 +269,7 @@
                 <input type="text" id="phone_1" placeholder="555.555.5555" inputmode="numeric" />
               </div>
 
-              <div class="dual">
+              <div class="dual dual--pair">
                 <select id="phone_2_type">
                   <option value="M" selected>Mobile</option>
                   <option value="H">Home</option>
@@ -255,7 +278,7 @@
                 <input type="text" id="phone_2" placeholder="555.555.5555" inputmode="numeric" />
               </div>
 
-              <div class="dual">
+              <div class="dual dual--pair">
                 <select id="phone_3_type">
                   <option value="M" selected>Mobile</option>
                   <option value="H">Home</option>
@@ -263,22 +286,20 @@
                 </select>
                 <input type="text" id="phone_3" placeholder="555.555.5555" inputmode="numeric" />
               </div>
-
-              <div class="field-help">
-                Phone numbers are automatically formatted with periods as you type.
-              </div>
             </div>
           </section>
 
           <section id="f_website" class="form-section">
+            <div class="section-heading">
+              <h2>Wing/Region Website</h2>
+              <p>Optional. Include only official Wing or Region websites relevant to your role.</p>
+            </div>
+
             <div class="field">
               <label for="website_text">Wing/Region Website</label>
-              <div class="dual">
+              <div class="dual dual--pair">
                 <input type="text" id="website_text" placeholder="Display Text" />
                 <input type="text" id="website_url" placeholder="Link URL" />
-              </div>
-              <div class="field-help">
-                Optional. Include only official Wing or Region websites relevant to your role.
               </div>
             </div>
           </section>
@@ -294,10 +315,13 @@
         <div class="preview-sticky">
           <section class="card preview-card">
             <div class="preview-card__header">
-              <h2>Preview</h2>
+              <div class="preview-card__title">
+                <h2>Preview</h2>
+                <p>Review the signature in rendered form or inspect the raw code output.</p>
+              </div>
 
               <div class="preview-toolbar">
-                <label for="preview_mode">Preview:</label>
+                <label for="preview_mode">Preview Mode</label>
                 <select id="preview_mode">
                   <option value="rendered" selected>Rendered</option>
                   <option value="code">Code</option>
