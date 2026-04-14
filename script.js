@@ -234,9 +234,6 @@
       warnings.push("You may only list two duty assignments recorded in eServices.");
     }
 
-    if (titleLines.some((line) => line.includes(","))) {
-      warnings.push("Duty assignments will state the name of the unit, followed by the duty position, without a comma.");
-    }
 
     if (titleLines.length >= 2) {
       const rankOrder = (line) => {
