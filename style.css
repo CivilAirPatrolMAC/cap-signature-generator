@@ -422,7 +422,7 @@ textarea:focus {
 #preview_code,
 .preview-code {
   margin: 0;
-  min-height: 360px;
+  min-height: 200px;
   padding: 1rem;
   border-radius: 12px;
   background: #0f172a;
