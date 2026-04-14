@@ -651,29 +651,6 @@ if (gradeType === "Cadet" && !hasNational) {
       }
     }
   }
-
-  const selected = gradeSelect.selectedOptions[0];
-  if (selected && selected.disabled) {
-    if (gradeType === "Cadet") {
-      gradeSelect.value = "Airman";
-    } else if (gradeType === "Paid") {
-      gradeSelect.value = "Mr.";
-    } else {
-      gradeSelect.value = "2nd Lt.";
-    }
-  }
-}
-
-  const selected = gradeSelect.selectedOptions[0];
-  if (selected && selected.disabled) {
-    if (gradeType === "Cadet") {
-      gradeSelect.value = "Airman";
-    } else if (gradeType === "Paid") {
-      gradeSelect.value = "";
-    } else {
-      gradeSelect.value = "2nd Lt.";
-    }
-  }
 }
   const selected = gradeSelect.selectedOptions[0];
   if (selected && selected.disabled) {
