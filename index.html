@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Civil Air Patrol Email Signature Generator</title>
   <meta
     name="description"
     content="Build a Civil Air Patrol email signature block with live preview."
   />
+  <link rel="shortcut icon" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -15,7 +17,9 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
 </head>
+
 <body>
   <main class="app-shell">
     <header class="page-header">
@@ -24,20 +28,25 @@
           <p class="eyebrow">Civil Air Patrol Brand Tools</p>
           <h1>Civil Air Patrol Email Signature Generator</h1>
           <p class="lede">
-            Create a CAP-compliant email signature block with live rendered and code preview.
+            Fill out your details below and verify the preview in the right column is correct.
           </p>
         </div>
 
         <nav class="tool-switcher" aria-label="Tool navigation">
-          <a class="tool-switcher__link" href="../cap-logo-generator/">
+          <button
+            type="button"
+            onclick="window.location.href='https://cap-logo-generator.netlify.app/'"
+          >
             Subordinate Entity Graphic Generator
-          </a>
-          <a class="tool-switcher__link" href="../CAP-emblem-generator/">
-            Emblem Generator
-          </a>
-          <a class="tool-switcher__link is-active" href="./">
+          </button>
+
+          <button
+            type="button"
+            class="active"
+            onclick="window.location.href='https://cap-signature-generator.netlify.app/'"
+          >
             Email Signature Block Generator
-          </a>
+          </button>
         </nav>
       </div>
     </header>
@@ -47,290 +56,274 @@
         <section class="card guidance-card">
           <h2>Email Signature Guidance</h2>
           <p>
-            Use this tool to generate a standardized Civil Air Patrol email signature block.
+            To generate your email signature, you have three options: you can download the
+            Word template to copy and paste from on the brand portal, you can use this email
+            signature generator tool, or you can copy and paste from the samples on the brand portal.
           </p>
 
           <div class="callout callout--warning">
             <h3>Guidelines, Standards, and Requirements</h3>
             <ul>
-              <li>Use approved CAP grade abbreviations. Do not use “SM.”</li>
-              <li>Do not include professional titles or post-nominals.</li>
-              <li>List no more than two duty assignments recorded in eServices.</li>
-              <li>Do not append quotes, disclaimers, or unofficial titles.</li>
-              <li>Review brand standards warnings before copying output.</li>
+              <li>
+                The Defense Media Agency and the Department of Defense Visual Information Style Guide
+                cite military ranks receiving periods in their abbreviated form when external
+                communication follows the industry standard of AP style. "SM" is not a grade and
+                should not be used.
+              </li>
+              <li>
+                Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.
+              </li>
+              <li>
+                Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol
+                in its capacity.
+              </li>
+              <li>
+                Duty assignments will state the name of the unit, followed by the duty position,
+                without a comma. Unit names may be abbreviated in accordance with this guide.
+              </li>
+              <li>
+                You may only list two duty assignments recorded in eServices; organize assignments
+                from highest to lowest organizational level. Do not list certifications,
+                accomplishments, special activity assignments non-Civil Air Patrol titles, quotes, etc.
+              </li>
+              <li>
+                No disclaimer, FOUO statement, motivational quote, etc. may be appended to the
+                signature block unless required by law or when operating under CAP Sensitive or
+                Classified Mission Programs.
+              </li>
+              <li>
+                Other than changing the text to be specific to your details, do not alter the
+                signature in any way. This includes font type.
+              </li>
+              <li>
+                Encampment commanders and commandant of cadets, NCSA and NFA activity directors and
+                deputies, are now available as duty positions - encampment commanders and commandants
+                are assigned at the wing level, and national activities (NCSAs and NFAs) are assigned
+                at the national-level with CAP/CP
+              </li>
             </ul>
           </div>
         </section>
 
-        <form id="sig-form" class="card form-card">
+        <form id="sig-form" class="card form-card" autocomplete="off">
           <section class="form-section">
-            <div class="section-heading">
-              <h2>Signature Type</h2>
-              <p>Select the output format appropriate for your email client or device.</p>
-            </div>
-
-            <div class="grid grid--2">
-              <div class="field">
-                <label class="field__label" for="type">Format</label>
-                <select id="type" name="type">
-                  <option value="generic" selected>Default HTML</option>
-                  <option value="plaintext">Plain Text</option>
-                  <option value="mobile">Abbreviated (Mobile)</option>
-                </select>
+            <div class="field">
+              <label for="type">Signature Type</label>
+              <select id="type">
+                <option value="generic" selected>Default</option>
+                <option value="plaintext">Plain Text</option>
+                <option value="mobile">Abbreviated (Mobile)</option>
+              </select>
+              <div class="field-help">
+                Default is recommended for standard desktop email clients. Plain Text is best for
+                clients that strip formatting. Abbreviated (Mobile) is intended for mobile devices only.
               </div>
+            </div>
+          </section>
 
-              <div class="field">
-                <label class="field__label" for="grade_type">Member Type</label>
-                <select id="grade_type" name="grade_type">
+          <section class="form-section">
+            <div class="field">
+              <label for="grade">
+                Grade &amp; Name <span class="req">*</span>
+              </label>
+
+              <div class="dual">
+                <select id="grade_type">
+                  <option value="Paid">NHQ Staff</option>
                   <option value="Adult" selected>Adult Volunteer</option>
                   <option value="Cadet">Cadet</option>
-                  <option value="Paid">NHQ Staff</option>
                 </select>
-              </div>
-            </div>
-          </section>
 
-          <section class="form-section">
-            <div class="section-heading">
-              <h2>Grade &amp; Name</h2>
-              <p>Use your CAP grade, if applicable, and your preferred professional name.</p>
-            </div>
+                <select id="grade">
+                  <optgroup label="No Grade">
+                    <option value="" data-any="true">No grade</option>
+                  </optgroup>
 
-            <div class="grid grid--2">
-              <div class="field">
-                <label class="field__label" for="grade">Grade</label>
-                <select id="grade" name="grade">
-                  <option value="" data-any="true">No grade</option>
-                  <option value="Mr." data-any="true">Mr.</option>
-                  <option value="Ms." data-any="true">Ms.</option>
-                  <option value="Mrs." data-any="true">Mrs.</option>
+                  <optgroup label="Courtesy Titles">
+                    <option value="Mr." data-any="true">Mr.</option>
+                    <option value="Ms." data-any="true">Ms.</option>
+                    <option value="Mrs." data-any="true">Mrs.</option>
+                  </optgroup>
 
-                  <option value="Airman Basic" data-cadet="true">Airman Basic</option>
-                  <option value="Airman" data-cadet="true">Airman</option>
-                  <option value="Airman 1st Class" data-cadet="true">Airman 1st Class</option>
-                  <option value="Senior Airman" data-cadet="true">Senior Airman</option>
-                  <option value="Staff Sgt." data-cadet="true">Staff Sgt.</option>
-                  <option value="Tech. Sgt." data-cadet="true">Tech. Sgt.</option>
-                  <option value="Master Sgt." data-cadet="true">Master Sgt.</option>
-                  <option value="Senior Master Sgt." data-cadet="true">Senior Master Sgt.</option>
-                  <option value="Chief Master Sgt." data-cadet="true">Chief Master Sgt.</option>
+                  <optgroup label="Cadet Enlisted">
+                    <option value="Airman Basic" data-cadet="true" disabled>Airman Basic</option>
+                    <option value="Airman" data-cadet="true" disabled>Airman</option>
+                    <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
+                    <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
+                    <option value="Staff Sgt." data-cadet="true" disabled>Staff Sgt.</option>
+                    <option value="Tech. Sgt." data-cadet="true" disabled>Tech. Sgt.</option>
+                    <option value="Master Sgt." data-cadet="true" disabled>Master Sgt.</option>
+                    <option value="Senior Master Sgt." data-cadet="true" disabled>Senior Master Sgt.</option>
+                    <option value="Chief Master Sgt." data-cadet="true" disabled>Chief Master Sgt.</option>
+                  </optgroup>
 
-                  <option value="Flight Officer" data-adult="true">Flight Officer</option>
-                  <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
-                  <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
-                  <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
-                  <option value="1st Lt." data-adult="true">1st Lt.</option>
-                  <option value="Capt." data-adult="true">Capt.</option>
-                  <option value="Maj." data-adult="true">Maj.</option>
-                  <option value="Lt. Col." data-adult="true">Lt. Col.</option>
-                  <option value="Col." data-adult="true">Col.</option>
-                  <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
-                  <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
+                  <optgroup label="Cadet Officer">
+                    <option value="2nd Lt." data-cadet="true" disabled>2nd Lt.</option>
+                    <option value="1st Lt." data-cadet="true" disabled>1st Lt.</option>
+                    <option value="Capt." data-cadet="true" disabled>Capt.</option>
+                    <option value="Maj." data-cadet="true" disabled>Maj.</option>
+                    <option value="Lt. Col." data-cadet="true" disabled>Lt. Col.</option>
+                    <option value="Col." data-cadet="true" disabled>Col.</option>
+                  </optgroup>
+
+                  <optgroup label="Adult">
+                    <option value="Staff Sgt." data-adult="true">Staff Sgt.</option>
+                    <option value="Tech. Sgt." data-adult="true">Tech. Sgt.</option>
+                    <option value="Master Sgt." data-adult="true">Master Sgt.</option>
+                    <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
+                    <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
+                    <option value="" data-adult="true">Senior Member</option>
+                    <option value="Flight Officer" data-adult="true">Flight Officer</option>
+                    <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
+                    <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
+                    <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
+                    <option value="1st Lt." data-adult="true">1st Lt.</option>
+                    <option value="Capt." data-adult="true">Capt.</option>
+                    <option value="Maj." data-adult="true">Maj.</option>
+                    <option value="Lt. Col." data-adult="true">Lt. Col.</option>
+                    <option value="Col." data-adult="true">Col.</option>
+                    <option value="Brig. Gen." data-adult="true">Brig. Gen.</option>
+                    <option value="Maj. Gen." data-adult="true">Maj. Gen.</option>
+                  </optgroup>
                 </select>
+
+                <input type="text" id="name" placeholder="Jane Doe" />
               </div>
 
-              <div class="field">
-                <label class="field__label" for="name">Full Name</label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value="Jane Doe"
-                  placeholder="Jane Doe"
-                  autocomplete="name"
-                />
+              <div class="field-help">
+                Use approved CAP grade abbreviations. Do not use "SM" or add professional titles or post-nominals.
               </div>
             </div>
           </section>
 
-          <section class="form-section hidden" id="f_wing">
-            <div class="section-heading">
-              <h2>Wing / Region / HQ</h2>
-              <p>Used for the abbreviated mobile signature only.</p>
-            </div>
-
+          <section id="f_wing" class="form-section hidden">
             <div class="field">
-              <label class="field__label" for="wing">Wing / Region / HQ</label>
-              <input
-                id="wing"
-                name="wing"
-                type="text"
-                placeholder="TXWG, SWR, or HQ"
-                maxlength="8"
-              />
+              <label for="wing">
+                Wing <span class="req">*</span>
+                <span class="note">Use 4-letter Wing, 3-letter Region, or “HQ”; no squadron designators</span>
+              </label>
+              <input type="text" id="wing" placeholder="TXWG" />
+              <div class="field-help">Used only for the abbreviated mobile signature.</div>
             </div>
           </section>
 
-          <section class="form-section" id="f_title">
-            <div class="section-heading">
-              <h2>Duty Position(s)</h2>
-              <p>Enter up to two duty assignment lines. Higher headquarters first.</p>
-            </div>
-
+          <section id="f_title" class="form-section">
             <div class="field">
-              <label class="field__label" for="title">Duty Assignment(s)</label>
+              <label for="title">
+                Duty Position(s)
+                <span class="note">Unit name followed by duty position</span>
+                <span class="note">Max 2 lines</span>
+              </label>
+
               <textarea
                 id="title"
-                name="title"
-                rows="4"
-                placeholder="Texas Wing Director of Public Affairs&#10;Fort Worth Phoenix Comp. Sq. Deputy Commander for Cadets"
+                rows="2"
+                placeholder="Texas Wing Director of Operations&#10;Fort Worth Phoenix Comp. Sq. Commander"
               ></textarea>
-              <p class="field__help">
-                Maximum of two lines. Press Enter only once to separate assignments.
-              </p>
-            </div>
 
-            <div id="title_warning" class="inline-warning" aria-live="polite">
-              Only two duty assignment lines are allowed.
-            </div>
-          </section>
+              <div id="title_warning" class="subtle-warning" aria-live="polite">
+                Maximum two lines allowed. Extra lines were removed.
+              </div>
 
-          <section class="form-section" id="f_phone">
-            <div class="section-heading">
-              <h2>Phone Number(s)</h2>
-              <p>Phone numbers are automatically formatted as 555.555.5555.</p>
-            </div>
-
-            <div class="phone-grid">
-              <div class="field field--inline">
-                <label class="field__label" for="phone_1_type">Type</label>
-                <select id="phone_1_type" name="phone_1_type">
-                  <option value="M" selected>Mobile</option>
-                  <option value="O">Office</option>
-                  <option value="H">Home</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="field__label" for="phone_1">Phone 1</label>
-                <input id="phone_1" name="phone_1" type="text" placeholder="555.555.5555" />
-              </div>
-            </div>
-
-            <div class="phone-grid">
-              <div class="field field--inline">
-                <label class="field__label" for="phone_2_type">Type</label>
-                <select id="phone_2_type" name="phone_2_type">
-                  <option value="M" selected>Mobile</option>
-                  <option value="O">Office</option>
-                  <option value="H">Home</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="field__label" for="phone_2">Phone 2</label>
-                <input id="phone_2" name="phone_2" type="text" placeholder="555.555.5555" />
-              </div>
-            </div>
-
-            <div class="phone-grid">
-              <div class="field field--inline">
-                <label class="field__label" for="phone_3_type">Type</label>
-                <select id="phone_3_type" name="phone_3_type">
-                  <option value="M" selected>Mobile</option>
-                  <option value="O">Office</option>
-                  <option value="H">Home</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="field__label" for="phone_3">Phone 3</label>
-                <input id="phone_3" name="phone_3" type="text" placeholder="555.555.5555" />
+              <div class="field-help">
+                List no more than two duty assignments recorded in eServices. Organize assignments
+                from highest to lowest organizational level. Do not include certifications,
+                accomplishments, special activity assignments, non-Civil Air Patrol titles, or quotes.
               </div>
             </div>
           </section>
 
-          <section class="form-section" id="f_website">
-            <div class="section-heading">
-              <h2>Official Website</h2>
-              <p>Include both display text and URL, or leave both blank.</p>
-            </div>
+          <section id="f_phone" class="form-section">
+            <div class="field">
+              <label>Phone Number(s)</label>
 
-            <div class="grid grid--2">
-              <div class="field">
-                <label class="field__label" for="website_text">Display Text</label>
-                <input
-                  id="website_text"
-                  name="website_text"
-                  type="text"
-                  placeholder="Texas Wing"
-                />
+              <div class="dual">
+                <select id="phone_1_type">
+                  <option value="M" selected>Mobile</option>
+                  <option value="H">Home</option>
+                  <option value="O">Office</option>
+                </select>
+                <input type="text" id="phone_1" placeholder="555.555.5555" inputmode="numeric" />
               </div>
 
-              <div class="field">
-                <label class="field__label" for="website_url">URL</label>
-                <input
-                  id="website_url"
-                  name="website_url"
-                  type="text"
-                  placeholder="https://txwg.cap.gov"
-                />
+              <div class="dual">
+                <select id="phone_2_type">
+                  <option value="M" selected>Mobile</option>
+                  <option value="H">Home</option>
+                  <option value="O">Office</option>
+                </select>
+                <input type="text" id="phone_2" placeholder="555.555.5555" inputmode="numeric" />
+              </div>
+
+              <div class="dual">
+                <select id="phone_3_type">
+                  <option value="M" selected>Mobile</option>
+                  <option value="H">Home</option>
+                  <option value="O">Office</option>
+                </select>
+                <input type="text" id="phone_3" placeholder="555.555.5555" inputmode="numeric" />
+              </div>
+
+              <div class="field-help">
+                Phone numbers are automatically formatted with periods as you type.
+              </div>
+            </div>
+          </section>
+
+          <section id="f_website" class="form-section">
+            <div class="field">
+              <label for="website_text">Wing/Region Website</label>
+              <div class="dual">
+                <input type="text" id="website_text" placeholder="Display Text" />
+                <input type="text" id="website_url" placeholder="Link URL" />
+              </div>
+              <div class="field-help">
+                Optional. Include only official Wing or Region websites relevant to your role.
               </div>
             </div>
           </section>
         </form>
 
-        <section class="card how-to-card">
-          <h2>How to use your signature</h2>
-          <ol>
-            <li>Complete the form and review any brand standards warnings.</li>
-            <li>Switch between rendered and code preview modes.</li>
-            <li>Select and copy the final output once warnings are resolved.</li>
-            <li>Paste into your email client’s signature settings.</li>
-            <li>Send yourself a test email to verify appearance.</li>
-          </ol>
-        </section>
+        <footer class="page-footer">
+          Version 38. Lasted modified on April 14th 2026, Managed by
+          <a href="mailto:Brand@cap.gov">Maj. Roman Vitanza</a>.
+        </footer>
       </div>
 
       <aside class="preview-column">
         <div class="preview-sticky">
           <section class="card preview-card">
             <div class="preview-card__header">
-              <div>
-                <h2>Preview</h2>
-                <p>Check both rendered and code output before copying.</p>
-              </div>
+              <h2>Preview</h2>
 
-              <div class="preview-tabs" role="tablist" aria-label="Preview mode">
-                <label class="preview-tab is-active" for="preview_mode_rendered">
-                  <input
-                    type="radio"
-                    name="preview_mode_choice"
-                    id="preview_mode_rendered"
-                    value="rendered"
-                    checked
-                  />
-                  <span>Rendered</span>
-                </label>
-
-                <label class="preview-tab" for="preview_mode_code">
-                  <input
-                    type="radio"
-                    name="preview_mode_choice"
-                    id="preview_mode_code"
-                    value="code"
-                  />
-                  <span>Code</span>
-                </label>
+              <div class="preview-toolbar">
+                <label for="preview_mode">Preview:</label>
+                <select id="preview_mode">
+                  <option value="rendered" selected>Rendered</option>
+                  <option value="code">Code</option>
+                </select>
               </div>
             </div>
 
-            <select id="preview_mode" class="visually-hidden" aria-hidden="true" tabindex="-1">
-              <option value="rendered" selected>Rendered</option>
-              <option value="code">Code</option>
-            </select>
-
             <div class="preview-surface">
-              <div id="preview_rendered" class="preview-pane"></div>
-              <pre id="preview_code" class="preview-pane hidden"></pre>
+              <div id="preview_rendered"></div>
+              <pre id="preview_code" class="preview-code hidden"></pre>
             </div>
           </section>
 
-          <section class="meta-note">
-            <p>Managed by Maj. Roman Vitanza.</p>
+          <section class="card copy-steps">
+            <h3>How to use your signature</h3>
+            <ol>
+              <li>Build and review your signature in Rendered preview mode.</li>
+              <li>Switch to Code if your email client requires HTML source.</li>
+              <li>Copy the finished signature into your email client's signature settings.</li>
+              <li>Send a test email to yourself and confirm spacing, links, and logo appearance.</li>
+              <li>On mobile devices, use the Abbreviated (Mobile) version instead of the full HTML signature.</li>
+            </ol>
           </section>
         </div>
       </aside>
     </section>
   </main>
-
-  <script src="script.js"></script>
 </body>
 </html>
