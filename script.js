@@ -296,6 +296,8 @@
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean);
+    // Skip duty assignment validation if "National" is present
+    const hasNational = titleLines.some(line => /\bnational\b/i.test(line));
 
     if (titleLines.length > 2) {
       warnings.push("You may only list two duty assignments recorded in eServices.");
@@ -338,25 +340,25 @@
       }
     }
 
-    if (gradeType === "Adult") {
-      for (const line of titleLines) {
-        const extractedDuty = extractDutyPosition(line);
-        if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-          warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
-          break;
-        }
-      }
+   if (gradeType === "Adult" && !hasNational) {
+  for (const line of titleLines) {
+    const extractedDuty = extractDutyPosition(line);
+    if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+      warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+      break;
     }
+  }
+}
 
-    if (gradeType === "Cadet") {
-      for (const line of titleLines) {
-        const extractedDuty = extractDutyPosition(line);
-        if (!extractedDuty || !CADET_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-          warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
-          break;
-        }
-      }
+   if (gradeType === "Cadet" && !hasNational) {
+  for (const line of titleLines) {
+    const extractedDuty = extractDutyPosition(line);
+    if (!extractedDuty || !CADET_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+      warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+      break;
     }
+  }
+}
 
     if ((websiteTextValue && !websiteUrlValue) || (!websiteTextValue && websiteUrlValue)) {
       warnings.push("Include both Wing/Region website display text and URL, or leave both fields blank.");
