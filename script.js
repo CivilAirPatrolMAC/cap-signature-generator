@@ -846,7 +846,15 @@ if (gradeType === "Cadet" && !hasNational) {
     warnings.push("Website display text must reference an official Wing or Region website.");
   }
 }
- if (websiteUrlValue) {
+    
+if (websiteUrlValue) {
+  // 🔧 Auto-add https:// if missing
+  if (!/^https?:\/\//i.test(websiteUrlValue)) {
+    websiteUrlValue = "https://" + websiteUrlValue;
+    vals.website_url = websiteUrlValue; // keep state in sync
+  }
+
+  // ✅ Validate CAP / .gov domain
   const isValidGovDomain = /^(https?:\/\/)?([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
 
   if (!isValidGovDomain) {
