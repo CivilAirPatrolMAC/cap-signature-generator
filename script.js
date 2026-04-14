@@ -351,10 +351,20 @@
   }
 }
 
-   if (gradeType === "Cadet" && !hasNational) {
+if (gradeType === "Cadet" && !hasNational) {
+  const allowedCadetNormalized = new Set(
+    Array.from(CADET_ALLOWED_DUTY_ASSIGNMENTS).map((duty) =>
+      duty.toLowerCase().trim()
+    )
+  );
+
   for (const line of titleLines) {
     const extractedDuty = extractDutyPosition(line);
-    if (!extractedDuty || !CADET_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+    const normalizedExtracted = String(extractedDuty || "")
+      .toLowerCase()
+      .trim();
+
+    if (!normalizedExtracted || !allowedCadetNormalized.has(normalizedExtracted)) {
       warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
       break;
     }
@@ -603,32 +613,42 @@
     }
   };
 
-  function gateGrades() {
-    const gradeSelect = $("grade");
-    const options = Array.from(gradeSelect.querySelectorAll("option"));
+ function gateGrades() {
+  const gradeSelect = $("grade");
+  const options = Array.from(gradeSelect.querySelectorAll("option"));
 
-    for (const opt of options) {
-      const isCadet = opt.getAttribute("data-cadet") === "true";
-      const isAdult = opt.getAttribute("data-adult") === "true";
-      const isAny = opt.getAttribute("data-any") === "true";
+  for (const opt of options) {
+    const isCadet = opt.getAttribute("data-cadet") === "true";
+    const isAdult = opt.getAttribute("data-adult") === "true";
+    const isAny = opt.getAttribute("data-any") === "true";
 
-      if (isAny) {
+    const isCourtesy =
+      opt.value === "Mr." ||
+      opt.value === "Ms." ||
+      opt.value === "Mrs.";
+
+    if (gradeType === "Adult") {
+      if (isAny || isCourtesy) {
         opt.disabled = false;
-        continue;
-      }
-
-      if (gradeType === "Adult") {
+      } else {
         opt.disabled = isCadet;
+      }
+    } else {
+      if (isCourtesy) {
+        opt.disabled = true;
+      } else if (isAny) {
+        opt.disabled = false;
       } else {
         opt.disabled = isAdult;
       }
     }
-
-    const selected = gradeSelect.selectedOptions[0];
-    if (selected && selected.disabled) {
-      gradeSelect.value = gradeType === "Cadet" ? "Airman" : "2nd Lt.";
-    }
   }
+
+  const selected = gradeSelect.selectedOptions[0];
+  if (selected && selected.disabled) {
+    gradeSelect.value = gradeType === "Cadet" ? "Airman" : "2nd Lt.";
+  }
+}
 
   function applyTypeUI() {
     const isMobile = type === "mobile";
