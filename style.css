@@ -18,6 +18,36 @@
     ol, ul { list-style: none; }
     table { border-collapse: collapse; border-spacing: 0; }
 
+.tool-switcher {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.tool-switcher button {
+  padding: 8px 16px;
+  font-size: 14px;
+
+  background-color: white;
+  color: rgb(0, 20, 137);
+  border: 2px solid rgb(0, 20, 137);
+
+  transition: all 0.2s ease-in-out;
+}
+
+.tool-switcher button:hover {
+  background-color: rgb(0, 20, 137);
+  color: white;
+}
+
+.tool-switcher button.active {
+  background-color: rgb(0, 20, 137);
+  color: white;
+}
+
+
+
     /* app layout */
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
