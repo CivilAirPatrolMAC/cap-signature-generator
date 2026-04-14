@@ -120,9 +120,9 @@
     "Assistant Deputy Chief of Staff, Communications",
     "Assistant Deputy Chief of Staff, Logistics",
     "Assistant Deputy Chief of Staff, Operations",
+    "Assistant Deputy Chief of Staff, Education and Training",
     "National",
-    "NHQ",
-    "Assistant Deputy Chief of Staff, Education and Training"
+    "NHQ"
   ]);
 
   const CADET_ALLOWED_DUTY_ASSIGNMENTS = new Set([
@@ -164,9 +164,6 @@
     "Cadet Recruiting Officer",
     "Cadet Safety NCO",
     "Cadet Safety Officer",
-    "Cadet Commander",
-    "Cadet Deputy Commander for Operations",
-    "Cadet Deputy Commander for Support",
     "Cadet Superintendent",
     "Cadet Testing NCO",
     "Cadet Testing Officer",
@@ -181,8 +178,7 @@
     "Primary Representative",
     "Cadet Chief of Staff",
     "Representative",
-    "Assistant Representative",
-    "Cadet Commander"
+    "Assistant Representative"
   ]);
 
   const $ = (id) => document.getElementById(id);
@@ -240,44 +236,44 @@
   }
 
   function normalizeDutyAssignmentName(s) {
-  return String(s || "")
-    .replace(/&/gi, "and")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function extractDutyPosition(line) {
-  const clean = String(line || "").trim();
-  if (!clean) return "";
-
-  const preferredSet =
-    gradeType === "Cadet"
-      ? CADET_ALLOWED_DUTY_ASSIGNMENTS
-      : ADULT_ALLOWED_DUTY_ASSIGNMENTS;
-
-  const secondarySet =
-    gradeType === "Cadet"
-      ? ADULT_ALLOWED_DUTY_ASSIGNMENTS
-      : CADET_ALLOWED_DUTY_ASSIGNMENTS;
-
-  for (const allowed of preferredSet) {
-    const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(escaped + "$", "i");
-    if (re.test(clean)) return allowed;
+    return String(s || "")
+      .replace(/&/gi, "and")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
-  for (const allowed of secondarySet) {
-    const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(escaped + "$", "i");
-    if (re.test(clean)) return allowed;
+  function extractDutyPosition(line) {
+    const clean = String(line || "").trim();
+    if (!clean) return "";
+
+    const preferredSet =
+      gradeType === "Cadet"
+        ? CADET_ALLOWED_DUTY_ASSIGNMENTS
+        : ADULT_ALLOWED_DUTY_ASSIGNMENTS;
+
+    const secondarySet =
+      gradeType === "Cadet"
+        ? ADULT_ALLOWED_DUTY_ASSIGNMENTS
+        : CADET_ALLOWED_DUTY_ASSIGNMENTS;
+
+    for (const allowed of preferredSet) {
+      const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp(escaped + "$", "i");
+      if (re.test(clean)) return allowed;
+    }
+
+    for (const allowed of secondarySet) {
+      const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp(escaped + "$", "i");
+      if (re.test(clean)) return allowed;
+    }
+
+    const noComma = clean.replace(/,/g, " ");
+    const pieces = noComma.split(/\s{2,}/).filter(Boolean);
+    if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
+
+    return normalizeDutyAssignmentName(clean);
   }
-
-  const noComma = clean.replace(/,/g, " ");
-  const pieces = noComma.split(/\s{2,}/).filter(Boolean);
-  if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
-
-  return normalizeDutyAssignmentName(clean);
-}
 
   function getValidationWarnings() {
     const warnings = [];
@@ -294,19 +290,14 @@ function extractDutyPosition(line) {
       warnings.push('"SM" is not a grade and should not be used.');
     }
 
-   if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP|EMT-B|EMT-A|EMT-P|EMT-LP|AEM|CEM)\b/i.test(combinedName)) {
-  warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
-}
-//if (/\b(MD|DO|DDS|DMD|OD|DPM|DC|PharmD|DNP|DPT|AuD|RN|LPN|LVN|NP|FNP|CNS|CRNA|CNM|PA-C|PA|RPh|OTR\/L|PT|PTA|OT|OTA|RD|RDN|PhD|EdD|DBA|DSc|ScD|DPhil|DLitt|JD|LLM|SJD|Esq\.?|MA|MS|MSc|MBA|MPA|MPP|MHA|MEd|BA|BS|BSc|BBA|BPA|CPA|CFA|CFP|CIMA|CMA|CGMA|CIA|CFE|FRM|ChFC|CLU|PMP|CAPM|PgMP|SHRM-CP|SHRM-SCP|PHR|SPHR|GPHR|CISSP|SSCP|CCSP|CISM|CISA|CRISC|CEH|OSCP|Security\+|Network\+|A\+|CASP\+|AWS-CP|AWS-SAA|CCNA|CCNP|CCIE|MCSE|MCSA|ITIL|PE|FE|EIT|P\.?Eng|CFI|CFII|MEI|ATP|A&P|IA|AGI|IGI|CEM|AEM|MEP|IAEM|EMT|EMT-B|EMT-P|Paramedic|FACHE|FACMPE|FHFMA|FRCP|FACS|FAAFP|CSP|CIH|RCDD|CIPP|CIPM
-//)\b/i.test(combinedName)) {
-//  warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+    if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP|EMT-B|EMT-A|EMT-P|EMT-LP|AEM|CEM)\b/i.test(combinedName)) {
+      warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+    }
 
-//   }
-
-    
     if (/,\s*[A-Z]{2,}/.test(combinedName)) {
-  warnings.push('Post-nominal credentials are not authorized in CAP signature blocks.');
-}
+      warnings.push("Post-nominal credentials are not authorized in CAP signature blocks.");
+    }
+
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
       warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
     }
@@ -315,8 +306,8 @@ function extractDutyPosition(line) {
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean);
-    // Skip duty assignment validation if "National" is present
-    const hasNational = titleLines.some(line => /\bnational\b/i.test(line));
+
+    const hasNational = titleLines.some((line) => /\bnational\b/i.test(line));
 
     if (titleLines.length > 2) {
       warnings.push("You may only list two duty assignments recorded in eServices.");
@@ -359,35 +350,60 @@ function extractDutyPosition(line) {
       }
     }
 
-   if (gradeType === "Adult" && !hasNational) {
-  for (const line of titleLines) {
-    const extractedDuty = extractDutyPosition(line);
-    if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-      warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
-      break;
+    if (gradeType === "Adult" && !hasNational) {
+      for (const line of titleLines) {
+        const extractedDuty = extractDutyPosition(line);
+        if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+          warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          break;
+        }
+      }
     }
-  }
-}
 
-if (gradeType === "Cadet" && !hasNational) {
- const allowedCadetNormalized = new Set(
-    Array.from(CADET_ALLOWED_DUTY_ASSIGNMENTS).map((duty) =>
-      normalizeDutyAssignmentName(duty).toLowerCase()
-    )
-  );
+    if (gradeType === "Cadet" && !hasNational) {
+      const allowedCadetNormalized = new Set(
+        Array.from(CADET_ALLOWED_DUTY_ASSIGNMENTS).map((duty) =>
+          normalizeDutyAssignmentName(duty).toLowerCase()
+        )
+      );
 
-  for (const line of titleLines) {
-    const extractedDuty = extractDutyPosition(line);
-    const normalizedExtracted = normalizeDutyAssignmentName(extractedDuty).toLowerCase();
+      for (const line of titleLines) {
+        const extractedDuty = extractDutyPosition(line);
+        const normalizedExtracted = normalizeDutyAssignmentName(extractedDuty).toLowerCase();
 
-    if (!normalizedExtracted || !allowedCadetNormalized.has(normalizedExtracted)) {
-      warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
-      break;
+        if (!normalizedExtracted || !allowedCadetNormalized.has(normalizedExtracted)) {
+          warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          break;
+        }
+      }
     }
-  }
-}
+
     if ((websiteTextValue && !websiteUrlValue) || (!websiteTextValue && websiteUrlValue)) {
       warnings.push("Include both Wing/Region website display text and URL, or leave both fields blank.");
+    }
+
+    if (websiteTextValue) {
+      const invalidText = /(my website|personal|portfolio|linkedin|facebook|instagram|twitter)/i.test(websiteTextValue);
+      if (invalidText) {
+        warnings.push("Website display text must reference an official Wing or Region website.");
+      }
+    }
+
+    if (websiteUrlValue) {
+      if (!/^https?:\/\//i.test(websiteUrlValue)) {
+        websiteUrlValue = "https://" + websiteUrlValue;
+        vals.website_url = websiteUrlValue;
+        const websiteInput = $("website_url");
+        if (websiteInput) {
+          websiteInput.value = websiteUrlValue;
+        }
+      }
+
+      const isValidGovDomain = /^https?:\/\/([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
+
+      if (!isValidGovDomain) {
+        warnings.push("Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).");
+      }
     }
 
     return warnings;
@@ -484,6 +500,7 @@ if (gradeType === "Cadet" && !hasNational) {
 
   function showTitleWarning() {
     const el = $("title_warning");
+    if (!el) return;
     el.classList.add("show");
     window.clearTimeout(showTitleWarning._t);
     showTitleWarning._t = window.setTimeout(() => {
@@ -493,6 +510,8 @@ if (gradeType === "Cadet" && !hasNational) {
 
   function limitTitleLines() {
     const textarea = $("title");
+    if (!textarea) return false;
+
     const lines = textarea.value.split(/\r?\n/);
 
     if (lines.length > 2) {
@@ -509,11 +528,8 @@ if (gradeType === "Cadet" && !hasNational) {
       const grade = sanitizeText(vals.grade || "");
       const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
 
-      const courtesyTitles = new Set(["Mr.", "Ms.", "Mrs."]);
-      const isCourtesy = courtesyTitles.has(vals.grade);
-
       const gradePart = grade ? `${grade} ` : "";
-      const displayName = `${cadetPrefix}${isCourtesy ? gradePart : gradePart}${name}`;
+      const displayName = `${cadetPrefix}${gradePart}${name}`;
 
       const titleRaw = vals.title || "";
       const titleHtml = sanitizeText(titleRaw)
@@ -541,8 +557,6 @@ if (gradeType === "Cadet" && !hasNational) {
         })
         .join("");
 
-      const orgLine = "";
-
       return `<!DOCTYPE html>
 <html><body><br />
   <h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">
@@ -552,10 +566,6 @@ if (gradeType === "Cadet" && !hasNational) {
   ${titleHtml ? `<h2 style="font-size: 12px; line-height: 14px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: normal; margin: 0 0 5px;">
     ${titleHtml}
   </h2>` : ""}
-
-  <h2 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; margin: 0 0 20px;">
-    ${orgLine}
-  </h2>
 
   ${phoneRows}
 
@@ -621,60 +631,57 @@ if (gradeType === "Cadet" && !hasNational) {
       const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
       const gradePart = vals.grade ? `${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
-
       const wing = vals.wing && vals.wing.trim() ? `, ${vals.wing.trim().toUpperCase()}` : "";
 
       return `${cadetPrefix}${gradePart}${name}${wing}\nCivil Air Patrol`;
     }
   };
 
- function gateGrades() {
-  const gradeSelect = $("grade");
-  const options = Array.from(gradeSelect.querySelectorAll("option"));
+  function gateGrades() {
+    const gradeSelect = $("grade");
+    const options = Array.from(gradeSelect.querySelectorAll("option"));
 
-  for (const opt of options) {
-    const isCadet = opt.getAttribute("data-cadet") === "true";
-    const isAdult = opt.getAttribute("data-adult") === "true";
-    const isAny = opt.getAttribute("data-any") === "true";
+    for (const opt of options) {
+      const isCadet = opt.getAttribute("data-cadet") === "true";
+      const isAdult = opt.getAttribute("data-adult") === "true";
+      const isAny = opt.getAttribute("data-any") === "true";
 
-    const isCourtesy =
-      opt.value === "Mr." ||
-      opt.value === "Ms." ||
-      opt.value === "Mrs.";
+      const isCourtesy =
+        opt.value === "Mr." ||
+        opt.value === "Ms." ||
+        opt.value === "Mrs.";
 
-    if (gradeType === "Paid") {
-      // NHQ Staff: only No Grade + Courtesy Titles
-      opt.disabled = !(isAny || isCourtesy);
-    } else if (gradeType === "Adult") {
-      // Adult Volunteer
-      if (isCourtesy || isAny) {
-        opt.disabled = false;
-      } else {
-        opt.disabled = isCadet;
+      if (gradeType === "Paid") {
+        opt.disabled = !(isAny || isCourtesy);
+      } else if (gradeType === "Adult") {
+        if (isCourtesy || isAny) {
+          opt.disabled = false;
+        } else {
+          opt.disabled = isCadet;
+        }
+      } else if (gradeType === "Cadet") {
+        if (isCourtesy) {
+          opt.disabled = true;
+        } else if (isAny) {
+          opt.disabled = false;
+        } else {
+          opt.disabled = isAdult;
+        }
       }
-    } else if (gradeType === "Cadet") {
-      // Cadet
-      if (isCourtesy) {
-        opt.disabled = true;
-      } else if (isAny) {
-        opt.disabled = false;
+    }
+
+    const selected = gradeSelect.selectedOptions[0];
+    if (selected && selected.disabled) {
+      if (gradeType === "Cadet") {
+        gradeSelect.value = "Airman";
+      } else if (gradeType === "Paid") {
+        gradeSelect.value = "";
       } else {
-        opt.disabled = isAdult;
+        gradeSelect.value = "2nd Lt.";
       }
     }
   }
 
-  const selected = gradeSelect.selectedOptions[0];
-  if (selected && selected.disabled) {
-    if (gradeType === "Cadet") {
-      gradeSelect.value = "Airman";
-    } else if (gradeType === "Paid") {
-      gradeSelect.value = "";
-    } else {
-      gradeSelect.value = "2nd Lt.";
-    }
-  }
-}
   function applyTypeUI() {
     const isMobile = type === "mobile";
     const isPlain = type === "plaintext";
@@ -839,26 +846,6 @@ if (gradeType === "Cadet" && !hasNational) {
       el.addEventListener("blur", updateOutputAndPreview);
       el.addEventListener("change", updateOutputAndPreview);
     }
-    if (websiteTextValue) {
-  const invalidText = /(my website|personal|portfolio|linkedin|facebook|instagram|twitter)/i.test(websiteTextValue);
-
-  if (invalidText) {
-    warnings.push("Website display text must reference an official Wing or Region website.");
-  }
-}
-    
-if (websiteUrlValue) {
-  if (!/^https?:\/\//i.test(websiteUrlValue)) {
-    websiteUrlValue = "https://" + websiteUrlValue;
-    vals.website_url = websiteUrlValue;
-  }
-
-  const isValidGovDomain = /^https?:\/\/([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
-
-  if (!isValidGovDomain) {
-    warnings.push("Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).");
-  }
-}
 
     initPhoneFormatting();
 
