@@ -21,6 +21,15 @@
 
   const $ = (id) => document.getElementById(id);
 
+  function sanitizeText(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
   function ensureValidationBox() {
     let box = $("validation_warnings");
     if (box) return box;
@@ -40,15 +49,6 @@
 
     form.parentNode.insertBefore(box, form);
     return box;
-  }
-
-  function sanitizeText(s) {
-    return String(s)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#39;");
   }
 
   function renderValidationWarnings(items) {
@@ -137,6 +137,50 @@
     }
 
     return warnings;
+  }
+
+  function hasBlockingWarnings() {
+    return getValidationWarnings().length > 0;
+  }
+
+  function setCopyLockState(isLocked) {
+    const rendered = $("preview_rendered");
+    const code = $("preview_code");
+
+    if (!rendered || !code) return;
+
+    if (isLocked) {
+      rendered.style.userSelect = "none";
+      code.style.userSelect = "none";
+      rendered.style.webkitUserSelect = "none";
+      code.style.webkitUserSelect = "none";
+      rendered.style.opacity = "0.55";
+      code.style.opacity = "0.55";
+      rendered.style.pointerEvents = "none";
+      code.style.pointerEvents = "none";
+      rendered.setAttribute("aria-disabled", "true");
+      code.setAttribute("aria-disabled", "true");
+      rendered.title = "Fix brand standard warnings before copying.";
+      code.title = "Fix brand standard warnings before copying.";
+    } else {
+      rendered.style.userSelect = "";
+      code.style.userSelect = "";
+      rendered.style.webkitUserSelect = "";
+      code.style.webkitUserSelect = "";
+      rendered.style.opacity = "";
+      code.style.opacity = "";
+      rendered.style.pointerEvents = "";
+      code.style.pointerEvents = "";
+      rendered.removeAttribute("aria-disabled");
+      code.removeAttribute("aria-disabled");
+      rendered.removeAttribute("title");
+      code.removeAttribute("title");
+    }
+  }
+
+  function blockCopyWhenInvalid(e) {
+    if (!hasBlockingWarnings()) return;
+    e.preventDefault();
   }
 
   function normalizeTel(s) {
@@ -386,6 +430,7 @@
 
     const warnings = getValidationWarnings();
     renderValidationWarnings(warnings);
+    setCopyLockState(warnings.length > 0);
 
     const out = template[type]();
 
@@ -414,6 +459,38 @@
     });
   }
 
+  function initCopyBlocking() {
+    const rendered = $("preview_rendered");
+    const code = $("preview_code");
+
+    if (rendered) {
+      rendered.addEventListener("copy", blockCopyWhenInvalid);
+      rendered.addEventListener("cut", blockCopyWhenInvalid);
+    }
+
+    if (code) {
+      code.addEventListener("copy", blockCopyWhenInvalid);
+      code.addEventListener("cut", blockCopyWhenInvalid);
+    }
+
+    document.addEventListener("copy", (e) => {
+      const active = document.activeElement;
+      const selection = window.getSelection ? window.getSelection() : null;
+      const selectedText = selection ? String(selection) : "";
+
+      const insidePreview =
+        (active && (active.id === "preview_rendered" || active.id === "preview_code")) ||
+        (selection &&
+          selection.anchorNode &&
+          ((rendered && rendered.contains(selection.anchorNode)) ||
+            (code && code.contains(selection.anchorNode))));
+
+      if (insidePreview && hasBlockingWarnings() && selectedText) {
+        e.preventDefault();
+      }
+    });
+  }
+
   function init() {
     type = $("type").value;
     gradeType = $("grade_type").value;
@@ -423,6 +500,7 @@
 
     limitTitleLines();
     ["phone_1", "phone_2", "phone_3"].forEach((id) => autoFormatPhoneInput($(id)));
+    initCopyBlocking();
     updateOutputAndPreview();
 
     $("type").addEventListener("change", () => {
