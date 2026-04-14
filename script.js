@@ -634,21 +634,14 @@ if (gradeType === "Cadet" && !hasNational) {
       opt.value === "Mrs.";
 
     if (gradeType === "Paid") {
-      // NHQ Staff: only No Grade + Courtesy Titles
-      if (isAny || isCourtesy) {
-        opt.disabled = false;
-      } else {
-        opt.disabled = true;
-      }
+      opt.disabled = !(isAny || isCourtesy);
     } else if (gradeType === "Adult") {
-      // Adult Volunteer: courtesy + no grade + adult ranks
       if (isCourtesy || isAny) {
         opt.disabled = false;
       } else {
         opt.disabled = isCadet;
       }
     } else if (gradeType === "Cadet") {
-      // Cadet: no courtesy, no adult ranks
       if (isCourtesy) {
         opt.disabled = true;
       } else if (isAny) {
@@ -658,6 +651,18 @@ if (gradeType === "Cadet" && !hasNational) {
       }
     }
   }
+
+  const selected = gradeSelect.selectedOptions[0];
+  if (selected && selected.disabled) {
+    if (gradeType === "Cadet") {
+      gradeSelect.value = "Airman";
+    } else if (gradeType === "Paid") {
+      gradeSelect.value = "Mr.";
+    } else {
+      gradeSelect.value = "2nd Lt.";
+    }
+  }
+}
 
   const selected = gradeSelect.selectedOptions[0];
   if (selected && selected.disabled) {
