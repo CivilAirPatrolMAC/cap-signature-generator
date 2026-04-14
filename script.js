@@ -181,8 +181,8 @@
     "Primary Representative",
     "Cadet Chief of Staff",
     "Representative",
-    "Assistant Representative"
-    "Cadet Commander",
+    "Assistant Representative",
+    "Cadet Commander"
   ]);
 
   const $ = (id) => document.getElementById(id);
