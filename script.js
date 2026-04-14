@@ -120,6 +120,8 @@
     "Assistant Deputy Chief of Staff, Communications",
     "Assistant Deputy Chief of Staff, Logistics",
     "Assistant Deputy Chief of Staff, Operations",
+    "National",
+    "NHQ",
     "Assistant Deputy Chief of Staff, Education and Training"
   ]);
 
@@ -146,9 +148,6 @@
     "Cadet First Sergeant",
     "Cadet Flight Commander",
     "Cadet Flight Sergeant",
-    "Cadet Group Commander",
-    "Cadet Group Deputy Commander for Operations",
-    "Cadet Group Deputy Commander for Support",
     "Cadet Group Superintendent",
     "Cadet Historian",
     "Cadet Information Technology NCO",
@@ -165,14 +164,19 @@
     "Cadet Recruiting Officer",
     "Cadet Safety NCO",
     "Cadet Safety Officer",
-    "Cadet Squadron Commander",
-    "Cadet Squadron Deputy Commander for Operations",
-    "Cadet Squadron Deputy Commander for Support",
+    "Cadet Commander",
+    "Cadet Deputy Commander for Operations",
+    "Cadet Deputy Commander for Support",
     "Cadet Superintendent",
     "Cadet Testing NCO",
     "Cadet Testing Officer",
     "Cadet Training NCO",
-    "Cadet Training Officer"
+    "Cadet Training Officer",
+    "Cadet Advisory Council Chair",
+    "Cadet Advisory Council Vice Chair",
+    "Cadet Advisory Council Recorder",
+    "Primary Representative",
+    "Assistant Representatitve"
   ]);
 
   const $ = (id) => document.getElementById(id);
