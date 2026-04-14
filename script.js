@@ -286,7 +286,7 @@ function extractDutyPosition(line) {
     const nameValue = String(vals.name || "").trim();
     const titleValue = String(vals.title || "").trim();
     const websiteTextValue = String(vals.website_text || "").trim();
-    const websiteUrlValue = String(vals.website_url || "").trim();
+    let websiteUrlValue = String(vals.website_url || "").trim();
 
     const combinedName = (gradeValue + " " + nameValue).trim();
 
@@ -848,14 +848,12 @@ if (gradeType === "Cadet" && !hasNational) {
 }
     
 if (websiteUrlValue) {
-  // 🔧 Auto-add https:// if missing
   if (!/^https?:\/\//i.test(websiteUrlValue)) {
     websiteUrlValue = "https://" + websiteUrlValue;
-    vals.website_url = websiteUrlValue; // keep state in sync
+    vals.website_url = websiteUrlValue;
   }
 
-  // ✅ Validate CAP / .gov domain
-  const isValidGovDomain = /^(https?:\/\/)?([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
+  const isValidGovDomain = /^https?:\/\/([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
 
   if (!isValidGovDomain) {
     warnings.push("Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).");
