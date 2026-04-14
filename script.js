@@ -179,6 +179,7 @@
     "Cadet Advisory Council Vice Chair",
     "Cadet Advisory Council Recorder",
     "Primary Representative",
+    "Representative"
     "Assistant Representative"
   ]);
 
