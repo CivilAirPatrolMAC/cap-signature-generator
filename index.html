@@ -62,6 +62,37 @@
     }
     p { margin: 8px 0; line-height: 1.45; }
 
+    .instructions {
+      margin: 18px 0 0;
+      padding: 16px 18px;
+      border: 1px solid #d1d5db;
+      border-left: 4px solid rgb(186, 12, 47);
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .instructions h2 {
+      color: rgb(0, 20, 137);
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 600;
+      margin: 0 0 10px;
+    }
+    .instructions h3 {
+      color: rgb(0, 20, 137);
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 600;
+      margin: 14px 0 8px;
+    }
+    .instructions ul {
+      list-style: disc;
+      margin: 8px 0 0 22px;
+    }
+    .instructions li {
+      margin: 6px 0;
+      line-height: 1.45;
+    }
+
     form {
       margin: 25px 0 0;
       padding: 25px 0 0;
@@ -104,6 +135,13 @@
     }
     textarea { resize: vertical; }
 
+    .field-help {
+      color: rgb(90, 98, 108);
+      font-size: 13px;
+      line-height: 1.4;
+      margin-top: -2px;
+    }
+
     .dual {
       display: flex;
       flex-direction: row;
@@ -119,7 +157,6 @@
     }
     footer a { color: inherit; }
 
-    /* subtle warning for duty position lines */
     .subtle-warning {
       font-size: 12px;
       color: rgb(158, 162, 162);
@@ -130,7 +167,6 @@
     }
     .subtle-warning.show { opacity: 1; }
 
-    /* right preview */
     .preview-toolbar {
       display: flex;
       gap: 12px;
@@ -151,6 +187,29 @@
       font-size: 12px;
       line-height: 1.45;
     }
+    .copy-steps {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #f9fafb;
+    }
+    .copy-steps h3 {
+      color: rgb(0, 20, 137);
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 600;
+      margin: 0 0 10px;
+    }
+    .copy-steps ol {
+      list-style: decimal;
+      margin: 8px 0 0 20px;
+    }
+    .copy-steps li {
+      margin: 6px 0;
+      line-height: 1.45;
+      font-size: 14px;
+    }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -160,6 +219,23 @@
     <h1>Civil Air Patrol Email Signature Generator</h1>
     <p>Fill out your details below, and verify the preview in the right column is correct.</p>
 
+    <div class="instructions">
+      <h2>Email Signature Guidance</h2>
+      <p>To generate your email signature, you have three options: you can download the Word template to copy and paste from, you can use the email signature generator tool, or you can copy and paste from the samples below.</p>
+
+      <h3>Guidelines, Standards, and Requirements</h3>
+      <ul>
+        <li>The Defense Media Agency and the Department of Defense Visual Information Style Guide cite military ranks receiving periods in their abbreviated form when external communication follows the industry standard of AP style. "SM" is not a grade and should not be used.</li>
+        <li>Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.</li>
+        <li>Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.</li>
+        <li>Duty assignments will state the name of the unit, followed by the duty position, without a comma. Unit names may be abbreviated in accordance with this guide.</li>
+        <li>You may only list two duty assignments recorded in eServices; organize assignments from highest to lowest organizational level. Do not list certifications, accomplishments, special activity assignments non- Civil Air Patrol titles, quotes, etc.</li>
+        <li>No disclaimer, FOUO statement, motivational quote, etc. may be appended to the signature block unless required by law or when operating under CAP Sensitive or Classified Mission Programs.</li>
+        <li>Other than changing the text to be specific to your details, do not alter the signature in any way. This includes font type.</li>
+        <li>Encampment commanders and commandant of cadets, NCSA and NFA activity directors and deputies, are now available as duty positions - encampment commanders and commandants are assigned at the wing level, and national activities (NCSAs and NFAs) are assigned at the national-level with CAP/CP</li>
+      </ul>
+    </div>
+
     <form id="sig-form" autocomplete="off">
       <div>
         <label for="type">Signature Type</label>
@@ -168,6 +244,7 @@
           <option value="plaintext">Plain Text</option>
           <option value="mobile">Abbreviated (Mobile)</option>
         </select>
+        <div class="field-help">Default is recommended for standard desktop email clients. Plain Text is best for clients that strip formatting. Abbreviated (Mobile) is intended for mobile devices only.</div>
       </div>
 
       <div>
@@ -179,12 +256,10 @@
           </select>
 
           <select id="grade">
-            <!-- No Grade options -->
             <optgroup label="No Grade">
               <option value="" data-any="true">No grade</option>
             </optgroup>
 
-            <!-- NEW: Courtesy titles -->
             <optgroup label="Courtesy Titles">
               <option value="Mr." data-any="true">Mr.</option>
               <option value="Ms." data-any="true">Ms.</option>
@@ -196,7 +271,6 @@
               <option value="Airman" data-cadet="true" disabled>Airman</option>
               <option value="Airman 1st Class" data-cadet="true" disabled>Airman 1st Class</option>
               <option value="Senior Airman" data-cadet="true" disabled>Senior Airman</option>
-
               <option value="Staff Sgt." data-cadet="true" disabled>Staff Sgt.</option>
               <option value="Tech. Sgt." data-cadet="true" disabled>Tech. Sgt.</option>
               <option value="Master Sgt." data-cadet="true" disabled>Master Sgt.</option>
@@ -219,12 +293,10 @@
               <option value="Master Sgt." data-adult="true">Master Sgt.</option>
               <option value="Senior Master Sgt." data-adult="true">Senior Master Sgt.</option>
               <option value="Chief Master Sgt." data-adult="true">Chief Master Sgt.</option>
-
               <option value="" data-adult="true">Senior Member</option>
               <option value="Flight Officer" data-adult="true">Flight Officer</option>
               <option value="Tech. Flight Officer" data-adult="true">Tech. Flight Officer</option>
               <option value="Senior Flight Officer" data-adult="true">Senior Flight Officer</option>
-
               <option value="2nd Lt." data-adult="true" selected>2nd Lt.</option>
               <option value="1st Lt." data-adult="true">1st Lt.</option>
               <option value="Capt." data-adult="true">Capt.</option>
@@ -238,6 +310,7 @@
 
           <input type="text" id="name" placeholder="Jane Doe" />
         </div>
+        <div class="field-help">Use approved CAP grade abbreviations. Do not use "SM" or add professional titles or post-nominals.</div>
       </div>
 
       <div id="f_wing" class="hidden">
@@ -246,6 +319,7 @@
           <span class="note">Use 4-letter Wing, 3-letter Region, or “HQ”; no squadron designators</span>
         </label>
         <input type="text" id="wing" placeholder="TXWG" />
+        <div class="field-help">Used only for the abbreviated mobile signature.</div>
       </div>
 
       <div id="f_title">
@@ -264,6 +338,7 @@
         <div id="title_warning" class="subtle-warning" aria-live="polite">
           Maximum two lines allowed. Extra lines were removed.
         </div>
+        <div class="field-help">List no more than two duty assignments recorded in eServices. Organize assignments from highest to lowest organizational level. Do not include certifications, accomplishments, special activity assignments, non-Civil Air Patrol titles, or quotes.</div>
       </div>
 
       <div id="f_phone">
@@ -275,7 +350,7 @@
             <option value="H">Home</option>
             <option value="O">Office</option>
           </select>
-          <input type="text" id="phone_1" placeholder="555.555.5555" />
+          <input type="text" id="phone_1" placeholder="555.555.5555" inputmode="numeric" />
         </div>
 
         <div class="dual">
@@ -284,7 +359,7 @@
             <option value="H">Home</option>
             <option value="O">Office</option>
           </select>
-          <input type="text" id="phone_2" placeholder="555.555.5555" />
+          <input type="text" id="phone_2" placeholder="555.555.5555" inputmode="numeric" />
         </div>
 
         <div class="dual">
@@ -293,8 +368,9 @@
             <option value="H">Home</option>
             <option value="O">Office</option>
           </select>
-          <input type="text" id="phone_3" placeholder="555.555.5555" />
+          <input type="text" id="phone_3" placeholder="555.555.5555" inputmode="numeric" />
         </div>
+        <div class="field-help">Phone numbers are automatically formatted with periods as you type.</div>
       </div>
 
       <div id="f_website">
@@ -303,11 +379,12 @@
           <input type="text" id="website_text" placeholder="Display Text" />
           <input type="text" id="website_url" placeholder="Link URL" />
         </div>
+        <div class="field-help">Optional. Include only official Wing or Region websites relevant to your role.</div>
       </div>
     </form>
 
     <footer>
-      Version 25. Last modified on April 7th, 2026. Managed by
+      Version 26. Managed by
       <a href="mailto:Brand@cap.gov">Maj. Roman Vitanza</a>.
     </footer>
   </div>
@@ -326,15 +403,25 @@
         <div id="preview_rendered"></div>
         <pre id="preview_code" class="preview-code hidden"></pre>
       </div>
+
+      <div class="copy-steps">
+        <h3>How to use your signature</h3>
+        <ol>
+          <li>Build and review your signature in Rendered preview mode.</li>
+          <li>Switch to Code if your email client requires HTML source.</li>
+          <li>Copy the finished signature into your email client's signature settings.</li>
+          <li>Send a test email to yourself and confirm spacing, links, and logo appearance.</li>
+          <li>On mobile devices, use the Abbreviated (Mobile) version instead of the full HTML signature.</li>
+        </ol>
+      </div>
     </div>
   </div>
 
   <script>
     (function () {
-      let type = "generic";        // generic | plaintext | mobile
-      let gradeType = "Adult";     // Adult | Cadet
+      let type = "generic";
+      let gradeType = "Adult";
 
-      // ONLY the "no auxiliary line" graphic
       const LOGO_URL = "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
 
       const vals = {
@@ -374,6 +461,26 @@
         return out;
       }
 
+      function formatPhoneDisplay(s) {
+        let digits = String(s || "").replace(/\D/g, "");
+        if (!digits) return "";
+
+        if (digits.length > 10 && digits.charAt(0) === "1") {
+          digits = digits.slice(1);
+        }
+
+        digits = digits.slice(0, 10);
+
+        if (digits.length <= 3) return digits;
+        if (digits.length <= 6) return digits.slice(0, 3) + "." + digits.slice(3);
+        return digits.slice(0, 3) + "." + digits.slice(3, 6) + "." + digits.slice(6);
+      }
+
+      function autoFormatPhoneInput(el) {
+        const formatted = formatPhoneDisplay(el.value);
+        if (el.value !== formatted) el.value = formatted;
+      }
+
       function showTitleWarning() {
         const el = $("title_warning");
         el.classList.add("show");
@@ -401,7 +508,6 @@
           const grade = sanitizeText(vals.grade || "");
           const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
 
-          // If grade is a courtesy title (Mr./Ms./Mrs.), don't add extra spacing rules; treat it as a prefix.
           const courtesyTitles = new Set(["Mr.", "Ms.", "Mrs."]);
           const isCourtesy = courtesyTitles.has(vals.grade);
 
@@ -435,7 +541,6 @@
             })
             .join("");
 
-          // Since we're always using the "no auxiliary line" logo now:
           const orgLine = "";
 
           return `<!DOCTYPE html>
@@ -489,7 +594,6 @@
               .forEach(line => lines.push(line.trim()));
           }
 
-          // No-aux logo => org line is "Civil Air Patrol"
           lines.push("");
 
           const phones = [
@@ -604,6 +708,20 @@
         $("preview_code").classList.toggle("hidden", mode !== "code");
       }
 
+      function initPhoneFormatting() {
+        ["phone_1", "phone_2", "phone_3"].forEach((id) => {
+          const el = $(id);
+          el.addEventListener("input", () => {
+            autoFormatPhoneInput(el);
+            updateOutputAndPreview();
+          });
+          el.addEventListener("blur", () => {
+            autoFormatPhoneInput(el);
+            updateOutputAndPreview();
+          });
+        });
+      }
+
       function init() {
         type = $("type").value;
         gradeType = $("grade_type").value;
@@ -612,6 +730,7 @@
         applyTypeUI();
 
         limitTitleLines();
+        ["phone_1", "phone_2", "phone_3"].forEach((id) => autoFormatPhoneInput($(id)));
         updateOutputAndPreview();
 
         $("type").addEventListener("change", () => {
@@ -642,9 +761,9 @@
 
         const inputs = [
           "name", "wing",
-          "phone_1_type", "phone_1",
-          "phone_2_type", "phone_2",
-          "phone_3_type", "phone_3",
+          "phone_1_type",
+          "phone_2_type",
+          "phone_3_type",
           "website_text", "website_url"
         ];
 
@@ -654,6 +773,8 @@
           el.addEventListener("blur", updateOutputAndPreview);
           el.addEventListener("change", updateOutputAndPreview);
         }
+
+        initPhoneFormatting();
 
         $("preview_mode").addEventListener("change", updateOutputAndPreview);
       }
