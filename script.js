@@ -21,6 +21,27 @@
 
   const $ = (id) => document.getElementById(id);
 
+  function ensureValidationBox() {
+    let box = $("validation_warnings");
+    if (box) return box;
+
+    const form = $("sig-form");
+    if (!form) return null;
+
+    box = document.createElement("div");
+    box.id = "validation_warnings";
+    box.style.margin = "0 0 18px";
+    box.style.padding = "14px 16px";
+    box.style.border = "1px solid #f5c2c7";
+    box.style.borderLeft = "4px solid rgb(186, 12, 47)";
+    box.style.borderRadius = "8px";
+    box.style.background = "#fff5f5";
+    box.style.display = "none";
+
+    form.parentNode.insertBefore(box, form);
+    return box;
+  }
+
   function sanitizeText(s) {
     return String(s)
       .replaceAll("&", "&amp;")
@@ -28,6 +49,94 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#39;");
+  }
+
+  function renderValidationWarnings(items) {
+    const box = ensureValidationBox();
+    if (!box) return;
+
+    if (!items.length) {
+      box.style.display = "none";
+      box.innerHTML = "";
+      return;
+    }
+
+    let html = '<h3 style="margin:0 0 8px; font-size:16px; line-height:1.3; font-weight:600; color:#001489;">Brand standards review</h3>';
+    html += '<ul style="margin:0 0 0 18px; padding:0; list-style:disc;">';
+
+    for (const item of items) {
+      html += '<li style="margin:6px 0; line-height:1.45;">' + sanitizeText(item) + "</li>";
+    }
+
+    html += "</ul>";
+    box.style.display = "block";
+    box.innerHTML = html;
+  }
+
+  function getValidationWarnings() {
+    const warnings = [];
+
+    const gradeValue = String(vals.grade || "").trim();
+    const nameValue = String(vals.name || "").trim();
+    const titleValue = String(vals.title || "").trim();
+    const websiteTextValue = String(vals.website_text || "").trim();
+    const websiteUrlValue = String(vals.website_url || "").trim();
+
+    const combinedName = (gradeValue + " " + nameValue).trim();
+
+    if (/\bSM\b/i.test(combinedName)) {
+      warnings.push('"SM" is not a grade and should not be used.');
+    }
+
+    if (/\b(MD|PhD|CFI|CPA|DDS|DVM|Esq\.?|RN|PE)\b/i.test(combinedName)) {
+      warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+    }
+
+    if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
+      warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
+    }
+
+    const titleLines = titleValue
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(Boolean);
+
+    if (titleLines.length > 2) {
+      warnings.push("You may only list two duty assignments recorded in eServices.");
+    }
+
+    if (titleLines.some(line => line.includes(","))) {
+      warnings.push("Duty assignments will state the name of the unit, followed by the duty position, without a comma.");
+    }
+
+    if (titleLines.length >= 2) {
+      const rankOrder = (line) => {
+        if (/national|nhq/i.test(line)) return 5;
+        if (/region/i.test(line)) return 4;
+        if (/wing/i.test(line)) return 3;
+        if (/group/i.test(line)) return 2;
+        if (/squadron|sq\./i.test(line)) return 1;
+        return 0;
+      };
+
+      if (rankOrder(titleLines[0]) < rankOrder(titleLines[1])) {
+        warnings.push("Organize duty assignments from highest to lowest organizational level.");
+      }
+    }
+
+    if (/(certified|certification|award|graduate|distinguished|quote|")/i.test(titleValue)) {
+      warnings.push("Do not list certifications, accomplishments, quotes, or other non-duty information in the duty assignment lines.");
+    }
+
+    if (/(FOUO|for official use only|sensitive but unclassified|classified|motivat)/i.test(titleValue)) {
+      warnings.push("No disclaimer, FOUO statement, or motivational quote may be appended unless required by law or mission program requirements.");
+    }
+
+    if ((websiteTextValue && !websiteUrlValue) || (!websiteTextValue && websiteUrlValue)) {
+      warnings.push("Include both Wing/Region website display text and URL, or leave both fields blank.");
+    }
+
+    return warnings;
   }
 
   function normalizeTel(s) {
@@ -275,6 +384,9 @@
   function updateOutputAndPreview() {
     readInputsToState();
 
+    const warnings = getValidationWarnings();
+    renderValidationWarnings(warnings);
+
     const out = template[type]();
 
     $("preview_rendered").innerHTML = (type === "generic")
@@ -361,4 +473,3 @@
 
   document.addEventListener("DOMContentLoaded", init);
 })();
-
