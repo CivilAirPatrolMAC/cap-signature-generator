@@ -846,13 +846,14 @@ if (gradeType === "Cadet" && !hasNational) {
     warnings.push("Website display text must reference an official Wing or Region website.");
   }
 }
-  if (websiteUrlValue) {
-  const isValidCapDomain = /^(https?:\/\/)?([a-z0-9-]+\.)*(gocivilairpatrol\.com|cap\.gov)(\/|$)/i.test(websiteUrlValue);
+ if (websiteUrlValue) {
+  const isValidGovDomain = /^(https?:\/\/)?([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
 
-  if (!isValidCapDomain) {
-    warnings.push("Only official Civil Air Patrol Wing or Region websites (GoCivilAirPatrol.com or cap.gov domains) may be used.");
+  if (!isValidGovDomain) {
+    warnings.push("Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).");
   }
 }
+
     initPhoneFormatting();
 
     $("preview_mode").addEventListener("change", updateOutputAndPreview);
