@@ -25,11 +25,13 @@
     "Director",
     "Deputy Director",
     "Deputy Chief of Staff Aerospace Education",
+    "Deputy Chief of Staff, Aerospace Education",
     "External Aerospace Education Officer",
     "Internal Aerospace Education Officer",
     "Cadet Advisory Council Senior Advisor",
     "Cadet Programs Development Officer",
     "Deputy Chief of Staff Cadet Programs",
+    "Deputy Chief of Staff, Cadet Programs",
     "Chaplain",
     "Character Development Instructor",
     "Chief of Staff",
@@ -42,6 +44,7 @@
     "NCO Advisor",
     "Senior Enlisted Leader",
     "Deputy Chief of Staff Communications",
+    "Deputy Chief of Staff, Communications",
     "Counterdrug Director",
     "Emergency Services Officer",
     "Emergency Services Training Officer",
@@ -51,11 +54,13 @@
     "Web Security Administrator",
     "Inspector General",
     "Deputy Chief of Staff Logistics",
+    "Deputy Chief of Staff, Logistics",
     "Maintenance Officer",
     "Transportation Officer",
     "Director of Public Affairs",
     "CIS Officer",
     "Deputy Chief of Staff Operations",
+    "Deputy Chief of Staff, Operations",
     "Homeland Security Officer",
     "Small Unmanned Aerial Systems Officer",
     "Standardization/Evaluation Officer",
@@ -64,6 +69,7 @@
     "Director of Plans and Programs",
     "Director of Plans & Programs",
     "Deputy Chief of Staff Education and Training",
+    "Deputy Chief of Staff, Education and Training",
     "Director of Safety",
     "Aerospace Education Officer",
     "Cyber Education Officer",
@@ -108,7 +114,13 @@
     "Director of Recruiting",
     "Director of Operations",
     "Plans and Programs Officer",
-    "Director of Education and Training"
+    "Director of Education and Training",
+    "Assistant Deputy Chief of Staff, Aerospace Education",
+    "Assistant Deputy Chief of Staff, Cadet Programs",
+    "Assistant Deputy Chief of Staff, Communications",
+    "Assistant Deputy Chief of Staff, Logistics",
+    "Assistant Deputy Chief of Staff, Operations",
+    "Assistant Deputy Chief of Staff, Education and Training"
   ]);
 
   const $ = (id) => document.getElementById(id);
@@ -205,9 +217,9 @@
       warnings.push('"SM" is not a grade and should not be used.');
     }
 
-    if (/\b(MD|PhD|CFI|CPA|DDS|DVM|Esq\.?|RN|PE)\b/i.test(combinedName)) {
-      warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
-    }
+  if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP)\b/i.test(combinedName)) {
+  warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+}
 
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
       warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
@@ -263,7 +275,7 @@
       for (const line of titleLines) {
         const extractedDuty = extractDutyPosition(line);
         if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-          warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          warnings.push('Adult duty assignments must use an approved duty position that is assignable in eServices. Invalid entry: "' + line + '"');
           break;
         }
       }
@@ -349,6 +361,20 @@
   function autoFormatPhoneInput(el) {
     const formatted = formatPhoneDisplay(el.value);
     if (el.value !== formatted) el.value = formatted;
+  }
+
+  function autoCorrectDutyAssignments(value) {
+    let v = String(value || "");
+
+    v = v.replace(/\bAssistant\s+DCS\.?\s+([^\n]+)/gi, function (_, role) {
+      return "Assistant Deputy Chief of Staff, " + role.trim();
+    });
+
+    v = v.replace(/\bDCS\.?\s+([^\n]+)/gi, function (_, role) {
+      return "Deputy Chief of Staff, " + role.trim();
+    });
+
+    return v;
   }
 
   function showTitleWarning() {
@@ -653,6 +679,13 @@
     $("grade").addEventListener("change", updateOutputAndPreview);
 
     $("title").addEventListener("input", () => {
+      const el = $("title");
+      const corrected = autoCorrectDutyAssignments(el.value);
+
+      if (el.value !== corrected) {
+        el.value = corrected;
+      }
+
       limitTitleLines();
       updateOutputAndPreview();
     });
