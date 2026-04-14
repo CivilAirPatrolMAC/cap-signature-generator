@@ -19,6 +19,98 @@
     website_url: ""
   };
 
+  const ADULT_ALLOWED_DUTY_ASSIGNMENTS = new Set([
+    "Encampment Commander",
+    "Encampment Commandant of Cadets",
+    "Director",
+    "Deputy Director",
+    "Deputy Chief of Staff Aerospace Education",
+    "External Aerospace Education Officer",
+    "Internal Aerospace Education Officer",
+    "Cadet Advisory Council Senior Advisor",
+    "Cadet Programs Development Officer",
+    "Deputy Chief of Staff Cadet Programs",
+    "Chaplain",
+    "Character Development Instructor",
+    "Chief of Staff",
+    "Commander",
+    "Deputy Commander",
+    "Director of Development",
+    "Government Relations Advisor",
+    "Health Services Officer",
+    "Historian",
+    "NCO Advisor",
+    "Senior Enlisted Leader",
+    "Deputy Chief of Staff Communications",
+    "Counterdrug Director",
+    "Emergency Services Officer",
+    "Emergency Services Training Officer",
+    "Director of Finance",
+    "Legal Officer",
+    "Director of IT",
+    "Web Security Administrator",
+    "Inspector General",
+    "Deputy Chief of Staff Logistics",
+    "Maintenance Officer",
+    "Transportation Officer",
+    "Director of Public Affairs",
+    "CIS Officer",
+    "Deputy Chief of Staff Operations",
+    "Homeland Security Officer",
+    "Small Unmanned Aerial Systems Officer",
+    "Standardization/Evaluation Officer",
+    "Director of Administration",
+    "Director of Personnel",
+    "Director of Plans and Programs",
+    "Director of Plans & Programs",
+    "Deputy Chief of Staff Education and Training",
+    "Director of Safety",
+    "Aerospace Education Officer",
+    "Cyber Education Officer",
+    "Activities Officer",
+    "Drug Demand Reduction Officer",
+    "Fitness Officer",
+    "Squadron Leadership Officer",
+    "Advisor to the Commander",
+    "Deputy Commander for Cadets",
+    "Deputy Commander for Seniors",
+    "Squadron NCO",
+    "Communications Officer",
+    "Disaster Preparedness Officer",
+    "Search and Rescue Officer",
+    "Finance Officer",
+    "Information Technologies Officer",
+    "Logistics Officer",
+    "Supply Officer",
+    "Public Affairs Officer",
+    "Recruiting Officer",
+    "Alerting Officer",
+    "Operations Officer",
+    "Administrative Officer",
+    "Personnel Officer",
+    "Education and Training Officer",
+    "Testing Officer",
+    "Safety Officer",
+    "Director of Aerospace Education",
+    "Director of Cadet Programs",
+    "Drug Demand Reduction Administrator",
+    "Encampment Commandant for Cadets",
+    "Wing Chaplain Coordinator",
+    "Diversity Officer",
+    "Communications Engineering Officer",
+    "Communications Licensing Officer",
+    "Communications Training Officer",
+    "Director of Communications",
+    "Counterdrug Officer",
+    "Director of Emergency Services",
+    "Disaster Relief Officer",
+    "Director of Logistics",
+    "Director of Recruiting",
+    "Director of Operations",
+    "Plans and Programs Officer",
+    "Director of Education and Training"
+  ]);
+
   const $ = (id) => document.getElementById(id);
 
   function sanitizeText(s) {
@@ -73,6 +165,31 @@
     box.innerHTML = html;
   }
 
+  function normalizeDutyAssignmentName(s) {
+    return String(s || "")
+      .replace(/&/gi, "and")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/^Deputy Chief of Staff\s+/i, "Deputy Chief of Staff ");
+  }
+
+  function extractDutyPosition(line) {
+    const clean = String(line || "").trim();
+    if (!clean) return "";
+
+    for (const allowed of ADULT_ALLOWED_DUTY_ASSIGNMENTS) {
+      const escaped = allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp(escaped + "$", "i");
+      if (re.test(clean)) return allowed;
+    }
+
+    const noComma = clean.replace(/,/g, " ");
+    const pieces = noComma.split(/\s{2,}/).filter(Boolean);
+    if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
+
+    return normalizeDutyAssignmentName(clean);
+  }
+
   function getValidationWarnings() {
     const warnings = [];
 
@@ -98,14 +215,14 @@
 
     const titleLines = titleValue
       .split(/\r?\n/)
-      .map(line => line.trim())
+      .map((line) => line.trim())
       .filter(Boolean);
 
     if (titleLines.length > 2) {
       warnings.push("You may only list two duty assignments recorded in eServices.");
     }
 
-    if (titleLines.some(line => line.includes(","))) {
+    if (titleLines.some((line) => line.includes(","))) {
       warnings.push("Duty assignments will state the name of the unit, followed by the duty position, without a comma.");
     }
 
@@ -134,11 +251,21 @@
 
     for (const line of titleLines) {
       const mentionsEncampment = /\bencampment\b/i.test(line);
-      const allowedEncampmentRole = /\b(encampment commander|commandant of cadets)\b/i.test(line);
+      const allowedEncampmentRole = /\b(encampment commander|commandant of cadets|encampment commandant of cadets)\b/i.test(line);
 
       if (mentionsEncampment && !allowedEncampmentRole) {
         warnings.push('Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."');
         break;
+      }
+    }
+
+    if (gradeType === "Adult") {
+      for (const line of titleLines) {
+        const extractedDuty = extractDutyPosition(line);
+        if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
+          warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          break;
+        }
       }
     }
 
@@ -249,19 +376,17 @@
     generic: () => {
       const name = sanitizeText(vals.name || "Jane Doe");
       const grade = sanitizeText(vals.grade || "");
-      const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+      const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
 
       const courtesyTitles = new Set(["Mr.", "Ms.", "Mrs."]);
       const isCourtesy = courtesyTitles.has(vals.grade);
 
-      const gradePart = grade
-        ? (isCourtesy ? `${grade} ` : `${grade} `)
-        : "";
+      const gradePart = grade ? (isCourtesy ? `${grade} ` : `${grade} `) : "";
 
       const titleRaw = vals.title || "";
       const titleHtml = sanitizeText(titleRaw)
         .split(/\r?\n/)
-        .filter(line => line.trim() !== "")
+        .filter((line) => line.trim() !== "")
         .slice(0, 2)
         .join("<br />");
 
@@ -273,8 +398,8 @@
         { t: vals.phone_2_type, n: vals.phone_2 },
         { t: vals.phone_3_type, n: vals.phone_3 }
       ]
-        .filter(p => String(p.n || "").trim().length > 0)
-        .map(p => {
+        .filter((p) => String(p.n || "").trim().length > 0)
+        .map((p) => {
           const shown = sanitizeText(p.n);
           const tel = normalizeTel(p.n);
           const href = tel ? `tel:${tel}` : "";
@@ -323,7 +448,7 @@
     },
 
     plaintext: () => {
-      const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+      const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
       const gradePart = vals.grade ? `${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
 
@@ -331,10 +456,11 @@
       lines.push(`${cadetPrefix}${gradePart}${name}`.trim());
 
       if (vals.title && vals.title.trim()) {
-        vals.title.split(/\r?\n/)
-          .filter(line => line.trim() !== "")
+        vals.title
+          .split(/\r?\n/)
+          .filter((line) => line.trim() !== "")
           .slice(0, 2)
-          .forEach(line => lines.push(line.trim()));
+          .forEach((line) => lines.push(line.trim()));
       }
 
       lines.push("");
@@ -343,7 +469,7 @@
         { t: vals.phone_1_type, n: vals.phone_1 },
         { t: vals.phone_2_type, n: vals.phone_2 },
         { t: vals.phone_3_type, n: vals.phone_3 }
-      ].filter(p => String(p.n || "").trim());
+      ].filter((p) => String(p.n || "").trim());
 
       for (const p of phones) {
         lines.push(`(${p.t}) ${String(p.n).trim()}`);
@@ -360,13 +486,11 @@
     },
 
     mobile: () => {
-      const cadetPrefix = (gradeType === "Cadet") ? "Cadet " : "";
+      const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
       const gradePart = vals.grade ? `${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
 
-      const wing = (vals.wing && vals.wing.trim())
-        ? `, ${vals.wing.trim().toUpperCase()}`
-        : "";
+      const wing = vals.wing && vals.wing.trim() ? `, ${vals.wing.trim().toUpperCase()}` : "";
 
       return `${cadetPrefix}${gradePart}${name}${wing}\nCivil Air Patrol`;
     }
@@ -395,7 +519,7 @@
 
     const selected = gradeSelect.selectedOptions[0];
     if (selected && selected.disabled) {
-      gradeSelect.value = (gradeType === "Cadet") ? "Airman" : "2nd Lt.";
+      gradeSelect.value = gradeType === "Cadet" ? "Airman" : "2nd Lt.";
     }
   }
 
@@ -444,9 +568,10 @@
 
     const out = template[type]();
 
-    $("preview_rendered").innerHTML = (type === "generic")
-      ? out
-      : `<div style="white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.45;">${sanitizeText(out)}</div>`;
+    $("preview_rendered").innerHTML =
+      type === "generic"
+        ? out
+        : `<div style="white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.45;">${sanitizeText(out)}</div>`;
 
     $("preview_code").textContent = out;
 
@@ -540,11 +665,13 @@
     });
 
     const inputs = [
-      "name", "wing",
+      "name",
+      "wing",
       "phone_1_type",
       "phone_2_type",
       "phone_3_type",
-      "website_text", "website_url"
+      "website_text",
+      "website_url"
     ];
 
     for (const id of inputs) {
