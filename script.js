@@ -176,7 +176,7 @@
     "Cadet Advisory Council Vice Chair",
     "Cadet Advisory Council Recorder",
     "Primary Representative",
-    "Assistant Representatitve"
+    "Assistant Representative"
   ]);
 
   const $ = (id) => document.getElementById(id);
