@@ -294,25 +294,9 @@ function extractDutyPosition(line) {
       warnings.push('"SM" is not a grade and should not be used.');
     }
 
-    if (/\b(
-MD|DO|DDS|DMD|OD|DPM|DC|
-PharmD|DNP|DPT|AuD|
-RN|LPN|LVN|NP|FNP|CNS|CRNA|CNM|PA-C|PA|RPh|OTR\/L|PT|PTA|OT|OTA|
-PhD|EdD|DBA|DSc|ScD|JD|LLM|SJD|
-MA|MS|MBA|MPA|MEd|BA|BS|BBA|
-CPA|CFA|CFP|CMA|CIA|CFE|FRM|
-PMP|CAPM|PgMP|
-SHRM-CP|SHRM-SCP|PHR|SPHR|
-CISSP|CISM|CISA|CEH|Security\+|Network\+|A\+|
-PE|FE|EIT|
-CFI|CFII|ATP|A&P|IA|
-CEM|AEM|MEP|IAEM|
-EMT|Paramedic|
-FACHE|FACMPE|FRCP|FACS|
-Esq\.?
-)\b/i.test(combinedName)) {
-      warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
-    }
+   if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP)\b/i.test(combinedName)) {
+  warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
+}
 
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
       warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity.");
