@@ -48,7 +48,7 @@ const ADULT_ALLOWED_DUTY_ASSIGNMENTS = new Set([
   "Deputy Chief of Staff, Operations",
   "Homeland Security Officer",
   "Small Unmanned Aerial Systems Officer",
-  "Standardization/Evaluation Officer",
+  "Standardization & Evaluation Officer",
   "Director of Administration",
   "Director of Personnel",
   "Director of Plans and Programs",
