@@ -64,7 +64,7 @@
 
       if (
         item ===
-        'Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.'
+        'Do not include professional titles or post-nominals such as "MD," "PhD," "CFI," etc.'
       ) {
         return {
           title: "Professional titles or certifications were detected.",
@@ -808,6 +808,27 @@
     if (isMobile) $("title_warning").classList.remove("show");
   }
 
+  function initGuidelinesToggle() {
+    const toggle = $("guidelines_toggle");
+    const content = $("guidelines_content");
+
+    if (!toggle || !content) return;
+
+    const icon = toggle.querySelector(".callout-toggle__icon");
+
+    toggle.addEventListener("click", () => {
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      const nextExpanded = !isExpanded;
+
+      toggle.setAttribute("aria-expanded", String(nextExpanded));
+      content.classList.toggle("is-collapsed", !nextExpanded);
+
+      if (icon) {
+        icon.textContent = nextExpanded ? "−" : "+";
+      }
+    });
+  }
+
   function readInputsToState() {
     vals.grade = $("grade").value;
 
@@ -932,6 +953,7 @@
     ["phone_1", "phone_2", "phone_3"].forEach((id) => autoFormatPhoneInput($(id)));
     initCopyBlocking();
     initCopyButtons();
+    initGuidelinesToggle();
     updateOutputAndPreview();
 
     $("type").addEventListener("change", () => {
