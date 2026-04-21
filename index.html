@@ -17,9 +17,9 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
-  <script src="adultdutyassignments.js"></script>
-  <script src="cadetdutyassignments.js"></script>
-  <script src="script.js"></script>
+  <script src="adultdutyassignments.js" defer></script>
+  <script src="cadetdutyassignments.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 
 <body>
@@ -35,16 +35,18 @@
         </div>
 
         <nav class="tool-switcher" aria-label="Tool navigation">
+          <a href="https://brand.gocivilairpatrol.com/">
+            <button type="button">
+              Brand Portal
+            </button>
+          </a>
 
-                  <a href="https://brand.gocivilairpatrol.com/">
-                    <button type="button">
-                      Brand Portal
-                    </button>
-                  </a>
-                   <button type="button"
-                     onclick="window.location.href='https://cap-brand-tools.netlify.app/'">
+          <button
+            type="button"
+            onclick="window.location.href='https://cap-brand-tools.netlify.app/'"
+          >
             Brand Tools Home
-                  </button>
+          </button>
 
           <button
             type="button"
@@ -54,26 +56,29 @@
           </button>
 
           <button
-            type="button" class="active"
+            type="button"
+            class="active"
             onclick="window.location.href='https://cap-signature-generator.netlify.app/'"
           >
             Email Signature Block Generator
           </button>
-      
-           <button
+
+          <button
             type="button"
             onclick="window.location.href='https://cap-business-card-generator.netlify.app'"
           >
             Business Card Generator
-          </button>     
+          </button>
 
-       <!--  <button
+          <!--
+          <button
             type="button"
             class="disabled"
             disabled
           >
             Emblem Generator (Coming Soon)
-          </button> -->
+          </button>
+          -->
         </nav>
       </div>
     </header>
@@ -85,49 +90,61 @@
             <h2>Email Signature Guidance</h2>
             <p>
               To generate your email signature, you have three options: you can download the
-              Word template to copy and paste from on the brand portal. 
+              Word template to copy and paste from on the brand portal.
             </p>
           </div>
 
-          <div class="callout callout--warning">
-            <h3>Guidelines, Standards, and Requirements</h3>
-            <ul>
-              <li>
-                The Defense Media Agency and the Department of Defense Visual Information Style Guide
-                cite military ranks receiving periods in their abbreviated form when external
-                communication follows the industry standard of AP style. "SM" is not a grade and
-                should not be used.
-              </li>
-              <li>
-                Do not include professional titles or post-nominals such as "MD," "PhD," "CFI," etc.
-              </li>
-              <li>
-                Appending ', CAP' is not required if the content is clearly showing Civil Air Patrol
-                in its capacity.
-              </li>
-              <li>
-                Duty assignments will state the name of the unit, followed by the duty position,
-                without a comma. Unit names may be abbreviated in accordance with this guide.
-              </li>
-              <li>
-                You may only list two duty assignments recorded in eServices; organize the assignments
-                from the highest to the lowest organizational level. Do not list certifications,
-                accomplishments, special activity assignments, non-Civil Air Patrol titles, quotes, etc.
-              </li>
-              <li>
-                No disclaimer, FOUO statement, motivational quote, etc., may be appended to the
-                signature block unless required by law or when operating under CAP Sensitive or
-                Classified Mission Programs.
-              </li>
-              <li>
-                Other than changing the text to be specific to your details, do not alter the
-                signature in any way. This includes font type.
-              </li>
-              <li>
-                Encampment commanders and commandant of cadets, NCSA and NFA activity directors and
-                deputies, are now available as duty positions
-              </li>
-            </ul>
+          <div class="callout callout--warning callout--collapsible">
+            <button
+              type="button"
+              class="callout-toggle"
+              id="guidelines_toggle"
+              aria-expanded="true"
+              aria-controls="guidelines_content"
+            >
+              <span>Guidelines, Standards, and Requirements</span>
+              <span class="callout-toggle__icon" aria-hidden="true">−</span>
+            </button>
+
+            <div id="guidelines_content" class="callout-content">
+              <ul>
+                <li>
+                  The Defense Media Agency and the Department of Defense Visual Information Style Guide
+                  cite military ranks receiving periods in their abbreviated form when external
+                  communication follows the industry standard of AP style. "SM" is not a grade and
+                  should not be used.
+                </li>
+                <li>
+                  Do not include professional titles or post-nominals such as "MD," "PhD," "CFI," etc.
+                </li>
+                <li>
+                  Appending ', CAP' is not required if the content is clearly showing Civil Air Patrol
+                  in its capacity.
+                </li>
+                <li>
+                  Duty assignments will state the name of the unit, followed by the duty position,
+                  without a comma. Unit names may be abbreviated in accordance with this guide.
+                </li>
+                <li>
+                  You may only list two duty assignments recorded in eServices; organize the assignments
+                  from the highest to the lowest organizational level. Do not list certifications,
+                  accomplishments, special activity assignments, non-Civil Air Patrol titles, quotes, etc.
+                </li>
+                <li>
+                  No disclaimer, FOUO statement, motivational quote, etc., may be appended to the
+                  signature block unless required by law or when operating under CAP Sensitive or
+                  Classified Mission Programs.
+                </li>
+                <li>
+                  Other than changing the text to be specific to your details, do not alter the
+                  signature in any way. This includes font type.
+                </li>
+                <li>
+                  Encampment commanders and commandant of cadets, NCSA and NFA activity directors and
+                  deputies, are now available as duty positions
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -357,15 +374,23 @@
               <div id="preview_rendered"></div>
               <pre id="preview_code" class="preview-code hidden"></pre>
             </div>
+
             <div class="preview-actions">
-              <button type="button" id="copy_preview_btn" class="action-btn">Copy Preview As Shown</button>
-              <button type="button" id="copy_html_btn" class="action-btn action-btn--secondary">Copy HTML</button>
-              <button type="button" id="copy_plain_btn" class="action-btn action-btn--secondary">Copy Plain Text</button>
-              <button type="button" id="copy_mobile_btn" class="action-btn action-btn--secondary">Copy Mobile</button>
+              <button type="button" id="copy_preview_btn" class="action-btn">
+                Copy Preview As Shown
+              </button>
+              <button type="button" id="copy_html_btn" class="action-btn">
+                Copy HTML
+              </button>
+              <button type="button" id="copy_plain_btn" class="action-btn action-btn--secondary">
+                Copy Plain Text
+              </button>
+              <button type="button" id="copy_mobile_btn" class="action-btn action-btn--secondary">
+                Copy Mobile
+              </button>
             </div>
 
-<div id="copy_status" class="copy-status" aria-live="polite"></div>
-            
+            <div id="copy_status" class="copy-status" aria-live="polite"></div>
           </section>
 
           <section class="card copy-steps">
