@@ -19,7 +19,6 @@
     website_url: ""
   };
 
-
   const $ = (id) => document.getElementById(id);
 
   function sanitizeText(s) {
@@ -232,6 +231,82 @@
     box.innerHTML = html;
   }
 
+  function setCopyStatus(message, kind) {
+    const el = $("copy_status");
+    if (!el) return;
+
+    el.textContent = message || "";
+    el.className = "copy-status";
+
+    if (!message) return;
+
+    el.classList.add("show");
+    el.classList.add(kind === "error" ? "copy-status--error" : "copy-status--success");
+  }
+
+  function updateCopyButtons(isLocked) {
+    ["copy_html_btn", "copy_plain_btn", "copy_mobile_btn"].forEach((id) => {
+      const btn = $(id);
+      if (btn) btn.disabled = !!isLocked;
+    });
+  }
+
+  async function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    ta.style.pointerEvents = "none";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+
+    if (!ok) {
+      throw new Error("Copy command failed");
+    }
+  }
+
+  async function handleCopy(copyType) {
+    const warnings = getValidationWarnings();
+    if (warnings.length) {
+      setCopyStatus("Fix the brand standard warnings before copying.", "error");
+      return;
+    }
+
+    let output = "";
+    let label = "";
+
+    if (copyType === "generic") {
+      output = template.generic();
+      label = "HTML";
+    } else if (copyType === "plaintext") {
+      output = template.plaintext();
+      label = "plain text";
+    } else if (copyType === "mobile") {
+      output = template.mobile();
+      label = "mobile";
+    } else {
+      setCopyStatus("Unknown copy type.", "error");
+      return;
+    }
+
+    try {
+      await copyTextToClipboard(output);
+      setCopyStatus(`Copied ${label} signature.`, "success");
+    } catch (err) {
+      setCopyStatus("Copy failed. Try again or copy from the preview manually.", "error");
+    }
+  }
+
   function normalizeDutyAssignmentName(s) {
     return String(s || "")
       .replace(/&/gi, "and")
@@ -309,10 +384,6 @@
     if (titleLines.length > 2) {
       warnings.push("You may only list two duty assignments recorded in eServices.");
     }
-
-   // if (titleLines.some((line) => line.includes(","))) {
-  //    warnings.push("Duty assignments will state the name of the unit, followed by the duty position, without a comma.");
-//    }
 
     if (titleLines.length >= 2) {
       const rankOrder = (line) => {
@@ -721,6 +792,7 @@
     const warnings = getValidationWarnings();
     renderValidationWarnings(warnings);
     setCopyLockState(warnings.length > 0);
+    updateCopyButtons(warnings.length > 0);
 
     const out = template[type]();
 
@@ -782,6 +854,24 @@
     });
   }
 
+  function initCopyButtons() {
+    const htmlBtn = $("copy_html_btn");
+    const plainBtn = $("copy_plain_btn");
+    const mobileBtn = $("copy_mobile_btn");
+
+    if (htmlBtn) {
+      htmlBtn.addEventListener("click", () => handleCopy("generic"));
+    }
+
+    if (plainBtn) {
+      plainBtn.addEventListener("click", () => handleCopy("plaintext"));
+    }
+
+    if (mobileBtn) {
+      mobileBtn.addEventListener("click", () => handleCopy("mobile"));
+    }
+  }
+
   function init() {
     type = $("type").value;
     gradeType = $("grade_type").value;
@@ -792,6 +882,7 @@
     limitTitleLines();
     ["phone_1", "phone_2", "phone_3"].forEach((id) => autoFormatPhoneInput($(id)));
     initCopyBlocking();
+    initCopyButtons();
     updateOutputAndPreview();
 
     $("type").addEventListener("change", () => {
@@ -839,7 +930,11 @@
 
     for (const id of inputs) {
       const el = $(id);
-      el.addEventListener("input", updateOutputAndPreview);
+      if (!el) continue;
+      el.addEventListener("input", () => {
+        setCopyStatus("", "");
+        updateOutputAndPreview();
+      });
       el.addEventListener("blur", updateOutputAndPreview);
       el.addEventListener("change", updateOutputAndPreview);
     }
