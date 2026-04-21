@@ -2,7 +2,8 @@
   let type = "generic";
   let gradeType = "Adult";
 
-  const LOGO_URL = "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
+  const LOGO_URL =
+    "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
 
   const vals = {
     name: "Jane Doe",
@@ -18,7 +19,6 @@
     website_text: "",
     website_url: ""
   };
-
 
   const $ = (id) => document.getElementById(id);
 
@@ -62,16 +62,125 @@
       return;
     }
 
-    let html = '<h3 style="margin:0 0 8px; font-size:16px; line-height:1.3; font-weight:600; color:#001489;">Brand standards review</h3>';
+    let html =
+      '<h3 style="margin:0 0 8px; font-size:16px; line-height:1.3; font-weight:600; color:#001489;">Brand standards review</h3>';
     html += '<ul style="margin:0 0 0 18px; padding:0; list-style:disc;">';
 
     for (const item of items) {
-      html += '<li style="margin:6px 0; line-height:1.45;">' + sanitizeText(item) + "</li>";
+      html +=
+        '<li style="margin:6px 0; line-height:1.45;">' +
+        sanitizeText(item) +
+        "</li>";
     }
 
     html += "</ul>";
     box.style.display = "block";
     box.innerHTML = html;
+  }
+
+  function setInlineWebsiteError(message) {
+    const errorEl = $("website_inline_error");
+    const inputEl = $("website_url");
+
+    if (inputEl) {
+      if (message) {
+        inputEl.classList.add("input-invalid");
+        inputEl.setAttribute("aria-invalid", "true");
+      } else {
+        inputEl.classList.remove("input-invalid");
+        inputEl.removeAttribute("aria-invalid");
+      }
+    }
+
+    if (!errorEl) return;
+
+    errorEl.textContent = message || "";
+    errorEl.classList.toggle("show", !!message);
+  }
+
+  function setCopyStatus(message, kind) {
+    const statusEl = $("copy_status");
+    if (!statusEl) return;
+
+    if (!message) {
+      statusEl.textContent = "";
+      statusEl.className = "copy-status";
+      return;
+    }
+
+    statusEl.textContent = message;
+    statusEl.className =
+      "copy-status show " +
+      (kind === "error" ? "copy-status--error" : "copy-status--success");
+  }
+
+  function getFriendlyValidationWarnings(items) {
+    return items.map((item) => {
+      if (item === '"SM" is not a grade and should not be used.') {
+        return 'Replace "SM" with an approved CAP grade abbreviation such as "Capt." or "Maj."';
+      }
+
+      if (
+        item ===
+        'Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.'
+      ) {
+        return "Remove professional titles, certifications, and post-nominal letters from the name line.";
+      }
+
+      if (item === "Post-nominal credentials are not authorized in CAP signature blocks.") {
+        return "Remove credentials after your name. CAP signature blocks should not include post-nominal letters.";
+      }
+
+      if (
+        item ===
+        "Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity. Civil Air Patrol is already prominently displayed in the signature block"
+      ) {
+        return 'Remove ", CAP" from the name or duty line. Civil Air Patrol is already identified in the signature.';
+      }
+
+      if (item === "You may only list two duty assignments recorded in eServices.") {
+        return "List no more than two duty assignments, and only if they are recorded in eServices.";
+      }
+
+      if (item === "Organize duty assignments from highest to lowest organizational level.") {
+        return "Put the higher-level assignment first, then the lower-level assignment.";
+      }
+
+      if (
+        item ===
+        "Do not list certifications, accomplishments, quotes, or other non-duty information in the duty assignment lines."
+      ) {
+        return "Use the duty assignment lines only for actual duty assignments. Remove awards, certifications, quotes, and other extra text.";
+      }
+
+      if (
+        item ===
+        "No disclaimer, FOUO statement, or motivational quote may be appended unless required by law or mission program requirements."
+      ) {
+        return "Remove disclaimers or quotes unless they are specifically required.";
+      }
+
+      if (
+        item ===
+        'Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."'
+      ) {
+        return 'Only "Encampment Commander" or "Commandant of Cadets" may be listed for encampment duty assignments.';
+      }
+
+      if (item === "Include both Wing/Region website display text and URL, or leave both fields blank.") {
+        return "For the website section, either fill in both Display Text and Link URL or leave both blank.";
+      }
+
+      if (item === "Website display text must reference an official Wing or Region website.") {
+        return 'Use website display text like "Texas Wing" or "Southwest Region," not personal or social profile wording.';
+      }
+
+      if (item === "Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).") {
+        return "Use an official CAP or .gov website URL, such as https://txwg.cap.gov.";
+      }
+
+      return item;
+    });
   }
 
   function normalizeDutyAssignmentName(s) {
@@ -109,9 +218,61 @@
 
     const noComma = clean.replace(/,/g, " ");
     const pieces = noComma.split(/\s{2,}/).filter(Boolean);
-    if (pieces.length > 1) return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
+    if (pieces.length > 1) {
+      return normalizeDutyAssignmentName(pieces[pieces.length - 1]);
+    }
 
     return normalizeDutyAssignmentName(clean);
+  }
+
+  function normalizeWebsiteUrl(raw) {
+    let value = String(raw || "").trim();
+    if (!value) return "";
+
+    if (!/^https?:\/\//i.test(value)) {
+      value = "https://" + value;
+    }
+
+    return value;
+  }
+
+  function validateOfficialWebsite(urlValue) {
+    const normalized = normalizeWebsiteUrl(urlValue);
+    if (!normalized) {
+      return { normalized: "", message: "" };
+    }
+
+    let parsed;
+    try {
+      parsed = new URL(normalized);
+    } catch (err) {
+      return {
+        normalized,
+        message: "Enter a complete URL such as https://txwg.cap.gov."
+      };
+    }
+
+    const hostname = parsed.hostname.toLowerCase();
+
+    const isOfficialCapOrGov =
+      hostname === "gov" ||
+      hostname.endsWith(".gov") ||
+      hostname === "cap.gov" ||
+      hostname.endsWith(".cap.gov") ||
+      hostname === "gocivilairpatrol.com" ||
+      hostname.endsWith(".gocivilairpatrol.com");
+
+    if (!isOfficialCapOrGov) {
+      return {
+        normalized,
+        message: "Use an official Civil Air Patrol or .gov website only."
+      };
+    }
+
+    return {
+      normalized: parsed.toString(),
+      message: ""
+    };
   }
 
   function getValidationWarnings() {
@@ -129,7 +290,11 @@
       warnings.push('"SM" is not a grade and should not be used.');
     }
 
-    if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP|EMT-B|EMT-A|EMT-P|EMT-LP|AEM|CEM)\b/i.test(combinedName)) {
+    if (
+      /\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP|EMT-B|EMT-A|EMT-P|EMT-LP|AEM|CEM)\b/i.test(
+        combinedName
+      )
+    ) {
       warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
     }
 
@@ -138,7 +303,9 @@
     }
 
     if (/,\s*CAP\b/i.test(combinedName) || /,\s*CAP\b/i.test(titleValue)) {
-      warnings.push("Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity. Civil Air Patrol is already prominently displayed in the signature block");
+      warnings.push(
+        "Appending ',CAP' is not required if the content is clearly showing Civil Air Patrol in its capacity. Civil Air Patrol is already prominently displayed in the signature block"
+      );
     }
 
     const titleLines = titleValue
@@ -151,10 +318,6 @@
     if (titleLines.length > 2) {
       warnings.push("You may only list two duty assignments recorded in eServices.");
     }
-
-   // if (titleLines.some((line) => line.includes(","))) {
-  //    warnings.push("Duty assignments will state the name of the unit, followed by the duty position, without a comma.");
-//    }
 
     if (titleLines.length >= 2) {
       const rankOrder = (line) => {
@@ -172,19 +335,28 @@
     }
 
     if (/(certified|certification|award|graduate|distinguished|quote|")/i.test(titleValue)) {
-      warnings.push("Do not list certifications, accomplishments, quotes, or other non-duty information in the duty assignment lines.");
+      warnings.push(
+        "Do not list certifications, accomplishments, quotes, or other non-duty information in the duty assignment lines."
+      );
     }
 
     if (/(FOUO|for official use only|sensitive but unclassified|classified|motivat)/i.test(titleValue)) {
-      warnings.push("No disclaimer, FOUO statement, or motivational quote may be appended unless required by law or mission program requirements.");
+      warnings.push(
+        "No disclaimer, FOUO statement, or motivational quote may be appended unless required by law or mission program requirements."
+      );
     }
 
     for (const line of titleLines) {
       const mentionsEncampment = /\bencampment\b/i.test(line);
-      const allowedEncampmentRole = /\b(encampment commander|commandant of cadets|encampment commandant of cadets)\b/i.test(line);
+      const allowedEncampmentRole =
+        /\b(encampment commander|commandant of cadets|encampment commandant of cadets)\b/i.test(
+          line
+        );
 
       if (mentionsEncampment && !allowedEncampmentRole) {
-        warnings.push('Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."');
+        warnings.push(
+          'Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."'
+        );
         break;
       }
     }
@@ -193,7 +365,9 @@
       for (const line of titleLines) {
         const extractedDuty = extractDutyPosition(line);
         if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
-          warnings.push('Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          warnings.push(
+            'Adult duty assignments must use an approved duty position. Invalid entry: "' + line + '"'
+          );
           break;
         }
       }
@@ -211,7 +385,9 @@
         const normalizedExtracted = normalizeDutyAssignmentName(extractedDuty).toLowerCase();
 
         if (!normalizedExtracted || !allowedCadetNormalized.has(normalizedExtracted)) {
-          warnings.push('Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"');
+          warnings.push(
+            'Cadet duty assignments must use an approved duty position. Invalid entry: "' + line + '"'
+          );
           break;
         }
       }
@@ -222,25 +398,26 @@
     }
 
     if (websiteTextValue) {
-      const invalidText = /(my website|personal|portfolio|linkedin|facebook|instagram|twitter)/i.test(websiteTextValue);
+      const invalidText =
+        /(my website|personal|portfolio|linkedin|facebook|instagram|twitter)/i.test(
+          websiteTextValue
+        );
       if (invalidText) {
         warnings.push("Website display text must reference an official Wing or Region website.");
       }
     }
 
     if (websiteUrlValue) {
-      if (!/^https?:\/\//i.test(websiteUrlValue)) {
-        websiteUrlValue = "https://" + websiteUrlValue;
-        vals.website_url = websiteUrlValue;
-        const websiteInput = $("website_url");
-        if (websiteInput) {
-          websiteInput.value = websiteUrlValue;
-        }
+      const websiteCheck = validateOfficialWebsite(websiteUrlValue);
+      websiteUrlValue = websiteCheck.normalized;
+      vals.website_url = websiteUrlValue;
+
+      const websiteInput = $("website_url");
+      if (websiteInput && websiteInput.value !== websiteUrlValue) {
+        websiteInput.value = websiteUrlValue;
       }
 
-      const isValidGovDomain = /^https?:\/\/([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
-
-      if (!isValidGovDomain) {
+      if (websiteCheck.message) {
         warnings.push("Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).");
       }
     }
@@ -287,9 +464,64 @@
     }
   }
 
+  function updateCopyButtons(isLocked) {
+    ["copy_html_btn", "copy_plain_btn", "copy_mobile_btn"].forEach((id) => {
+      const btn = $(id);
+      if (btn) btn.disabled = !!isLocked;
+    });
+  }
+
   function blockCopyWhenInvalid(e) {
     if (!hasBlockingWarnings()) return;
     e.preventDefault();
+  }
+
+  async function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    ta.style.pointerEvents = "none";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+  }
+
+  async function handleCopy(typeToCopy) {
+    const warnings = getValidationWarnings();
+    if (warnings.length) {
+      setCopyStatus("Fix the brand standards warnings before copying.", "error");
+      return;
+    }
+
+    let output = "";
+    let label = "";
+
+    if (typeToCopy === "generic") {
+      output = template.generic();
+      label = "HTML";
+    } else if (typeToCopy === "plaintext") {
+      output = template.plaintext();
+      label = "plain text";
+    } else {
+      output = template.mobile();
+      label = "mobile";
+    }
+
+    try {
+      await copyTextToClipboard(output);
+      setCopyStatus(`Copied ${label} signature.`, "success");
+    } catch (err) {
+      setCopyStatus("Copy failed. Try again, or copy from the preview manually.", "error");
+    }
   }
 
   function normalizeTel(s) {
@@ -560,9 +792,23 @@
   function updateOutputAndPreview() {
     readInputsToState();
 
+    setCopyStatus("", "");
+
+    const websiteCheck = validateOfficialWebsite(vals.website_url);
+    if (websiteCheck.normalized && vals.website_url !== websiteCheck.normalized) {
+      vals.website_url = websiteCheck.normalized;
+      const websiteInput = $("website_url");
+      if (websiteInput && websiteInput.value !== websiteCheck.normalized) {
+        websiteInput.value = websiteCheck.normalized;
+      }
+    }
+
+    setInlineWebsiteError(websiteCheck.message);
+
     const warnings = getValidationWarnings();
-    renderValidationWarnings(warnings);
+    renderValidationWarnings(getFriendlyValidationWarnings(warnings));
     setCopyLockState(warnings.length > 0);
+    updateCopyButtons(warnings.length > 0);
 
     const out = template[type]();
 
@@ -624,6 +870,24 @@
     });
   }
 
+  function initCopyButtons() {
+    const htmlBtn = $("copy_html_btn");
+    const plainBtn = $("copy_plain_btn");
+    const mobileBtn = $("copy_mobile_btn");
+
+    if (htmlBtn) {
+      htmlBtn.addEventListener("click", () => handleCopy("generic"));
+    }
+
+    if (plainBtn) {
+      plainBtn.addEventListener("click", () => handleCopy("plaintext"));
+    }
+
+    if (mobileBtn) {
+      mobileBtn.addEventListener("click", () => handleCopy("mobile"));
+    }
+  }
+
   function init() {
     type = $("type").value;
     gradeType = $("grade_type").value;
@@ -634,6 +898,7 @@
     limitTitleLines();
     ["phone_1", "phone_2", "phone_3"].forEach((id) => autoFormatPhoneInput($(id)));
     initCopyBlocking();
+    initCopyButtons();
     updateOutputAndPreview();
 
     $("type").addEventListener("change", () => {
@@ -681,6 +946,7 @@
 
     for (const id of inputs) {
       const el = $(id);
+      if (!el) continue;
       el.addEventListener("input", updateOutputAndPreview);
       el.addEventListener("blur", updateOutputAndPreview);
       el.addEventListener("change", updateOutputAndPreview);
