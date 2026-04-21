@@ -595,3 +595,48 @@ textarea:focus {
   border: 1px solid var(--danger-border);
   color: var(--danger-accent);
 }
+
+
+.callout--collapsible {
+  padding: 0;
+  overflow: hidden;
+}
+
+.callout-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 0.75rem;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 700;
+}
+
+.callout-toggle:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.callout-toggle:focus-visible {
+  outline: 2px solid #001489;
+  outline-offset: -2px;
+}
+
+.callout-toggle__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.callout-content {
+  padding: 0 1rem 1rem;
+}
+
+.callout-content.is-collapsed {
+  display: none;
+}
