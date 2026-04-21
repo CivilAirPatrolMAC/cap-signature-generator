@@ -2,7 +2,8 @@
   let type = "generic";
   let gradeType = "Adult";
 
-  const LOGO_URL = "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
+  const LOGO_URL =
+    "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
 
   const vals = {
     name: "Jane Doe",
@@ -245,7 +246,7 @@
   }
 
   function updateCopyButtons(isLocked) {
-    ["copy_html_btn", "copy_plain_btn", "copy_mobile_btn"].forEach((id) => {
+    ["copy_preview_btn", "copy_html_btn", "copy_plain_btn", "copy_mobile_btn"].forEach((id) => {
       const btn = $(id);
       if (btn) btn.disabled = !!isLocked;
     });
@@ -270,9 +271,20 @@
     const ok = document.execCommand("copy");
     document.body.removeChild(ta);
 
-    if (!ok) {
-      throw new Error("Copy command failed");
+    if (!ok) throw new Error("Copy command failed");
+  }
+
+  async function copyHtmlAndTextToClipboard(html, text) {
+    if (navigator.clipboard && window.isSecureContext && window.ClipboardItem) {
+      const item = new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" })
+      });
+      await navigator.clipboard.write([item]);
+      return;
     }
+
+    await copyTextToClipboard(text);
   }
 
   async function handleCopy(copyType) {
@@ -304,6 +316,40 @@
       setCopyStatus(`Copied ${label} signature.`, "success");
     } catch (err) {
       setCopyStatus("Copy failed. Try again or copy from the preview manually.", "error");
+    }
+  }
+
+  async function copyPreviewAsShown() {
+    const warnings = getValidationWarnings();
+    if (warnings.length) {
+      setCopyStatus("Fix the brand standard warnings before copying.", "error");
+      return;
+    }
+
+    const mode = $("preview_mode") ? $("preview_mode").value : "rendered";
+    const rendered = $("preview_rendered");
+    const code = $("preview_code");
+
+    try {
+      if (mode === "code") {
+        await copyTextToClipboard(code ? (code.textContent || "") : "");
+        setCopyStatus("Copied preview exactly as shown in Code mode.", "success");
+        return;
+      }
+
+      if (type === "generic") {
+        const html = rendered ? (rendered.innerHTML || "") : "";
+        const text = rendered ? (rendered.innerText || rendered.textContent || "") : "";
+        await copyHtmlAndTextToClipboard(html, text);
+        setCopyStatus("Copied preview as shown.", "success");
+        return;
+      }
+
+      const visibleText = rendered ? (rendered.innerText || rendered.textContent || "") : "";
+      await copyTextToClipboard(visibleText);
+      setCopyStatus("Copied preview as shown.", "success");
+    } catch (err) {
+      setCopyStatus("Copy failed. Try again or copy manually from the preview.", "error");
     }
   }
 
@@ -462,9 +508,7 @@
         websiteUrlValue = "https://" + websiteUrlValue;
         vals.website_url = websiteUrlValue;
         const websiteInput = $("website_url");
-        if (websiteInput) {
-          websiteInput.value = websiteUrlValue;
-        }
+        if (websiteInput) websiteInput.value = websiteUrlValue;
       }
 
       const isValidGovDomain = /^https?:\/\/([a-z0-9-]+\.)*(cap\.gov|gov)(\/|$)/i.test(websiteUrlValue);
@@ -855,9 +899,14 @@
   }
 
   function initCopyButtons() {
+    const previewBtn = $("copy_preview_btn");
     const htmlBtn = $("copy_html_btn");
     const plainBtn = $("copy_plain_btn");
     const mobileBtn = $("copy_mobile_btn");
+
+    if (previewBtn) {
+      previewBtn.addEventListener("click", copyPreviewAsShown);
+    }
 
     if (htmlBtn) {
       htmlBtn.addEventListener("click", () => handleCopy("generic"));
@@ -888,16 +937,21 @@
     $("type").addEventListener("change", () => {
       type = $("type").value;
       applyTypeUI();
+      setCopyStatus("", "");
       updateOutputAndPreview();
     });
 
     $("grade_type").addEventListener("change", () => {
       gradeType = $("grade_type").value;
       gateGrades();
+      setCopyStatus("", "");
       updateOutputAndPreview();
     });
 
-    $("grade").addEventListener("change", updateOutputAndPreview);
+    $("grade").addEventListener("change", () => {
+      setCopyStatus("", "");
+      updateOutputAndPreview();
+    });
 
     $("title").addEventListener("input", () => {
       const el = $("title");
@@ -908,6 +962,7 @@
       }
 
       limitTitleLines();
+      setCopyStatus("", "");
       updateOutputAndPreview();
     });
 
@@ -941,7 +996,10 @@
 
     initPhoneFormatting();
 
-    $("preview_mode").addEventListener("change", updateOutputAndPreview);
+    $("preview_mode").addEventListener("change", () => {
+      setCopyStatus("", "");
+      updateOutputAndPreview();
+    });
   }
 
   document.addEventListener("DOMContentLoaded", init);
