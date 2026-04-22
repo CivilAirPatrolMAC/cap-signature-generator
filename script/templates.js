@@ -1,12 +1,10 @@
 // templates.js
 
-import { getVals, getType, getGradeType } from "./state.js";
-import { sanitizeText } from "./formatters.js";
+import { getVals } from "./state.js";
+import { sanitizeText, normalizePhone } from "./formatters.js";
 import { LOGO_URL } from "./constants.js";
 
-// --- Helpers ---
-
-function line(value) {
+function htmlLine(value) {
   return value ? `${sanitizeText(value)}<br>` : "";
 }
 
@@ -14,12 +12,24 @@ function textLine(value) {
   return value ? `${sanitizeText(value)}\n` : "";
 }
 
-// --- Generic (HTML) Signature ---
+function buildFullName(grade, name) {
+  return [sanitizeText(grade || ""), sanitizeText(name || "")]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+}
+
+function buildContactLines(email, phone) {
+  const lines = [];
+
+  if (email) lines.push(sanitizeText(email));
+  if (phone) lines.push(sanitizeText(normalizePhone(phone)));
+
+  return lines;
+}
 
 export function buildGenericSignature() {
   const vals = getVals();
-  const type = getType();
-  const gradeType = getGradeType();
 
   const {
     name,
@@ -30,25 +40,25 @@ export function buildGenericSignature() {
     phone
   } = vals;
 
+  const fullName = buildFullName(grade, name);
+  const contactLines = buildContactLines(email, phone);
+
   return `
-<table style="font-family: Arial, sans-serif; font-size: 12px;">
+<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4;">
   <tr>
-    <td style="padding-right:10px;">
-      <img src="${LOGO_URL}" alt="CAP Logo" width="80">
+    <td style="padding-right: 12px; vertical-align: top;">
+      <img src="${LOGO_URL}" alt="CAP Logo" width="80" style="display: block; border: 0;">
     </td>
-    <td>
-      <strong>${sanitizeText(grade || "")} ${sanitizeText(name || "")}</strong><br>
-      ${line(duty)}
-      ${line(unit)}
-      ${line(email)}
-      ${line(phone)}
+    <td style="vertical-align: top; color: #000;">
+      <strong>${fullName}</strong><br>
+      ${htmlLine(duty)}
+      ${htmlLine(unit)}
+      ${contactLines.map((line) => `${line}<br>`).join("")}
     </td>
   </tr>
 </table>
 `.trim();
 }
-
-// --- Plain Text Signature ---
 
 export function buildPlainTextSignature() {
   const vals = getVals();
@@ -62,18 +72,19 @@ export function buildPlainTextSignature() {
     phone
   } = vals;
 
+  const fullName = buildFullName(grade, name);
+  const phoneDisplay = phone ? normalizePhone(phone) : "";
+
   return [
-    `${sanitizeText(grade || "")} ${sanitizeText(name || "")}`,
-    duty && sanitizeText(duty),
-    unit && sanitizeText(unit),
-    email && sanitizeText(email),
-    phone && sanitizeText(phone)
+    fullName,
+    duty ? sanitizeText(duty) : "",
+    unit ? sanitizeText(unit) : "",
+    email ? sanitizeText(email) : "",
+    phoneDisplay ? sanitizeText(phoneDisplay) : ""
   ]
     .filter(Boolean)
     .join("\n");
 }
-
-// --- Mobile-Friendly Signature ---
 
 export function buildMobileSignature() {
   const vals = getVals();
@@ -87,13 +98,18 @@ export function buildMobileSignature() {
     phone
   } = vals;
 
+  const fullName = buildFullName(grade, name);
+  const contactLines = buildContactLines(email, phone);
+
   return `
-<div style="font-family: Arial, sans-serif; font-size: 14px;">
-  <strong>${sanitizeText(grade || "")} ${sanitizeText(name || "")}</strong><br>
-  ${line(duty)}
-  ${line(unit)}
-  ${line(email)}
-  ${line(phone)}
+<div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #000;">
+  <div style="margin-bottom: 8px;">
+    <img src="${LOGO_URL}" alt="CAP Logo" width="64" style="display: block; border: 0;">
+  </div>
+  <strong>${fullName}</strong><br>
+  ${htmlLine(duty)}
+  ${htmlLine(unit)}
+  ${contactLines.map((line) => `${line}<br>`).join("")}
 </div>
 `.trim();
 }
