@@ -19,9 +19,9 @@ function getSelectedFormat() {
   return checked ? checked.value : SIGNATURE_FORMATS.GENERIC;
 }
 
-// --- Output selector ---
+// --- Output Selection ---
 
-function getOutput(format) {
+function buildOutput(format) {
   switch (format) {
     case SIGNATURE_FORMATS.PLAINTEXT:
       return buildPlainTextSignature();
@@ -39,22 +39,22 @@ function getOutput(format) {
 
 export function renderPreview() {
   const format = getSelectedFormat();
-  const output = getOutput(format);
+  const output = buildOutput(format);
 
   const previewEl = $("#preview");
   const outputEl = $("#output");
 
-  // Update code/textarea output
+  // Update textarea/code view
   if (outputEl) {
     outputEl.value = output;
   }
 
-  // Update rendered preview
+  // 🚨 THIS IS THE CRITICAL PART FOR IMAGE RENDERING
   if (previewEl) {
     if (format === SIGNATURE_FORMATS.PLAINTEXT) {
-      previewEl.textContent = output; // text only
+      previewEl.textContent = output; // plain text only
     } else {
-      previewEl.innerHTML = output; // HTML (REQUIRED for image)
+      previewEl.innerHTML = output;   // ✅ REQUIRED for <img> to render
     }
   }
 }
