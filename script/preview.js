@@ -5,15 +5,21 @@ import {
   buildPlainTextSignature,
   buildMobileSignature
 } from "./templates.js";
+
 import { SIGNATURE_FORMATS } from "./constants.js";
 
-function $(selector) {
-  return document.querySelector(selector);
+function byId(id) {
+  return document.getElementById(id);
 }
 
 function getSelectedFormat() {
-  const checked = document.querySelector('input[name="format"]:checked');
-  return checked ? checked.value : SIGNATURE_FORMATS.GENERIC;
+  const typeEl = byId("type");
+  return typeEl ? typeEl.value : SIGNATURE_FORMATS.GENERIC;
+}
+
+function getSelectedPreviewMode() {
+  const modeEl = byId("preview_mode");
+  return modeEl ? modeEl.value : "rendered";
 }
 
 function buildOutput(format) {
@@ -30,20 +36,31 @@ function buildOutput(format) {
 
 export function renderPreview() {
   const format = getSelectedFormat();
+  const previewMode = getSelectedPreviewMode();
   const output = buildOutput(format);
 
-  const previewEl = $("#preview");
-  const outputEl = $("#output");
+  const renderedEl = byId("preview_rendered");
+  const codeEl = byId("preview_code");
 
-  if (outputEl) {
-    outputEl.value = output;
+  if (renderedEl) {
+    if (format === SIGNATURE_FORMATS.PLAINTEXT) {
+      renderedEl.textContent = output;
+    } else {
+      renderedEl.innerHTML = output;
+    }
   }
 
-  if (previewEl) {
-    if (format === SIGNATURE_FORMATS.PLAINTEXT) {
-      previewEl.textContent = output;
+  if (codeEl) {
+    codeEl.textContent = output;
+  }
+
+  if (renderedEl && codeEl) {
+    if (previewMode === "code") {
+      renderedEl.classList.add("hidden");
+      codeEl.classList.remove("hidden");
     } else {
-      previewEl.innerHTML = output;
+      renderedEl.classList.remove("hidden");
+      codeEl.classList.add("hidden");
     }
   }
 }
