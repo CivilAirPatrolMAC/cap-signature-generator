@@ -39,21 +39,22 @@ function limitTitleLines() {
 
 function collectFormValues() {
   return {
-    name: getValue("name"),
-    grade: getValue("grade"),
-    duty: getValue("title"),
-    unit: getValue("wing"),
-    email: "",
-    phone: getValue("phone_1"),
-    websiteText: getValue("website_text"),
-    websiteUrl: getValue("website_url"),
-    phone2: getValue("phone_2"),
-    phone3: getValue("phone_3"),
-    phone1Type: getValue("phone_1_type"),
-    phone2Type: getValue("phone_2_type"),
-    phone3Type: getValue("phone_3_type"),
+    signatureType: getValue("type"),
     gradeType: getValue("grade_type"),
-    signatureType: getValue("type")
+    grade: getValue("grade"),
+    name: getValue("name"),
+    wing: getValue("wing"),
+    duty: getValue("title"),
+
+    phone1Type: getValue("phone_1_type"),
+    phone1: getValue("phone_1"),
+    phone2Type: getValue("phone_2_type"),
+    phone2: getValue("phone_2"),
+    phone3Type: getValue("phone_3_type"),
+    phone3: getValue("phone_3"),
+
+    websiteText: getValue("website_text"),
+    websiteUrl: getValue("website_url")
   };
 }
 
@@ -93,34 +94,26 @@ function initGuidelinesToggle() {
   });
 }
 
-function initPreviewMode() {
-  const previewModeEl = byId("preview_mode");
-  if (!previewModeEl) return;
-
-  previewModeEl.addEventListener("change", renderPreview);
-}
-
-function initSignatureType() {
-  const typeEl = byId("type");
-  if (!typeEl) return;
-
-  typeEl.addEventListener("change", handleFormChange);
-}
-
-function initFormListeners() {
-  const form = byId("sig-form");
-  if (!form) return;
-
-  form.addEventListener("input", handleFormChange);
-  form.addEventListener("change", handleFormChange);
-}
-
 export function initUI() {
-  initFormListeners();
+  const form = byId("sig-form");
+  const typeEl = byId("type");
+  const previewModeEl = byId("preview_mode");
+
+  if (form) {
+    form.addEventListener("input", handleFormChange);
+    form.addEventListener("change", handleFormChange);
+  }
+
+  if (typeEl) {
+    typeEl.addEventListener("change", handleFormChange);
+  }
+
+  if (previewModeEl) {
+    previewModeEl.addEventListener("change", renderPreview);
+  }
+
   initPhoneFormatting();
   initGuidelinesToggle();
-  initPreviewMode();
-  initSignatureType();
 
   limitTitleLines();
   updateVals(collectFormValues());
