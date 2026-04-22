@@ -1,22 +1,18 @@
 // constants.js
 
-// --- Image Assets ---
-export const LOGO_URL = "./LogoNoAux.png"; // located at repo root
+export const LOGO_URL = "./LogoNoAux.png";
 
-// --- Signature Formats ---
 export const SIGNATURE_FORMATS = {
   GENERIC: "generic",
   PLAINTEXT: "plaintext",
   MOBILE: "mobile"
 };
 
-// --- Member Types ---
 export const MEMBER_TYPES = {
   SENIOR: "senior",
   CADET: "cadet"
 };
 
-// --- Grade Types ---
 export const GRADE_TYPES = {
   OFFICER: "officer",
   NCO: "nco",
@@ -24,7 +20,6 @@ export const GRADE_TYPES = {
   CADET_NCO: "cadet-nco"
 };
 
-// --- Default State ---
 export const DEFAULT_STATE = {
   type: MEMBER_TYPES.SENIOR,
   gradeType: GRADE_TYPES.OFFICER,
@@ -38,7 +33,6 @@ export const DEFAULT_STATE = {
   }
 };
 
-// --- Field Names (for form inputs) ---
 export const FIELD_NAMES = {
   NAME: "name",
   GRADE: "grade",
