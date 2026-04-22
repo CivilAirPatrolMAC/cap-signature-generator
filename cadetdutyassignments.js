@@ -1,6 +1,6 @@
 // cadetdutyassignments.js
 
-const CADET_ALLOWED_DUTY_ASSIGNMENTS = new Set([
+export const cadetDutyAssignments = [
   "Cadet Activities NCO",
   "Cadet Activities Officer",
   "Cadet Administrative NCO",
@@ -54,4 +54,4 @@ const CADET_ALLOWED_DUTY_ASSIGNMENTS = new Set([
   "Cadet Chief of Staff",
   "Representative",
   "Assistant Representative"
-]);
+];
