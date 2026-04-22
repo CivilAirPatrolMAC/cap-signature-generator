@@ -464,7 +464,7 @@
       }
     }
 
-/*    if (gradeType === "Adult" && !hasNational) {
+    /*    if (gradeType === "Adult" && !hasNational) {
       for (const line of titleLines) {
         const extractedDuty = extractDutyPosition(line);
         if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
@@ -669,6 +669,12 @@
         })
         .join("");
 
+      const auxiliaryLine = phoneRows
+        ? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: bold; margin: 0 0 5px;">
+    Civil Air Patrol, U.S. Air Force Auxiliary
+  </p>`
+        : "";
+
       return `<!DOCTYPE html>
 <html><body><br />
   <h1 style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #001871; font-weight: bold; margin: 0 0 5px;">
@@ -679,6 +685,7 @@
     ${titleHtml}
   </h2>` : ""}
 
+  ${auxiliaryLine}
   ${phoneRows}
 
   <p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0 0 5px;">
@@ -724,6 +731,10 @@
         { t: vals.phone_2_type, n: vals.phone_2 },
         { t: vals.phone_3_type, n: vals.phone_3 }
       ].filter((p) => String(p.n || "").trim());
+
+      if (phones.length) {
+        lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
+      }
 
       for (const p of phones) {
         lines.push(`(${p.t}) ${String(p.n).trim()}`);
