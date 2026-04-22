@@ -1,10 +1,11 @@
 // state.js
 
-// Internal state object
+import { DEFAULT_STATE } from "./constants.js";
+
 const state = {
-  type: "senior",        // "senior" | "cadet"
-  gradeType: "officer",  // adjust if you support more types
-  vals: {}               // form values (name, email, phone, etc.)
+  type: DEFAULT_STATE.type,
+  gradeType: DEFAULT_STATE.gradeType,
+  vals: { ...DEFAULT_STATE.vals }
 };
 
 // --- Getters ---
@@ -40,19 +41,32 @@ export function updateVals(updates) {
     ...state.vals,
     ...updates
   };
+
+  if (Object.prototype.hasOwnProperty.call(updates, "signatureType")) {
+    state.type = updates.signatureType || DEFAULT_STATE.type;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updates, "gradeType")) {
+    state.gradeType = updates.gradeType || DEFAULT_STATE.gradeType;
+  }
 }
 
 export function setVal(key, value) {
   state.vals[key] = value;
+
+  if (key === "signatureType") {
+    state.type = value || DEFAULT_STATE.type;
+  }
+
+  if (key === "gradeType") {
+    state.gradeType = value || DEFAULT_STATE.gradeType;
+  }
 }
 
 // --- Initialization ---
 
 export function initializeState() {
-  // If you later want to hydrate from localStorage or defaults,
-  // this is the place to do it.
-
-  state.type = "senior";
-  state.gradeType = "officer";
-  state.vals = {};
+  state.type = DEFAULT_STATE.type;
+  state.gradeType = DEFAULT_STATE.gradeType;
+  state.vals = { ...DEFAULT_STATE.vals };
 }
