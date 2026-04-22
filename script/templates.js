@@ -1,7 +1,7 @@
 // templates.js
 
 import { getVals } from "./state.js";
-import { sanitizeText, normalizePhone } from "./formatters.js";
+import { sanitizeText } from "./formatters.js";
 import { LOGO_URL } from "./constants.js";
 
 function buildFullName(grade, name) {
@@ -10,31 +10,31 @@ function buildFullName(grade, name) {
     .join(" ");
 }
 
-function buildContactLines(email, phone) {
-  const lines = [];
-
-  if (email) lines.push(sanitizeText(email));
-  if (phone) lines.push(sanitizeText(normalizePhone(phone)));
-
-  return lines;
+function buildPhoneLine(type, number) {
+  if (!number) return "";
+  return `${sanitizeText(type || "M")}: ${sanitizeText(number)}`;
 }
 
 export function buildGenericSignature() {
   const vals = getVals();
-  const { name, grade, duty, unit, email, phone } = vals;
 
-  const fullName = buildFullName(grade, name);
+  const fullName = buildFullName(vals.grade, vals.name);
+
   const detailLines = [
-    duty ? sanitizeText(duty) : "",
-    unit ? sanitizeText(unit) : "",
-    ...buildContactLines(email, phone)
+    vals.duty ? sanitizeText(vals.duty).replace(/\n/g, "<br>") : "",
+    buildPhoneLine(vals.phone1Type, vals.phone1),
+    buildPhoneLine(vals.phone2Type, vals.phone2),
+    buildPhoneLine(vals.phone3Type, vals.phone3),
+    vals.websiteText && vals.websiteUrl
+      ? `<a href="${sanitizeText(vals.websiteUrl)}">${sanitizeText(vals.websiteText)}</a>`
+      : ""
   ].filter(Boolean);
 
   return `
 <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4;">
   <tr>
     <td style="padding-right: 16px; vertical-align: top;">
-      <img src="${LOGO_URL}" alt="CAP Logo" width="150" style="display: block; border: 0;">
+      <img src="${LOGO_URL}" alt="CAP Logo" width="150" style="display:block; border:0;">
     </td>
     <td style="vertical-align: top; color: #000;">
       ${fullName ? `<strong>${fullName}</strong><br>` : ""}
@@ -47,17 +47,15 @@ export function buildGenericSignature() {
 
 export function buildPlainTextSignature() {
   const vals = getVals();
-  const { name, grade, duty, unit, email, phone } = vals;
-
-  const fullName = buildFullName(grade, name);
-  const phoneDisplay = phone ? normalizePhone(phone) : "";
+  const fullName = buildFullName(vals.grade, vals.name);
 
   return [
     fullName,
-    duty ? sanitizeText(duty) : "",
-    unit ? sanitizeText(unit) : "",
-    email ? sanitizeText(email) : "",
-    phoneDisplay ? sanitizeText(phoneDisplay) : ""
+    vals.duty || "",
+    buildPhoneLine(vals.phone1Type, vals.phone1),
+    buildPhoneLine(vals.phone2Type, vals.phone2),
+    buildPhoneLine(vals.phone3Type, vals.phone3),
+    vals.websiteText && vals.websiteUrl ? `${vals.websiteText}: ${vals.websiteUrl}` : ""
   ]
     .filter(Boolean)
     .join("\n");
@@ -65,22 +63,15 @@ export function buildPlainTextSignature() {
 
 export function buildMobileSignature() {
   const vals = getVals();
-  const { name, grade, duty, unit, email, phone } = vals;
-
-  const fullName = buildFullName(grade, name);
-  const detailLines = [
-    duty ? sanitizeText(duty) : "",
-    unit ? sanitizeText(unit) : "",
-    ...buildContactLines(email, phone)
-  ].filter(Boolean);
+  const fullName = buildFullName(vals.grade, vals.name);
 
   return `
 <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #000;">
   <div style="margin-bottom: 8px;">
-    <img src="${LOGO_URL}" alt="CAP Logo" width="120" style="display: block; border: 0;">
+    <img src="${LOGO_URL}" alt="CAP Logo" width="120" style="display:block; border:0;">
   </div>
   ${fullName ? `<strong>${fullName}</strong><br>` : ""}
-  ${detailLines.map((line) => `${line}<br>`).join("")}
+  ${vals.wing ? `${sanitizeText(vals.wing)}<br>` : ""}
 </div>
 `.trim();
 }
