@@ -8,10 +8,6 @@ function htmlLine(value) {
   return value ? `${sanitizeText(value)}<br>` : "";
 }
 
-function textLine(value) {
-  return value ? `${sanitizeText(value)}\n` : "";
-}
-
 function buildFullName(grade, name) {
   return [sanitizeText(grade || ""), sanitizeText(name || "")]
     .filter(Boolean)
