@@ -1,6 +1,6 @@
 // adultdutyassignments.js
 
-const ADULT_ALLOWED_DUTY_ASSIGNMENTS = new Set([
+export const adultDutyAssignments = [
   "Encampment Commander",
   "Encampment Commandant of Cadets",
   "Activity Director",
@@ -109,4 +109,4 @@ const ADULT_ALLOWED_DUTY_ASSIGNMENTS = new Set([
   "Assistant Deputy Chief of Staff, Education and Training",
   "National",
   "NHQ"
-]);
+];
