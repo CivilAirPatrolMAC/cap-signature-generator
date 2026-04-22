@@ -8,6 +8,7 @@
   const vals = {
     name: "Jane Doe",
     grade: "2nd Lt.",
+    is_chaplain: false,
     wing: "",
     title: "",
     phone_1_type: "M",
@@ -639,8 +640,9 @@
       const name = sanitizeText(vals.name || "Jane Doe");
       const grade = sanitizeText(vals.grade || "");
       const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
+      const chaplainPrefix = vals.is_chaplain && grade ? "Ch., " : "";
 
-      const gradePart = grade ? `${grade} ` : "";
+      const gradePart = grade ? `${chaplainPrefix}${grade} ` : "";
       const displayName = `${cadetPrefix}${gradePart}${name}`;
 
       const titleRaw = vals.title || "";
@@ -708,7 +710,8 @@
 
     plaintext: () => {
       const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
-      const gradePart = vals.grade ? `${vals.grade} ` : "";
+      const chaplainPrefix = vals.is_chaplain && vals.grade ? "Ch., " : "";
+      const gradePart = vals.grade ? `${chaplainPrefix}${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
 
       const lines = [];
@@ -748,7 +751,8 @@
 
     mobile: () => {
       const cadetPrefix = gradeType === "Cadet" ? "Cadet " : "";
-      const gradePart = vals.grade ? `${vals.grade} ` : "";
+      const chaplainPrefix = vals.is_chaplain && vals.grade ? "Ch., " : "";
+      const gradePart = vals.grade ? `${chaplainPrefix}${vals.grade} ` : "";
       const name = vals.name || "Jane Doe";
       const wing = vals.wing && vals.wing.trim() ? `, ${vals.wing.trim().toUpperCase()}` : "";
 
@@ -838,6 +842,7 @@
 
   function readInputsToState() {
     vals.grade = $("grade").value;
+    vals.is_chaplain = $("is_chaplain").checked;
 
     const nm = $("name").value.trim();
     vals.name = nm ? nm : "Jane Doe";
@@ -1005,6 +1010,7 @@
     const inputs = [
       "name",
       "wing",
+      "is_chaplain",
       "phone_1_type",
       "phone_2_type",
       "phone_3_type",
