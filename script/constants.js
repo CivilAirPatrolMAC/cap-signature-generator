@@ -9,35 +9,28 @@ export const SIGNATURE_FORMATS = {
 };
 
 export const MEMBER_TYPES = {
-  SENIOR: "senior",
-  CADET: "cadet"
-};
-
-export const GRADE_TYPES = {
-  OFFICER: "officer",
-  NCO: "nco",
-  CADET_OFFICER: "cadet-officer",
-  CADET_NCO: "cadet-nco"
+  PAID: "Paid",
+  ADULT: "Adult",
+  CADET: "Cadet"
 };
 
 export const DEFAULT_STATE = {
-  type: MEMBER_TYPES.SENIOR,
-  gradeType: GRADE_TYPES.OFFICER,
+  type: SIGNATURE_FORMATS.GENERIC,
+  gradeType: MEMBER_TYPES.ADULT,
   vals: {
-    name: "",
+    signatureType: SIGNATURE_FORMATS.GENERIC,
+    gradeType: MEMBER_TYPES.ADULT,
     grade: "",
+    name: "",
+    wing: "",
     duty: "",
-    unit: "",
-    email: "",
-    phone: ""
+    phone1Type: "M",
+    phone1: "",
+    phone2Type: "M",
+    phone2: "",
+    phone3Type: "M",
+    phone3: "",
+    websiteText: "",
+    websiteUrl: ""
   }
-};
-
-export const FIELD_NAMES = {
-  NAME: "name",
-  GRADE: "grade",
-  DUTY: "duty",
-  UNIT: "unit",
-  EMAIL: "email",
-  PHONE: "phone"
 };
