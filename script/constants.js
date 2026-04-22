@@ -1,6 +1,6 @@
 // constants.js
 
-export const LOGO_URL = "https://www.gocivilairpatrol.com/media/cms/CAP_Seal_B7742B16539E1.png";
+export const LOGO_URL = "./LogoNoAux.png";
 
 export const MEMBER_TYPES = {
   SENIOR: "senior",
