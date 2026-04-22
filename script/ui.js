@@ -1,60 +1,50 @@
 // ui.js
 
-import { setType, setGradeType, updateVals } from "./state.js";
+import { updateVals } from "./state.js";
 import { renderPreview } from "./preview.js";
 
-// --- Helpers ---
-
-function $(selector) {
-  return document.querySelector(selector);
+function byId(id) {
+  return document.getElementById(id);
 }
 
-function $all(selector) {
-  return document.querySelectorAll(selector);
+function getValue(id) {
+  const el = byId(id);
+  return el ? el.value : "";
 }
 
-// --- Event Wiring ---
+function collectFormValues() {
+  return {
+    name: getValue("name"),
+    grade: getValue("grade"),
+    duty: getValue("title"),
+    unit: getValue("wing"),
+    email: getValue("website_text"),
+    phone: getValue("phone_1")
+  };
+}
 
-function handleInputChange(e) {
-  const { name, value } = e.target;
-
-  if (!name) return;
-
-  updateVals({ [name]: value });
+function handleFormChange() {
+  updateVals(collectFormValues());
   renderPreview();
 }
-
-function handleTypeChange(e) {
-  const newType = e.target.value;
-
-  setType(newType);
-  renderPreview();
-}
-
-function handleGradeTypeChange(e) {
-  const newGradeType = e.target.value;
-
-  setGradeType(newGradeType);
-  renderPreview();
-}
-
-// --- Public Init ---
 
 export function initUI() {
-  // All text/standard inputs
-  $all("input, textarea, select").forEach((el) => {
-    el.addEventListener("input", handleInputChange);
-  });
+  const form = byId("sig-form");
+  const typeEl = byId("type");
+  const previewModeEl = byId("preview_mode");
 
-  // Type selector (senior/cadet)
-  const typeEl = $("#type");
-  if (typeEl) {
-    typeEl.addEventListener("change", handleTypeChange);
+  updateVals(collectFormValues());
+
+  if (form) {
+    form.addEventListener("input", handleFormChange);
+    form.addEventListener("change", handleFormChange);
   }
 
-  // Grade type selector (officer, etc.)
-  const gradeTypeEl = $("#gradeType");
-  if (gradeTypeEl) {
-    gradeTypeEl.addEventListener("change", handleGradeTypeChange);
+  if (typeEl) {
+    typeEl.addEventListener("change", renderPreview);
+  }
+
+  if (previewModeEl) {
+    previewModeEl.addEventListener("change", renderPreview);
   }
 }
