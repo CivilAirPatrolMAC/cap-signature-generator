@@ -669,11 +669,9 @@
         })
         .join("");
 
-      const auxiliaryLine = phoneRows
-        ? `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: bold; margin: 0 0 5px;">
-    Civil Air Patrol, U.S. Air Force Auxiliary
-  </p>`
-        : "";
+      const auxiliaryLine = `<p style="font-size: 12px; line-height: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #000000; font-weight: bold; margin: 0 0 5px;">
+  Civil Air Patrol, U.S. Air Force Auxiliary
+</p>`;
 
       return `<!DOCTYPE html>
 <html><body><br />
@@ -732,9 +730,7 @@
         { t: vals.phone_3_type, n: vals.phone_3 }
       ].filter((p) => String(p.n || "").trim());
 
-      if (phones.length) {
-        lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
-      }
+     lines.push("Civil Air Patrol, U.S. Air Force Auxiliary");
 
       for (const p of phones) {
         lines.push(`(${p.t}) ${String(p.n).trim()}`);
