@@ -464,7 +464,7 @@
       }
     }
 
-    if (gradeType === "Adult" && !hasNational) {
+/*    if (gradeType === "Adult" && !hasNational) {
       for (const line of titleLines) {
         const extractedDuty = extractDutyPosition(line);
         if (!extractedDuty || !ADULT_ALLOWED_DUTY_ASSIGNMENTS.has(extractedDuty)) {
@@ -490,7 +490,7 @@
           break;
         }
       }
-    }
+    } */
 
     if ((websiteTextValue && !websiteUrlValue) || (!websiteTextValue && websiteUrlValue)) {
       warnings.push("Include both Wing/Region website display text and URL, or leave both fields blank.");
