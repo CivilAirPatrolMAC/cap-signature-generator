@@ -1,7 +1,12 @@
 // preview.js
 
-import { getState } from "./state.js";
-import { buildGenericSignature, buildPlainTextSignature, buildMobileSignature } from "./templates.js";
+import {
+  buildGenericSignature,
+  buildPlainTextSignature,
+  buildMobileSignature
+} from "./templates.js";
+
+import { SIGNATURE_FORMATS } from "./constants.js";
 
 // --- Helpers ---
 
@@ -11,40 +16,45 @@ function $(selector) {
 
 function getSelectedFormat() {
   const checked = document.querySelector('input[name="format"]:checked');
-  return checked ? checked.value : "generic";
+  return checked ? checked.value : SIGNATURE_FORMATS.GENERIC;
 }
 
-function getOutputForFormat(state, format) {
+// --- Output selector ---
+
+function getOutput(format) {
   switch (format) {
-    case "plaintext":
-      return buildPlainTextSignature(state);
-    case "mobile":
-      return buildMobileSignature(state);
-    case "generic":
+    case SIGNATURE_FORMATS.PLAINTEXT:
+      return buildPlainTextSignature();
+
+    case SIGNATURE_FORMATS.MOBILE:
+      return buildMobileSignature();
+
+    case SIGNATURE_FORMATS.GENERIC:
     default:
-      return buildGenericSignature(state);
+      return buildGenericSignature();
   }
 }
 
-// --- Public Render ---
+// --- Main Render Function ---
 
 export function renderPreview() {
-  const state = getState();
   const format = getSelectedFormat();
-  const output = getOutputForFormat(state, format);
+  const output = getOutput(format);
 
-  const codeOutputEl = $("#output");
   const previewEl = $("#preview");
+  const outputEl = $("#output");
 
-  if (codeOutputEl) {
-    codeOutputEl.value = output;
+  // Update code/textarea output
+  if (outputEl) {
+    outputEl.value = output;
   }
 
+  // Update rendered preview
   if (previewEl) {
-    if (format === "plaintext") {
-      previewEl.textContent = output;
+    if (format === SIGNATURE_FORMATS.PLAINTEXT) {
+      previewEl.textContent = output; // text only
     } else {
-      previewEl.innerHTML = output;
+      previewEl.innerHTML = output; // HTML (REQUIRED for image)
     }
   }
 }
