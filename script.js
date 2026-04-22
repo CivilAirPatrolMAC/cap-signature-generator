@@ -760,6 +760,24 @@
     }
   };
 
+
+  function isChaplainAllowed() {
+    return gradeType === "Adult" || gradeType === "Paid";
+  }
+
+  function syncChaplainToggle() {
+    const chaplainCheckbox = $("is_chaplain");
+    if (!chaplainCheckbox) return;
+
+    const allowed = isChaplainAllowed();
+    chaplainCheckbox.disabled = !allowed;
+
+    if (!allowed && chaplainCheckbox.checked) {
+      chaplainCheckbox.checked = false;
+      vals.is_chaplain = false;
+    }
+  }
+
   function gateGrades() {
     const gradeSelect = $("grade");
     const options = Array.from(gradeSelect.querySelectorAll("option"));
@@ -842,7 +860,7 @@
 
   function readInputsToState() {
     vals.grade = $("grade").value;
-    vals.is_chaplain = $("is_chaplain").checked;
+    vals.is_chaplain = isChaplainAllowed() && $("is_chaplain").checked;
 
     const nm = $("name").value.trim();
     vals.name = nm ? nm : "Jane Doe";
@@ -959,6 +977,7 @@
     gradeType = $("grade_type").value;
 
     gateGrades();
+    syncChaplainToggle();
     applyTypeUI();
 
     limitTitleLines();
@@ -978,6 +997,7 @@
     $("grade_type").addEventListener("change", () => {
       gradeType = $("grade_type").value;
       gateGrades();
+      syncChaplainToggle();
       setCopyStatus("", "");
       updateOutputAndPreview();
     });
