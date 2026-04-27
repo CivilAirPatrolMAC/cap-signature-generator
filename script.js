@@ -3,7 +3,7 @@
   let gradeType = "Adult";
 
   const LOGO_URL =
-    "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcLzkzRHN5eTR0WmI3MXIydXRpY2FzLnBuZyJ9:frontify:joUZ3kIja1IrzlO8KaboqI-LUNdOHqpimmyV8BsveqA?width=2400";
+    "./LogoNoAux.png";
 
   const vals = {
     name: "Jane Doe",
