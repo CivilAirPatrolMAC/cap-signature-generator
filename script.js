@@ -698,7 +698,9 @@
 
   <a href="https://www.GoCivilAirPatrol.com">
     <img src="${LOGO_URL}"
-         style="display:block; border:0; outline:none; text-decoration:none; width:200px; max-width:200px; height:auto;"
+         width="200"
+         height="42"
+         style="display:block; border:0; outline:none; text-decoration:none; width:200px; max-width:200px; height:42px;"
          alt="Civil Air Patrol Logo" />
   </a>
 
