@@ -160,6 +160,14 @@
         };
       }
 
+      if (item === 'Chaplains may not hold the duty assignment of "Commander."') {
+        return {
+          title: '“Commander” is not allowed when chaplain is selected.',
+          why: "Chaplains may not hold the duty assignment of commander.",
+          fix: "Change the duty assignment to an authorized non-commander position."
+        };
+      }
+
       if (item === "Include both Wing/Region website display text and URL, or leave both fields blank.") {
         return {
           title: "The website entry is incomplete.",
@@ -462,6 +470,16 @@
       if (mentionsEncampment && !allowedEncampmentRole) {
         warnings.push('Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."');
         break;
+      }
+    }
+
+    if (vals.is_chaplain) {
+      for (const line of titleLines) {
+        const extractedDuty = extractDutyPosition(line);
+        if (normalizeDutyAssignmentName(extractedDuty).toLowerCase() === "commander") {
+          warnings.push('Chaplains may not hold the duty assignment of "Commander."');
+          break;
+        }
       }
     }
 
