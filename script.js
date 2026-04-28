@@ -409,7 +409,7 @@
       warnings.push('"SM" is not a grade and should not be used.');
     }
 
-    if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CFII|ATP|A&P|Esq\.?|FACHE|FRCP|EMT-B|EMT-A|EMT-P|EMT-LP|AEM|CEM)\b/i.test(combinedName)) {
+    if (/\b(MD|DO|PhD|EdD|DBA|DNP|PharmD|DDS|DMD|OD|JD|LLM|MA|MS|MBA|MPA|MEd|BA|BS|BBA|RN|NP|PA-C|CPA|CFA|PMP|CFM|SHRM-CP|SHRM-SCP|CISSP|PE|CFI|CAP|CFII|ATP|A&P|Esq\.?|FACHE|FRCP|EMT|EMT-B|EMT-A|EMT-P|EMT-LP|AEM|CEM)\b/i.test(combinedName)) {
       warnings.push('Do not include professional titles or post-nomials such as "MD," "PhD," "CFI," etc.');
     }
 
