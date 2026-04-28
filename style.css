@@ -182,8 +182,6 @@ button {
 .preview-sticky {
   position: sticky;
   top: 1rem;
-  max-height: calc(100vh - 2rem);
-  overflow: auto;
   display: grid;
   gap: 1rem;
 }
@@ -468,19 +466,17 @@ textarea:focus {
 
 /* Responsive */
 
-@media (max-width: 960px) {
+@media (max-width: 860px) {
   .layout {
     grid-template-columns: 1fr;
   }
 
   .preview-sticky {
     position: static;
-    max-height: none;
-    overflow: visible;
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .dual--triple,
   .dual--pair {
     grid-template-columns: 1fr;
@@ -496,7 +492,7 @@ textarea:focus {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 640px) {
   .app-shell {
     width: min(100% - 1rem, var(--max-width));
     padding-top: 1rem;
