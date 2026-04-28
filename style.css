@@ -182,6 +182,8 @@ button {
 .preview-sticky {
   position: sticky;
   top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
   display: grid;
   gap: 1rem;
 }
@@ -466,13 +468,15 @@ textarea:focus {
 
 /* Responsive */
 
-@media (max-width: 1120px) {
+@media (max-width: 960px) {
   .layout {
     grid-template-columns: 1fr;
   }
 
   .preview-sticky {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
