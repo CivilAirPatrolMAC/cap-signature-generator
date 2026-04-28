@@ -468,15 +468,20 @@ textarea:focus {
 
 @media (max-width: 1120px) {
   .layout {
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .layout {
     grid-template-columns: 1fr;
   }
 
   .preview-sticky {
     position: static;
   }
-}
 
-@media (max-width: 860px) {
   .dual--triple,
   .dual--pair {
     grid-template-columns: 1fr;
