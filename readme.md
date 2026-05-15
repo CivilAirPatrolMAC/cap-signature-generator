@@ -1,94 +1,90 @@
 # Civil Air Patrol Email Signature Generator
 
-This repository contains a browser-based tool for creating Civil Air Patrol (CAP) email signature blocks. It provides a guided form, validates entries against CAP brand rules, renders a live preview, and offers copy actions for different signature formats.
+Browser-based CAP signature builder that helps members create compliant email signature blocks with a live preview, copy tools, and built-in policy checks.
 
-## What this tool does
+## Current capabilities
 
-- Generates three signature variants:
-  - **Default** (rich HTML)
+- Generates **three signature outputs**:
+  - **Default** (rich HTML email signature)
   - **Plain Text**
   - **Abbreviated (Mobile)**
-- Provides a **live preview** of the generated signature as users fill out the form.
-- Validates content against CAP guidance (for example: grade usage, duty-assignment limits/order, approved website domains, and restricted text).
-- Displays readable validation feedback with “why” and “fix” guidance.
-- Supports quick copy actions for preview content and generated output.
+- Includes a **live preview panel** that updates as fields change.
+- Provides **brand standards validation** before copying:
+  - grade/title and credential checks
+  - duty assignment count/order/content checks
+  - adult vs cadet duty-position allowlist validation
+  - restricted content checks (quotes/disclaimers, charter-number patterns, etc.)
+  - official website text/URL checks
+  - duplicate phone type checks
+- Shows **explainable warning cards** with:
+  - what is wrong
+  - why it is flagged
+  - how to fix it
+- Supports **clipboard actions** for:
+  - preview copy
+  - HTML copy
+  - plain text copy
+  - mobile copy
+- Persists form state in browser local storage so values survive reload.
 
-## Project structure
+## UI and workflow
 
-- `index.html` — App markup, form controls, preview container, and script/style includes.
-- `style.css` — Visual layout and component styling.
-- `script.js` — Main logic for:
-  - form state
-  - signature generation
-  - validation rules and messaging
-  - copy-to-clipboard helpers
-  - UI behavior
-- `adultdutyassignments.js` — Approved adult duty assignment list (reference data).
-- `cadetdutyassignments.js` — Approved cadet duty assignment list (reference data).
-- `favicon.png`, `LogoNoAux.png`, `LogoWithAux.png` — Static image assets.
+The app is a single-page interface with:
 
-## How to run locally
+- Header + navigation links to related CAP brand tools.
+- Guidance panel with collapsible standards content.
+- Form sections for signature type, grade/name, wing (mobile), duty assignments, contact info, and website.
+- Sticky preview card with copy controls and copy status feedback.
 
-This is a static front-end project (no build step required).
+## Tech stack
 
-### Option 1: Open directly
+- **HTML** (`index.html`)
+- **CSS** (`style.css`)
+- **Vanilla JavaScript** (`script.js`)
+- **Static image assets** (`favicon.png`, `LogoNoAux.png`, `LogoWithAux.png`)
+
+No framework, no build pipeline, no backend required.
+
+## File map
+
+- `index.html` — page structure, form controls, preview container, and script/style includes.
+- `style.css` — layout, theme tokens, responsive behavior, controls/cards/callouts, and preview styling.
+- `script.js` — app state, renderers, validators, field behavior, local storage sync, and clipboard handlers.
+- `adultdutyassignments.js` — adult duty assignment allowlist dataset.
+- `cadetdutyassignments.js` — cadet duty assignment allowlist dataset.
+
+## Run locally
+
+### Option 1: open directly
 
 Open `index.html` in a browser.
 
-### Option 2: Use a local web server (recommended)
-
-From the repository root:
+### Option 2 (recommended): local static server
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then open:
+Then visit `http://localhost:8000`.
 
-- `http://localhost:8000`
+## Developer notes
 
-## How to make changes
-
-### 1. Update UI text or layout
-
-- Edit **structure/content** in `index.html`.
-- Edit **styling** in `style.css`.
-
-### 2. Update generation or validation behavior
-
-- Edit `script.js`.
-- Keep changes isolated by concern where possible:
-  - input collection/state updates
+- Keep validation and generation logic consistent with CAP brand standards.
+- Preserve exact duty-assignment naming in the allowlist files to avoid false validation failures.
+- If you update form fields, also update:
+  - state defaults
+  - local storage serialization/deserialization
+  - signature rendering functions
   - validation logic
-  - render/generation functions
-  - clipboard/copy actions
+  - copy output behavior
 
-### 3. Update duty assignment data
+## Manual QA checklist
 
-- Edit the relevant list file:
-  - adults: `adultdutyassignments.js`
-  - cadets: `cadetdutyassignments.js`
-- Preserve exact phrasing/casing for matching logic.
+Before shipping changes, verify:
 
-### 4. Test your changes manually
-
-At minimum, verify:
-
-- Signature type switching works.
-- Preview updates immediately when fields change.
-- Validation warnings appear and clear correctly.
-- Copy actions still work for each format.
-- Mobile/desktop layout remains usable.
-
-## Suggested change workflow
-
-1. Create a feature branch.
-2. Make small, focused edits.
-3. Run locally and test the scenarios above.
-4. Commit with a clear message (for example: `docs: add project readme`).
-5. Open a pull request summarizing what changed and why.
-
-## Notes
-
-- The app currently uses plain HTML/CSS/JavaScript and is intentionally lightweight.
-- Keep the user-facing guidance aligned with current CAP brand standards when editing copy or validation behavior.
+1. Signature type switch updates UI and output correctly.
+2. Preview updates immediately when each form field changes.
+3. Validation warnings appear for invalid input and clear after fixes.
+4. Copy buttons are disabled while warnings are present and enabled when compliant.
+5. All copy modes produce expected content.
+6. Desktop and mobile layouts remain usable.
