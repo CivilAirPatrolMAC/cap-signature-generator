@@ -195,9 +195,9 @@
 
       if (item.startsWith("Duplicate phone type detected: ")) {
         return {
-          title: "Multiple different numbers share the same phone type.",
-          why: "Using the same label (for example, two “M” entries) for different numbers can confuse recipients about which number to use.",
-          fix: "Change one phone type label so each different number has a distinct, accurate type."
+          title: "The same phone type is used more than once.",
+          why: "Repeating a phone type label (for example, two “M” entries) can make the contact section unclear.",
+          fix: "Change one repeated phone type label so each row uses the correct, distinct type."
         };
       }
 
@@ -557,21 +557,17 @@
       { index: 3, type: String(vals.phone_3_type || "").trim().toUpperCase(), number: String(vals.phone_3 || "").trim() }
     ];
 
-    const normalizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
     const phoneTypeMap = new Map();
 
     for (const row of phoneRows) {
       if (!row.type || !row.number) continue;
-      const normalizedDigits = normalizePhoneDigits(row.number);
-      if (!normalizedDigits) continue;
       if (!phoneTypeMap.has(row.type)) phoneTypeMap.set(row.type, []);
-      phoneTypeMap.get(row.type).push({ index: row.index, normalizedDigits });
+      phoneTypeMap.get(row.type).push({ index: row.index });
     }
 
     for (const [phoneType, entries] of phoneTypeMap.entries()) {
-      const uniqueNumbers = new Set(entries.map((entry) => entry.normalizedDigits));
-      if (uniqueNumbers.size > 1) {
-        warnings.push(`Duplicate phone type detected: ${phoneType}. You entered different numbers with the same phone type; switch one type label to the correct value.`);
+      if (entries.length > 1) {
+        warnings.push(`Duplicate phone type detected: ${phoneType}. You entered the same phone type more than once; switch one type label to the correct value.`);
       }
     }
 
