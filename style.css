@@ -52,6 +52,20 @@ body {
     linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 100%);
 }
 
+
+body.page-transitioning {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-transitioning {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 img {
   max-width: 100%;
   display: block;
