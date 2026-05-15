@@ -1097,6 +1097,34 @@
     }
   }
 
+
+  function initToolTransitions() {
+    const navButtons = Array.from(document.querySelectorAll(".tool-switcher button[data-nav-url]"));
+    if (!navButtons.length) return;
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetUrl = button.dataset.navUrl;
+        if (!targetUrl) return;
+
+        if (button.classList.contains("active") || window.location.href === targetUrl) {
+          return;
+        }
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (prefersReducedMotion) {
+          window.location.href = targetUrl;
+          return;
+        }
+
+        document.body.classList.add("page-transitioning");
+        window.setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 220);
+      });
+    });
+  }
+
   function init() {
     type = $("type").value;
     gradeType = $("grade_type").value;
@@ -1111,6 +1139,7 @@
     initCopyBlocking();
     initCopyButtons();
     initGuidelinesToggle();
+    initToolTransitions();
     updateOutputAndPreview();
 
     $("type").addEventListener("change", () => {
