@@ -193,6 +193,22 @@
         };
       }
 
+      if (item.startsWith("Duplicate phone type detected: ")) {
+        return {
+          title: "The same phone type is used more than once.",
+          why: "Repeating a phone type label (for example, two “M” entries) can make the contact section unclear.",
+          fix: "Change one repeated phone type label so each row uses the correct, distinct type."
+        };
+      }
+
+      if (item === 'Director of Public Affairs duty assignments must be at the Region level and include "Region" in the unit name.') {
+        return {
+          title: "Director of Public Affairs is restricted to Region-level units.",
+          why: "This position is authorized at the Region level, not subordinate commands.",
+          fix: 'Update the duty line so the unit includes “Region,” or use a different duty position for subordinate units.'
+        };
+      }
+
       return {
         title: item,
         why: "This entry does not match the current CAP signature standard enforced by the generator.",
@@ -532,6 +548,33 @@
 
       if (!isValidGovDomain) {
         warnings.push("Link URL must point to an official Civil Air Patrol or .gov website (e.g., .cap.gov or .gov).");
+      }
+    }
+
+    const phoneRows = [
+      { index: 1, type: String(vals.phone_1_type || "").trim().toUpperCase(), number: String(vals.phone_1 || "").trim() },
+      { index: 2, type: String(vals.phone_2_type || "").trim().toUpperCase(), number: String(vals.phone_2 || "").trim() },
+      { index: 3, type: String(vals.phone_3_type || "").trim().toUpperCase(), number: String(vals.phone_3 || "").trim() }
+    ];
+
+    const phoneTypeMap = new Map();
+
+    for (const row of phoneRows) {
+      if (!row.type || !row.number) continue;
+      if (!phoneTypeMap.has(row.type)) phoneTypeMap.set(row.type, []);
+      phoneTypeMap.get(row.type).push({ index: row.index });
+    }
+
+    for (const [phoneType, entries] of phoneTypeMap.entries()) {
+      if (entries.length > 1) {
+        warnings.push(`Duplicate phone type detected: ${phoneType}. You entered the same phone type more than once; switch one type label to the correct value.`);
+      }
+    }
+
+    for (const line of titleLines) {
+      if (/\bdirector of public affairs\b/i.test(line) && !/\bregion\b/i.test(line)) {
+        warnings.push('Director of Public Affairs duty assignments must be at the Region level and include "Region" in the unit name.');
+        break;
       }
     }
 
