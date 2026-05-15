@@ -899,15 +899,7 @@
     vals.website_url = $("website_url").value.trim();
   }
 
-  function saveFormStateIfEnabled() {
-    const saveToggle = $("save_locally");
-    if (!saveToggle) return;
-
-    if (!saveToggle.checked) {
-      localStorage.removeItem(STORAGE_KEY);
-      return;
-    }
-
+  function saveFormState() {
     const payload = {
       type: $("type").value,
       grade_type: $("grade_type").value,
@@ -968,13 +960,11 @@
     assign("website_url", saved.website_url);
     assign("preview_mode", saved.preview_mode);
 
-    const saveToggle = $("save_locally");
-    if (saveToggle) saveToggle.checked = true;
   }
 
   function updateOutputAndPreview() {
     readInputsToState();
-    saveFormStateIfEnabled();
+    saveFormState();
 
     const warnings = getValidationWarnings();
     renderValidationWarnings(warnings);
@@ -1124,7 +1114,6 @@
       "name",
       "wing",
       "is_chaplain",
-      "save_locally",
       "phone_1_type",
       "phone_2_type",
       "phone_3_type",
