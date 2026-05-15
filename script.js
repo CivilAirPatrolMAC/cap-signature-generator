@@ -142,6 +142,14 @@
         };
       }
 
+      if (item === "Charter numbers do not belong in the signature block duty assignment lines.") {
+        return {
+          title: "A charter-number pattern was detected in a duty line.",
+          why: "Charter numbers should not be listed in signature block duty assignment lines.",
+          fix: "Remove entries formatted like SWR-OK-110 and keep only the unit name and approved duty position."
+        };
+      }
+
       if (item.startsWith('Adult duty assignments must use an approved duty position. Invalid entry: "')) {
         const invalidEntry = item.match(/Invalid entry: "(.*)"$/)?.[1] || "this entry";
         return {
@@ -461,6 +469,13 @@
 
       if (mentionsEncampment && !allowedEncampmentRole) {
         warnings.push('Encampment duty assignments may only be listed if the duty position is "Encampment Commander" or "Commandant of Cadets."');
+        break;
+      }
+    }
+
+    for (const line of titleLines) {
+      if (/\b[A-Z]{3}-[A-Z]{2}-\d{1,}\b/.test(line.toUpperCase())) {
+        warnings.push("Charter numbers do not belong in the signature block duty assignment lines.");
         break;
       }
     }
