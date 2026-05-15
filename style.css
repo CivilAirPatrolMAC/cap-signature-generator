@@ -174,19 +174,20 @@ button {
   min-width: 0;
 }
 
+.preview-column {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+
 .controls-column {
   display: grid;
   gap: 1rem;
 }
 
 .preview-sticky {
-  position: sticky;
-  top: 1rem;
   display: grid;
   gap: 1rem;
-  max-height: calc(100vh - 2rem);
-  overflow-y: auto;
-  padding-right: 0.35rem;
 }
 
 /* Cards */
@@ -474,6 +475,7 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .preview-column,
   .preview-sticky {
     position: static;
   }
