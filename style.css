@@ -184,6 +184,9 @@ button {
   top: 1rem;
   display: grid;
   gap: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding-right: 0.35rem;
 }
 
 /* Cards */
