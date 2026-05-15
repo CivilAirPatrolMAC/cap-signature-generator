@@ -4,6 +4,7 @@
 
   const LOGO_URL =
     "./LogoNoAux.png";
+  const STORAGE_KEY = "cap_signature_form_v1";
 
   const vals = {
     name: "Jane Doe",
@@ -898,8 +899,82 @@
     vals.website_url = $("website_url").value.trim();
   }
 
+  function saveFormStateIfEnabled() {
+    const saveToggle = $("save_locally");
+    if (!saveToggle) return;
+
+    if (!saveToggle.checked) {
+      localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+
+    const payload = {
+      type: $("type").value,
+      grade_type: $("grade_type").value,
+      grade: $("grade").value,
+      is_chaplain: $("is_chaplain").checked,
+      name: $("name").value,
+      wing: $("wing").value,
+      title: $("title").value,
+      phone_1_type: $("phone_1_type").value,
+      phone_1: $("phone_1").value,
+      phone_2_type: $("phone_2_type").value,
+      phone_2: $("phone_2").value,
+      phone_3_type: $("phone_3_type").value,
+      phone_3: $("phone_3").value,
+      website_text: $("website_text").value,
+      website_url: $("website_url").value,
+      preview_mode: $("preview_mode").value
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }
+
+  function loadSavedFormState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+
+    let saved;
+    try {
+      saved = JSON.parse(raw);
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+
+    const assign = (id, value) => {
+      const el = $(id);
+      if (!el || typeof value === "undefined" || value === null) return;
+      el.value = value;
+    };
+
+    assign("type", saved.type);
+    assign("grade_type", saved.grade_type);
+    type = $("type").value;
+    gradeType = $("grade_type").value;
+    gateGrades();
+    assign("grade", saved.grade);
+    $("is_chaplain").checked = !!saved.is_chaplain;
+    assign("name", saved.name);
+    assign("wing", saved.wing);
+    assign("title", saved.title);
+    assign("phone_1_type", saved.phone_1_type);
+    assign("phone_1", saved.phone_1);
+    assign("phone_2_type", saved.phone_2_type);
+    assign("phone_2", saved.phone_2);
+    assign("phone_3_type", saved.phone_3_type);
+    assign("phone_3", saved.phone_3);
+    assign("website_text", saved.website_text);
+    assign("website_url", saved.website_url);
+    assign("preview_mode", saved.preview_mode);
+
+    const saveToggle = $("save_locally");
+    if (saveToggle) saveToggle.checked = true;
+  }
+
   function updateOutputAndPreview() {
     readInputsToState();
+    saveFormStateIfEnabled();
 
     const warnings = getValidationWarnings();
     renderValidationWarnings(warnings);
@@ -993,6 +1068,7 @@
     type = $("type").value;
     gradeType = $("grade_type").value;
 
+    loadSavedFormState();
     gateGrades();
     syncChaplainToggle();
     applyTypeUI();
@@ -1048,6 +1124,7 @@
       "name",
       "wing",
       "is_chaplain",
+      "save_locally",
       "phone_1_type",
       "phone_2_type",
       "phone_3_type",
